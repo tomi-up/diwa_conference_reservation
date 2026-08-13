@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ClaudeCodeEditorTabs">
+    <option name="activeSessionId" value="13aaca01-24a7-487b-8aea-fb9bd6e0e711" />
+    <option name="openSessionIds">
+      <list>
+        <option value="13aaca01-24a7-487b-8aea-fb9bd6e0e711" />
+      </list>
+    </option>
+    <option name="sessionPaths">
+      <map>
+        <entry key="13aaca01-24a7-487b-8aea-fb9bd6e0e711" value="/switch-account" />
+      </map>
+    </option>
+    <option name="sessionTitles">
+      <map>
+        <entry key="13aaca01-24a7-487b-8aea-fb9bd6e0e711" value="can you test if it can send email using smtp, use" />
+      </map>
+    </option>
+  </component>
+</project>

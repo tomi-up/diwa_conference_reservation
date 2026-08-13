@@ -1,0 +1,17 @@
+# Environment & Credentials
+.env
+.env.local
+.env.*.local
+
+# Composer Dependencies
+/vendor/
+
+# Logs & Temporary Files
+*.log
+scratch/
+
+# IDE & OS Files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
