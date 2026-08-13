@@ -33,14 +33,14 @@ require_once __DIR__ . '/includes/header.php';
     <img src="<?= APP_URL ?>/assets/images/diwa_header.jpg" class="position-absolute top-0 start-0 w-100 h-100" alt="Background" style="object-fit: cover; z-index: 1; filter: blur(5px);">
     
     <!-- dark tint overlay -->
-    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: 0.2; z-index: 2;"></div>
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: 0.4; z-index: 2;"></div>
 
     <!-- main content section -->
     <div class="container position-relative" style="z-index: 3;">
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-9">
 
-                <div class="position-relative border shadow-lg mb-4 px-4 py-5 bg-white text-center">
+                <div style="background-color: #ffffffc7;" class="position-relative border shadow-lg mb-4 px-4 py-5 text-center">
                     <div class="card-body">
                         <div class="mb-3">
                             <img src="<?= APP_URL ?>/assets/images/diwa_logo-no_word.png" alt="DIWA Logo" class="brand-logo-square mb-2" style="max-height: 110px; width: auto;">
