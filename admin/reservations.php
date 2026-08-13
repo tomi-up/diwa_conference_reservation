@@ -67,7 +67,7 @@ require_once __DIR__ . '/../includes/admin_header.php';
             </div>
             <div class="col-md-3">
                 <select class="form-select form-select-sm" id="status" name="status">
-                    <option value="">Status ▼</option>
+                    <option value="">All Statuses</option>
                     <option value="CONFIRMED" <?= ($filters['status'] === 'CONFIRMED') ? 'selected' : '' ?>>Confirmed</option>
                     <option value="CANCELLED" <?= ($filters['status'] === 'CANCELLED') ? 'selected' : '' ?>>Cancelled</option>
                 </select>
@@ -130,9 +130,9 @@ require_once __DIR__ . '/../includes/admin_header.php';
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-end pe-4">
-                                    <div class="d-inline-flex gap-1.5 align-items-center justify-content-end">
+                                    <div class="d-inline-flex gap-2 align-items-center justify-content-end">
                                         <button type="button" 
-                                                class="btn btn-sm btn-outline-primary fw-semibold px-3 btn-open-view-modal"
+                                                class="btn btn-sm btn-outline-secondary fw-semibold px-3 btn-open-view-modal"
                                                 onclick="openReservationViewModal(this)"
                                                 data-id="<?= $res['id'] ?>"
                                                 data-code="<?= format_reservation_id($res['id'], $res['created_at']) ?>"

@@ -104,9 +104,12 @@ require_once __DIR__ . '/../includes/admin_header.php';
     </div>
     <div class="d-flex align-items-center gap-2">
         <button type="button" class="btn btn-danger fw-bold btn-sm shadow-sm px-3" data-bs-toggle="modal" data-bs-target="#blockScheduleModal">
-            <i class="bi bi-slash-circle me-1.5"></i> + Block Schedule
+            <i class="bi bi-slash-circle me-2"></i>Block Schedule
         </button>
-        <a href="reservations" class="btn btn-outline-secondary btn-sm fw-semibold">
+        <button type="button" class="btn btn-outline-danger btn-sm py-0.5 px-2.5 fw-semibold" data-bs-toggle="modal" data-bs-target="#manageBlocksModal">
+            Manage Blocks
+        </button>
+        <a hidden href="reservations" class="btn btn-outline-secondary btn-sm fw-semibold">
             <i class="bi bi-list-task me-1"></i> Reservations List
         </a>
     </div>
@@ -118,20 +121,12 @@ require_once __DIR__ . '/../includes/admin_header.php';
         <div class="card border-0 shadow-sm p-3 h-100 bg-white">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <span class="text-muted small fw-bold text-uppercase d-block">Today (<?= date('M j') ?>)</span>
-                <span class="badge bg-success-subtle text-success fs-7 border border-success-subtle px-2 py-0.5">Today</span>
             </div>
-            <div class="mb-2">
-                <?php if ($count_today_bookings === 0): ?>
-                    <div class="fs-6 fw-bold text-success">Fully Available</div>
-                <?php else: ?>
-                    <div class="fs-6 fw-bold text-dark"><?= $count_today_bookings ?> Confirmed Booking(s)</div>
-                <?php endif; ?>
-            </div>
-            <div>
-                <button type="button" id="btnViewToday" class="btn btn-link btn-sm p-0 text-decoration-none fw-semibold">
-                    View Schedule &rarr;
-                </button>
-            </div>
+            <?php if ($count_today_bookings === 0): ?>
+                <div class="fs-5 fw-bold text-success">Fully Available</div>
+            <?php else: ?>
+                <div class="fs-5 fw-bold text-dark"><?= $count_today_bookings ?> Confirmed Booking(s)</div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -139,20 +134,12 @@ require_once __DIR__ . '/../includes/admin_header.php';
         <div class="card border-0 shadow-sm p-3 h-100 bg-white">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <span class="text-muted small fw-bold text-uppercase d-block">Tomorrow (<?= date('M j', strtotime('+1 day')) ?>)</span>
-                <span class="badge bg-primary-subtle text-primary fs-7 border border-primary-subtle px-2 py-0.5">Tomorrow</span>
             </div>
-            <div class="mb-2">
-                <?php if ($count_tomorrow_bookings === 0): ?>
-                    <div class="fs-6 fw-bold text-success">Fully Available</div>
-                <?php else: ?>
-                    <div class="fs-6 fw-bold text-dark"><?= $count_tomorrow_bookings ?> Confirmed Booking(s)</div>
-                <?php endif; ?>
-            </div>
-            <div>
-                <button type="button" id="btnViewTomorrow" class="btn btn-link btn-sm p-0 text-decoration-none fw-semibold">
-                    View Schedule &rarr;
-                </button>
-            </div>
+            <?php if ($count_tomorrow_bookings === 0): ?>
+                <div class="fs-5 fw-bold text-success">Fully Available</div>
+            <?php else: ?>
+                <div class="fs-5 fw-bold text-dark"><?= $count_tomorrow_bookings ?> Confirmed Booking(s)</div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -160,27 +147,14 @@ require_once __DIR__ . '/../includes/admin_header.php';
         <div class="card border-0 shadow-sm p-3 h-100 bg-white">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <span class="text-muted small fw-bold text-uppercase d-block">Unavailable Periods</span>
-                <span class="badge bg-danger-subtle text-danger fs-7 border border-danger-subtle px-2 py-0.5">Admin Control</span>
             </div>
-            <div class="mb-2">
-                <div class="fs-6 fw-bold text-danger"><?= $count_blocked_schedules ?> Active Block(s)</div>
-            </div>
-            <div>
-                <button type="button" class="btn btn-outline-danger btn-sm py-0.5 px-2.5 fw-semibold" data-bs-toggle="modal" data-bs-target="#manageBlocksModal">
-                    Manage Blocks
-                </button>
-            </div>
+            <div class="fs-5 fw-bold text-danger"><?= $count_blocked_schedules ?> Active Block(s)</div>
         </div>
     </div>
 </div>
 
 <!-- Inline Status Legend & Calendar Grid Card -->
 <div class="card border-0 shadow-sm mb-4">
-    <div class="card-header bg-white py-2.5 d-flex align-items-center gap-2 flex-wrap">
-        <span class="fw-bold text-dark small me-1"><i class="bi bi-info-circle text-primary me-1"></i> Schedule Status Legend:</span>
-        <span class="badge bg-success px-2.5 py-1">Confirmed</span>
-        <span class="badge bg-danger px-2.5 py-1">Blocked / Unavailable</span>
-    </div>
     <div class="card-body p-4">
         <div id="calendar"></div>
     </div>

@@ -45,7 +45,7 @@ require_once __DIR__ . '/../includes/admin_header.php';
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-2 pb-3 mb-4 border-bottom">
     <h1 class="h3 fw-bold mb-0">Dashboard Overview</h1>
-    <div class="btn-toolbar mb-2 mb-md-0 gap-2">
+    <div hidden class="btn-toolbar mb-2 mb-md-0 gap-2">
         <a href="reservations" class="btn btn-sm btn-outline-secondary">
             <i class="bi bi-list-ul me-1"></i> View All Reservations
         </a>
@@ -62,7 +62,7 @@ require_once __DIR__ . '/../includes/admin_header.php';
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="text-muted fw-semibold small mb-1">Today's Bookings</h6>
-                    <h2 class="fw-bold mb-0 text-dark"><?= $count_today ?></h2>
+                    <h2 class="fw-bold mb-0 text-muted"><?= $count_today ?></h2>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@ require_once __DIR__ . '/../includes/admin_header.php';
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="text-muted fw-semibold small mb-1">Upcoming Bookings</h6>
-                    <h2 class="fw-bold mb-0 text-success"><?= $count_upcoming ?></h2>
+                    <h2 class="fw-bold mb-0 text-muted"><?= $count_upcoming ?></h2>
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@ require_once __DIR__ . '/../includes/admin_header.php';
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="text-muted fw-semibold small mb-1">Total Confirmed</h6>
-                    <h2 class="fw-bold mb-0 text-primary"><?= $count_confirmed ?></h2>
+                    <h2 class="fw-bold mb-0 text-muted"><?= $count_confirmed ?></h2>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@ require_once __DIR__ . '/../includes/admin_header.php';
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="text-muted fw-semibold small mb-1">Total Cancelled</h6>
-                    <h2 class="fw-bold mb-0 text-warning"><?= $count_cancelled ?></h2>
+                    <h2 class="fw-bold mb-0 text-muted"><?= $count_cancelled ?></h2>
                 </div>
             </div>
         </div>
