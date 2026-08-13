@@ -91,7 +91,7 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="container-fluid px-lg-5 py-4">
-    <div class="text-center mb-4">
+    <div hidden class="text-center mb-4"><div class="col-lg-2 col-xl-2"></div>
         <h2 class="fw-bold text-dark mb-1">Conference Room Reservation & Availability</h2>
         <p class="text-muted small">Complete the form below to reserve the DIWA Center conference room and inspect live schedule availability.</p>
     </div>
@@ -110,20 +110,51 @@ require_once __DIR__ . '/includes/header.php';
         <?php endif; ?>
     </div>
 
-    <div id="reservationCardWrapper">
+    <div id="reservationCardWrapper" class="w-24">
         <div class="row g-4">
-            <!-- Left Column: Reservation Form -->
-            <div class="col-lg-6 col-xl-6">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <!-- Left Column: Availability Checker & Schedule Matrix -->
+            <div class="col-lg-2 col-xl-2"></div>
+            <div class="col-lg-8 col-xl-8">
+                <div class="border shadow-sm h-100">
+                    <div style="height: 80px;" class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <h5 class="card-title mb-0 fw-bold text-dark">
+                            <i class="bi bi-clock-history text-primary me-2"></i>Availability Checker
+                        </h5>
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="checker_date_input" class="small text-muted fw-semibold mb-0 d-none d-sm-inline">Date:</label>
+                            <input type="date" id="checker_date_input" class="form-control form-control-sm" value="<?= e($form_data['reservation_date']) ?>" min="<?= date('Y-m-d') ?>">
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="p-3 bg-light rounded border mb-3" hidden>
+                            <div class="d-flex align-items-center text-secondary small">
+                                <i class="bi bi-info-circle-fill text-primary me-2 fs-5"></i>
+                                <div>
+                                    <strong>Operating Hours:</strong> 7:00 AM &ndash; 6:00 PM.<br>
+                                    Click any <span class="badge bg-success">AVAILABLE</span> slot chip below to automatically pick its start and end times.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Live Interactive Hourly Schedule Matrix -->
+                        <div id="reservationScheduleGrid">
+                            <div class="text-center text-muted py-5">
+                                <div class="spinner-border text-primary me-2" role="status"></div> Loading schedule availability...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-xl-2"></div>
+
+            <!-- Right Column: Reservation Form -->
+            <div class="col-lg-2 col-xl-2"></div>
+            <div class="col-lg-8 col-xl-8">
+                <div class="border shadow-sm h-100">
+                    <div style="height: 80px;" class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
                         <h5 class="card-title mb-0 fw-bold text-dark">
                             <i class="bi bi-pencil-square text-primary me-2"></i>Reservation Form
                         </h5>
-                        <?php if ($is_logged_in): ?>
-                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
-                                <i class="bi bi-shield-check me-1"></i>Verified UP Account
-                            </span>
-                        <?php endif; ?>
                     </div>
                     <div class="card-body p-4">
                         <?php if (!$is_logged_in): ?>
@@ -186,7 +217,7 @@ require_once __DIR__ . '/includes/header.php';
                                     Project / Team / Office <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control" id="project_team_office" name="project_team_office" 
-                                       value="<?= e($form_data['project_team_office']) ?>" placeholder="Finance & Operations Team" 
+                                       value="<?= e($form_data['project_team_office']) ?>" 
                                        <?= !$is_logged_in ? 'disabled' : '' ?> required>
                             </div>
 
@@ -241,39 +272,8 @@ require_once __DIR__ . '/includes/header.php';
 
                 </div>
             </div>
+            <div class="col-lg-2 col-xl-2"></div>
 
-            <!-- Right Column: Availability Checker & Schedule Matrix -->
-            <div class="col-lg-6 col-xl-6">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <h5 class="card-title mb-0 fw-bold text-dark">
-                            <i class="bi bi-clock-history text-primary me-2"></i>Availability Checker
-                        </h5>
-                        <div class="d-flex align-items-center gap-2">
-                            <label for="checker_date_input" class="small text-muted fw-semibold mb-0 d-none d-sm-inline">Select Date:</label>
-                            <input type="date" id="checker_date_input" class="form-control form-control-sm" value="<?= e($form_data['reservation_date']) ?>" min="<?= date('Y-m-d') ?>">
-                        </div>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="p-3 bg-light rounded border mb-3">
-                            <div class="d-flex align-items-center text-secondary small">
-                                <i class="bi bi-info-circle-fill text-primary me-2 fs-5"></i>
-                                <div>
-                                    <strong>Operating Hours:</strong> 7:00 AM &ndash; 6:00 PM.<br>
-                                    Click any <span class="badge bg-success">AVAILABLE</span> slot chip below to automatically pick its start and end times.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Live Interactive Hourly Schedule Matrix -->
-                        <div id="reservationScheduleGrid">
-                            <div class="text-center text-muted py-5">
-                                <div class="spinner-border text-primary me-2" role="status"></div> Loading schedule availability...
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

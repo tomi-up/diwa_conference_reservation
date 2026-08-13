@@ -40,7 +40,7 @@ $(document).ready(function () {
                     if (data.success && data.slots) {
                         const availableCount = data.slots.filter(s => s.status === 'AVAILABLE').length;
                         let html = `
-                            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-2">
                                 <span class="fw-bold text-dark"><i class="bi bi-calendar-event text-primary me-1.5"></i> Schedule for <u class="text-primary">${data.formatted_date}</u></span>
                                 <span class="badge bg-success-subtle text-success border border-success-subtle">${availableCount} Open Slots</span>
                             </div>
@@ -48,22 +48,23 @@ $(document).ready(function () {
                         `;
 
                         data.slots.forEach(slot => {
+                            console.log(slot);
                             const isOccupied = slot.status === 'OCCUPIED';
                             if (isOccupied) {
                                 html += `
                                     <div class="col-6 col-sm-4 col-md-3">
-                                        <div class="p-2 border rounded text-center bg-danger-subtle text-danger border-danger-subtle opacity-75">
+                                        <div style="height: 80px;" class="p-2 border rounded text-center bg-danger-subtle text-danger border-danger-subtle opacity-75 d-flex flex-column align-items-center justify-content-center">
                                             <div class="fw-bold small text-dark">${slot.label}</div>
-                                            <span class="badge bg-danger mt-1"><i class="bi bi-slash-circle me-1"></i>BLOCKED</span>
+                                            <span class="badge bg-danger mt-1">BLOCKED</span>
                                         </div>
                                     </div>
                                 `;
                             } else {
                                 const isSelected = (startTime === slot.start_time && endTime === slot.end_time);
-                                const selectedClass = isSelected ? 'border-2 border-primary bg-primary-subtle' : 'bg-success-subtle border-success-subtle';
+                                const selectedClass = isSelected ? 'border-2 border-success bg-success-subtle' : 'bg-success-subtle border-success-subtle';
                                 html += `
                                     <div class="col-6 col-sm-4 col-md-3">
-                                        <div class="p-2 border rounded text-center ${selectedClass} text-success cursor-pointer slot-picker-chip transition-all" 
+                                        <div style="height: 80px; cursor: pointer;" class="p-2 border rounded text-center ${selectedClass} text-success slot-picker-chip transition-all d-flex flex-column align-items-center justify-content-center" 
                                              data-start="${slot.start_time}" data-end="${slot.end_time}" style="cursor: pointer;" title="Click to pick ${slot.label}">
                                             <div class="fw-bold small text-dark">${slot.label}</div>
                                             <span class="badge bg-success mt-1">AVAILABLE</span>
@@ -124,8 +125,8 @@ $(document).ready(function () {
         if (start && end) {
             $('#start_time').val(start);
             $('#end_time').val(end);
-            $('.slot-picker-chip').removeClass('border-2 border-primary bg-primary-subtle').addClass('bg-success-subtle border-success-subtle');
-            $(this).removeClass('bg-success-subtle border-success-subtle').addClass('border-2 border-primary bg-primary-subtle');
+            $('.slot-picker-chip').removeClass('border-2 border-success bg-primary-subtle').addClass('bg-success-subtle border-success-subtle');
+            $(this).removeClass('bg-success-subtle border-success-subtle').addClass('border-2 border-success bg-success-subtle');
             loadScheduleGridAndCheck();
         }
     });
@@ -202,55 +203,61 @@ $(document).ready(function () {
                         // Render smooth inline Success Card without reloading page!
                         const d = res.details;
                         const successCardHtml = `
-                            <div class="card border-0 shadow-sm bg-white mb-5 overflow-hidden">
-                                <div class="card-header bg-success text-white py-3 text-center">
-                                    <h4 class="mb-0 fw-bold"><i class="bi bi-check-circle-fill me-2"></i> Reservation Confirmed!</h4>
-                                </div>
-                                <div class="card-body p-4 p-md-5">
-                                    <div class="alert alert-success border-0 bg-success-subtle text-success-emphasis p-3 mb-4 rounded-3 d-flex align-items-center">
-                                        <i class="bi bi-check-circle-fill fs-3 me-3 text-success"></i>
-                                        <div>
-                                            <strong>Reservation Request Submitted!</strong><br>
-                                            Your reservation details have been successfully recorded for <u>${d.requester_email}</u>.
+                            <div class="row">
+                                <div class="col-lg-1 col-xl-1"></div>
+                                <div class="col-lg-10 col-xl-10">
+                                    <div class="border shadow-sm bg-white mb-5 overflow-hidden">
+                                        <div class="card-header bg-success text-white py-3 text-center">
+                                            <h4 class="mb-0 fw-bold"><i class="bi bi-check-circle-fill me-2"></i> Reservation Confirmed!</h4>
+                                        </div>
+                                        <div class="card-body p-4 p-md-5">
+                                            <div class="alert alert-success border-0 bg-success-subtle text-success-emphasis p-3 mb-4 rounded-3 d-flex align-items-center">
+                                                <i class="bi bi-check-circle-fill fs-3 me-3 text-success"></i>
+                                                <div>
+                                                    <strong>Reservation Request Submitted!</strong><br>
+                                                    Your reservation details have been successfully recorded for <u>${d.requester_email}</u>.
+                                                </div>
+                                            </div>
+
+                                            <!-- DIWA Styled Callout Box -->
+                                            <div style="background-color: #fdf2f2; border: 1px solid #fecaca; border-left: 5px solid #951a1d; padding: 20px 24px; border-radius: 6px;" class="mb-4">
+                                                <h5 style="color: #951a1d;" class="fw-bold mb-3 border-bottom pb-2">Reservation Details</h5>
+                                                <div class="row g-2 font-size-14">
+                                                    <div class="col-sm-4 text-secondary fw-semibold">Reservation ID:</div>
+                                                    <div class="col-sm-8 text-end fw-bold text-danger font-monospace fs-6">${d.formatted_id}</div>
+                                                    
+                                                    <div class="col-sm-4 text-secondary fw-semibold">Requesting Personnel:</div>
+                                                    <div class="col-sm-8 text-end text-dark fw-bold">${d.requester_name}</div>
+
+                                                    <div class="col-sm-4 text-secondary fw-semibold">Facility / Room:</div>
+                                                    <div class="col-sm-8 text-end text-dark">${d.room_name}</div>
+
+                                                    <div class="col-sm-4 text-secondary fw-semibold">Date:</div>
+                                                    <div class="col-sm-8 text-end text-dark">${d.reservation_date}</div>
+
+                                                    <div class="col-sm-4 text-secondary fw-semibold">Time:</div>
+                                                    <div class="col-sm-8 text-end text-dark">${d.start_time} &ndash; ${d.end_time}</div>
+
+                                                    <div class="col-sm-4 text-secondary fw-semibold">Project / Office:</div>
+                                                    <div class="col-sm-8 text-end text-dark">${d.project_team_office}</div>
+
+                                                    <div class="col-sm-4 text-secondary fw-semibold">Purpose:</div>
+                                                    <div class="col-sm-8 text-end text-dark">${d.purpose}</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                                <button type="button" id="btnBookAnother" class="btn btn-primary px-4 py-2">
+                                                    <i class="bi bi-plus-circle me-1"></i> Make Another Reservation
+                                                </button>
+                                                <a href="availability.php?date=${d.raw_date}" class="btn btn-outline-secondary px-4 py-2">
+                                                    <i class="bi bi-calendar-week me-1"></i> View Schedule Matrix
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <!-- DIWA Styled Callout Box -->
-                                    <div style="background-color: #fdf2f2; border: 1px solid #fecaca; border-left: 5px solid #951a1d; padding: 20px 24px; border-radius: 6px;" class="mb-4">
-                                        <h5 style="color: #951a1d;" class="fw-bold mb-3 border-bottom pb-2">Reservation Details</h5>
-                                        <div class="row g-2 font-size-14">
-                                            <div class="col-sm-4 text-secondary fw-semibold">Reservation ID:</div>
-                                            <div class="col-sm-8 fw-bold text-danger font-monospace fs-6">${d.formatted_id}</div>
-                                            
-                                            <div class="col-sm-4 text-secondary fw-semibold">Requesting Personnel:</div>
-                                            <div class="col-sm-8 text-dark fw-bold">${d.requester_name}</div>
-
-                                            <div class="col-sm-4 text-secondary fw-semibold">Facility / Room:</div>
-                                            <div class="col-sm-8 text-dark">${d.room_name}</div>
-
-                                            <div class="col-sm-4 text-secondary fw-semibold">Date:</div>
-                                            <div class="col-sm-8 text-dark">${d.reservation_date}</div>
-
-                                            <div class="col-sm-4 text-secondary fw-semibold">Time:</div>
-                                            <div class="col-sm-8 text-dark">${d.start_time} &ndash; ${d.end_time}</div>
-
-                                            <div class="col-sm-4 text-secondary fw-semibold">Project / Office:</div>
-                                            <div class="col-sm-8 text-dark">${d.project_team_office}</div>
-
-                                            <div class="col-sm-4 text-secondary fw-semibold">Purpose:</div>
-                                            <div class="col-sm-8 text-dark">${d.purpose}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                                        <button type="button" id="btnBookAnother" class="btn btn-primary px-4 py-2">
-                                            <i class="bi bi-plus-circle me-1"></i> Make Another Reservation
-                                        </button>
-                                        <a href="availability.php?date=${d.raw_date}" class="btn btn-outline-secondary px-4 py-2">
-                                            <i class="bi bi-calendar-week me-1"></i> View Schedule Matrix
-                                        </a>
-                                    </div>
                                 </div>
+                                <div class="col-lg-1 col-xl-1"></div>
                             </div>
                         `;
 

@@ -5,10 +5,25 @@
 ?>
 
 <!-- Shared Footer -->
-<footer class="footer py-4 mt-auto" style="background-color: #1e293b; border-top: 3px solid #951a1d; color: #f8fafc;">
-    <div class="container text-center">
-        <p class="mb-1 text-white fw-semibold">&copy; <?= date('Y') ?> DIWA Center Conference Services. All rights reserved.</p>
-            <span class="small" style="color: #94a3b8;">Made by <strong style="color: #f87171;">Maylotechy</strong></span>
+<footer class="footer py-4 mt-auto" style="background-color: #ffffff; color: #f8fafc;">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-evenly gap-3">
+            
+            <!-- Picture -->
+            <img src="<?= APP_URL ?>/assets/images/diwa_logo_landscape.png"
+                 alt="DIWA Center Logo"
+                 style="height: 50px; width: auto;">
+
+            <!-- Text -->
+            <div class="text-end">
+                <p style="color: #32444e;" class="mb-1 fw-semibold">
+                    &copy; <?= date('Y') ?> DIWA Center Conference Services. All rights reserved.
+                </p>
+                <span class="small" style="color: #32444e70;">
+                    Made by <strong style="color: #f87171;">Maylotechy</strong> and <strong style="color: #f87171;">Centuriee</strong>
+                </span>
+            </div>
+
         </div>
     </div>
 </footer>

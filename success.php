@@ -25,7 +25,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
 
             <div class="card shadow-sm border-0 text-center p-4">
                 <div class="card-body">
