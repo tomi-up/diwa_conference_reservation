@@ -63,7 +63,7 @@ function generate_daily_schedule_matrix(string $date, ?PDO $pdo = null): array {
         $slots[] = [
             'start_time' => $s_time,
             'end_time'   => $e_time,
-            'label'      => date('g:i A', strtotime($s_time)) . ' - ' . date('g:i A', strtotime($e_time)),
+            'label'      => date('gA', strtotime($s_time)) . ' - ' . date('gA', strtotime($e_time)),
             'status'     => $is_occupied ? 'OCCUPIED' : 'AVAILABLE'
         ];
     }

@@ -40,7 +40,7 @@ $(document).ready(function () {
                     if (data.success && data.slots) {
                         const availableCount = data.slots.filter(s => s.status === 'AVAILABLE').length;
                         let html = `
-                            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-2">
                                 <span class="fw-bold text-dark"><i class="bi bi-calendar-event text-primary me-1.5"></i> Schedule for <u class="text-primary">${data.formatted_date}</u></span>
                                 <span class="badge bg-success-subtle text-success border border-success-subtle">${availableCount} Open Slots</span>
                             </div>
@@ -48,22 +48,23 @@ $(document).ready(function () {
                         `;
 
                         data.slots.forEach(slot => {
+                            console.log(slot);
                             const isOccupied = slot.status === 'OCCUPIED';
                             if (isOccupied) {
                                 html += `
                                     <div class="col-6 col-sm-4 col-md-3">
-                                        <div class="p-2 border rounded text-center bg-danger-subtle text-danger border-danger-subtle opacity-75">
+                                        <div style="height: 80px;" class="p-2 border rounded text-center bg-danger-subtle text-danger border-danger-subtle opacity-75 d-flex flex-column align-items-center justify-content-center">
                                             <div class="fw-bold small text-dark">${slot.label}</div>
-                                            <span class="badge bg-danger mt-1"><i class="bi bi-slash-circle me-1"></i>BLOCKED</span>
+                                            <span class="badge bg-danger mt-1">BLOCKED</span>
                                         </div>
                                     </div>
                                 `;
                             } else {
                                 const isSelected = (startTime === slot.start_time && endTime === slot.end_time);
-                                const selectedClass = isSelected ? 'border-2 border-primary bg-primary-subtle' : 'bg-success-subtle border-success-subtle';
+                                const selectedClass = isSelected ? 'border-2 border-success bg-success-subtle' : 'bg-success-subtle border-success-subtle';
                                 html += `
                                     <div class="col-6 col-sm-4 col-md-3">
-                                        <div class="p-2 border rounded text-center ${selectedClass} text-success cursor-pointer slot-picker-chip transition-all" 
+                                        <div style="height: 80px; cursor: pointer;" class="p-2 border rounded text-center ${selectedClass} text-success slot-picker-chip transition-all d-flex flex-column align-items-center justify-content-center" 
                                              data-start="${slot.start_time}" data-end="${slot.end_time}" style="cursor: pointer;" title="Click to pick ${slot.label}">
                                             <div class="fw-bold small text-dark">${slot.label}</div>
                                             <span class="badge bg-success mt-1">AVAILABLE</span>
@@ -124,8 +125,8 @@ $(document).ready(function () {
         if (start && end) {
             $('#start_time').val(start);
             $('#end_time').val(end);
-            $('.slot-picker-chip').removeClass('border-2 border-primary bg-primary-subtle').addClass('bg-success-subtle border-success-subtle');
-            $(this).removeClass('bg-success-subtle border-success-subtle').addClass('border-2 border-primary bg-primary-subtle');
+            $('.slot-picker-chip').removeClass('border-2 border-success bg-primary-subtle').addClass('bg-success-subtle border-success-subtle');
+            $(this).removeClass('bg-success-subtle border-success-subtle').addClass('border-2 border-success bg-success-subtle');
             loadScheduleGridAndCheck();
         }
     });

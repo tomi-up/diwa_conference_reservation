@@ -36,7 +36,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
 <nav class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm bg-white">
     <div class="container">
         <a class="navbar-brand" href="<?= APP_URL ?>/index">
-            <img src="<?= APP_URL ?>/assets/images/diwa_logo_landscape.png" alt="DIWA Logo" class="brand-logo-landscape">
+            <img src="<?= APP_URL ?>/assets/images/diwa_logo.png" alt="DIWA Logo" class="brand-logo-landscape">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -50,7 +50,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= (in_array(basename($_SERVER['PHP_SELF']), ['reserve.php', 'reserve'])) ? 'active fw-semibold' : '' ?>" href="<?= APP_URL ?>/reserve">
-                        Reserve Room & Availability
+                        Reserve
                     </a>
                 </li>
             </ul>
@@ -102,7 +102,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
 </nav>
 
 <!-- Global Alert Container for Notifications & Auth Errors -->
-<div id="globalAuthAlertContainer" class="container mt-3">
+<div id="globalAuthAlertContainer" class="container">
     <?php 
     $flash = get_flash_message();
     if ($flash): 
