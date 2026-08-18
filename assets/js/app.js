@@ -289,15 +289,36 @@ $(document).ready(function () {
             const startTime = $('#start_time').val();
             const endTime = $('#end_time').val();
 
+            const termsAccepted = $('#terms_accepted').is(':checked');
+
             const errors = [];
             if (!name || !email || !office || !purpose || !date || !startTime || !endTime) {
                 errors.push('All required fields must be completed.');
             }
+            if (!termsAccepted) {
+                errors.push('You must accept the Terms & Conditions and Responsible Use Policy before submitting.');
+            }
             if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 errors.push('Please enter a valid email address.');
             }
-            if (startTime && endTime && startTime >= endTime) {
-                errors.push('End time must be later than start time.');
+            if (date) {
+                const maxAdvanceDate = new Date();
+                maxAdvanceDate.setDate(maxAdvanceDate.getDate() + 30);
+                const selectedDate = new Date(date);
+                if (selectedDate > maxAdvanceDate) {
+                    errors.push('Advance Booking Limit: Reservations can only be booked up to 30 days in advance.');
+                }
+            }
+            if (startTime && endTime) {
+                if (startTime >= endTime) {
+                    errors.push('End time must be later than start time.');
+                } else {
+                    const startMin = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
+                    const endMin = parseInt(endTime.split(':')[0]) * 60 + parseInt(endTime.split(':')[1]);
+                    if (endMin - startMin > 240) {
+                        errors.push('Duration Cap Exceeded: Single reservation sessions cannot exceed 4 hours.');
+                    }
+                }
             }
             if (startTime < '07:00' || endTime > '18:00') {
                 errors.push('Reservation hours are strictly between 7:00 AM and 6:00 PM.');
@@ -724,7 +745,7 @@ window.startBookingTutorial = function() {
             {
                 element: '#btnStartTutorial',
                 popover: {
-                    title: 'Welcome to DIWA Center Portal',
+                    title: 'Welcome to Conference Reservation System',
                     description: 'Let\'s take a quick 30-second tour on how to check room availability and make a reservation.',
                     side: 'bottom',
                     align: 'center'
@@ -793,5 +814,25 @@ if (window.location.pathname.includes('reserve') && !localStorage.getItem('diwa_
         localStorage.setItem('diwa_tutorial_seen', 'true');
     }, 1000);
 }
+
+// 6. Terms & Conditions Auto-Check & Persistence Handler
+function syncTermsAcceptanceState() {
+    const email = $('#requester_email').val() ? $('#requester_email').val().trim().toLowerCase() : '';
+    const key = email ? 'diwa_terms_accepted_' + email : 'diwa_terms_accepted_global';
+    if (localStorage.getItem(key) === 'true') {
+        $('#terms_accepted').prop('checked', true);
+    }
+}
+
+syncTermsAcceptanceState();
+
+$(document).on('click', '#btnAgreeTerms', function () {
+    const email = $('#requester_email').val() ? $('#requester_email').val().trim().toLowerCase() : '';
+    const key = email ? 'diwa_terms_accepted_' + email : 'diwa_terms_accepted_global';
+    
+    localStorage.setItem(key, 'true');
+    localStorage.setItem('diwa_terms_accepted_global', 'true');
+    $('#terms_accepted').prop('checked', true);
+});
 
 });

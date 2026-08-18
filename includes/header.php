@@ -75,7 +75,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                                 <li><hr class="dropdown-divider my-1"></li>
                                 <li>
                                     <a class="dropdown-item text-primary small fw-semibold" href="<?= APP_URL ?>/admin/calendar">
-                                        <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
+                                        Admin Dashboard
                                     </a>
                                 </li>
                             <?php endif; ?>

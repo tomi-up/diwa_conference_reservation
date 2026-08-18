@@ -46,6 +46,20 @@ $form_data = [
     'end_time'            => sanitize_input($_POST['end_time'] ?? '')
 ];
 
+// Terms & Conditions Check
+$terms_accepted = !empty($_POST['terms_accepted']);
+if (!$terms_accepted) {
+    $errors[] = 'You must accept the Terms & Conditions and Responsible Use Policy before submitting.';
+}
+
+// 5-Minute Rate Limit / Cooldown Check
+$last_submit = $_SESSION['last_reservation_submit_time'] ?? 0;
+if (time() - $last_submit < 300) {
+    $wait_sec = 300 - (time() - $last_submit);
+    $wait_min = ceil($wait_sec / 60);
+    $errors[] = "Rate Limit: Please wait {$wait_min} minute(s) before submitting another reservation request.";
+}
+
 // Validation Rules
 if (empty($form_data['requester_name'])) {
     $errors[] = 'Name of Requesting Personnel is required.';
@@ -63,13 +77,46 @@ if (empty($form_data['reservation_date'])) {
     $errors[] = 'Reservation Date is required.';
 } elseif ($form_data['reservation_date'] < date('Y-m-d')) {
     $errors[] = 'Reservation date cannot be in the past.';
+} else {
+    // Max 30 Days Advance Limit
+    $max_advance_date = date('Y-m-d', strtotime('+30 days'));
+    if ($form_data['reservation_date'] > $max_advance_date) {
+        $errors[] = 'Advance Booking Limit: Reservations can only be booked up to 30 days in advance (on or before ' . format_date($max_advance_date) . ').';
+    }
 }
+
 if (empty($form_data['start_time']) || empty($form_data['end_time'])) {
     $errors[] = 'Start Time and End Time are required.';
 } elseif (strtotime($form_data['end_time']) <= strtotime($form_data['start_time'])) {
     $errors[] = 'End Time must be later than Start Time.';
 } elseif ($form_data['start_time'] < '07:00' || $form_data['end_time'] > '18:00') {
     $errors[] = 'Reservation hours are strictly between 7:00 AM and 6:00 PM.';
+} else {
+    // Max 4 Hours Duration Cap
+    $duration_seconds = strtotime($form_data['end_time']) - strtotime($form_data['start_time']);
+    if ($duration_seconds > 14400) {
+        $errors[] = 'Duration Cap Exceeded: Single reservation sessions cannot exceed 4 hours.';
+    }
+}
+
+// Daily 1 Active Booking Limit per User
+if (empty($errors) && !empty($form_data['requester_email']) && !empty($form_data['reservation_date'])) {
+    $stmt_check_daily = $pdo->prepare("
+        SELECT COUNT(*) 
+        FROM reservations 
+        WHERE requester_email = :email 
+          AND reservation_date = :res_date 
+          AND status = 'CONFIRMED'
+    ");
+    $stmt_check_daily->execute([
+        'email'    => $form_data['requester_email'],
+        'res_date' => $form_data['reservation_date']
+    ]);
+    $daily_count = (int)$stmt_check_daily->fetchColumn();
+
+    if ($daily_count >= 1) {
+        $errors[] = 'Notice: You already have an active reservation request for this date. To prevent spam, only 1 active booking per user per day is allowed.';
+    }
 }
 
 if (!empty($errors)) {
@@ -94,6 +141,7 @@ if (!$result['success']) {
 }
 
 $reservation_id = $result['reservation_id'];
+$_SESSION['last_reservation_submit_time'] = time();
 
 // Send Email Notification
 $email_sent = send_reservation_confirmation_email($reservation_id, $pdo);

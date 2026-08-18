@@ -288,12 +288,25 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
 
                             <!-- Real-time Availability Badge -->
-                            <div class="mb-4 text-center">
+                            <div class="mb-3 text-center">
                                 <div id="liveAvailabilityBadge"></div>
                             </div>
 
+                            <!-- Terms & Conditions Checkbox & Responsible Use Policy Link -->
+                            <div class="mb-4">
+                                <div class="form-check bg-light p-3 rounded border">
+                                    <input class="form-check-input ms-0 me-2" type="checkbox" value="1" id="terms_accepted" name="terms_accepted" <?= !$is_logged_in ? 'disabled' : '' ?> required>
+                                    <label class="form-check-label small text-dark fw-medium" for="terms_accepted">
+                                        I have read and agree to the 
+                                        <a href="#" class="fw-bold text-danger text-decoration-underline ms-1" data-bs-toggle="modal" data-bs-target="#termsModal">
+                                            Responsible Use Policy & Terms of Service
+                                        </a> <span class="text-danger">*</span>
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary py-2.5 fw-bold fs-6" <?= !$is_logged_in ? 'disabled' : '' ?>>
+                                <button type="submit" id="reservationFormSubmitBtn" class="btn btn-primary py-2.5 fw-bold fs-6" <?= !$is_logged_in ? 'disabled' : '' ?>>
                                     <i class="bi bi-calendar-check me-2"></i> Submit Reservation Request
                                 </button>
                             </div>
@@ -304,6 +317,73 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="col-lg-2 col-xl-2"></div>
 
+        </div>
+    </div>
+</div>
+
+<!-- Terms & Responsible Use Policy Modal (Vantage Style UI with Original Policy Text) -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden p-3 p-md-4 bg-white">
+            <div class="modal-header border-0 pb-0 d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="text-uppercase fw-bold text-muted mb-1" style="font-size: 0.75rem; letter-spacing: 0.1em; color: #64748b;">AGREEMENT & RESPONSIBLE USE POLICY</div>
+                    <h2 class="modal-title fw-bold text-dark tracking-tight mb-0" id="termsModalLabel" style="font-size: 2rem; color: #0f172a; font-weight: 800;">
+                        Terms of Service
+                    </h2>
+                </div>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body pt-3 pb-4 px-3" style="max-height: 65vh; overflow-y: auto; color: #334155; font-size: 0.9375rem; line-height: 1.6;">
+                <p class="text-secondary mb-3">
+                    We know it's tempting to skip these Terms of Service, but it's important to establish what you can expect from us as you use the DiWA Center Conference Room Reservation system, and what we expect from you.
+                </p>
+
+                <div class="p-3 bg-light rounded-3 border mb-4">
+                    <strong class="text-dark d-block mb-1">System Security & Monitoring Notice</strong>
+                    <span class="small text-muted">
+                        All reservation activities, user sessions, and IP logs are recorded. System abuse, spamming, fake bookings, or flooding will result in your account being blocked from accessing the site again.
+                    </span>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="fw-bold text-dark mb-1">1. Authorized Personnel & Academic Purpose</h6>
+                    <p class="small text-secondary mb-0">
+                        Reservations are strictly reserved for official project, team, office, or academic activities within UP Mindanao and the DiWA Center. All users must sign in with their authenticated <strong>@up.edu.ph</strong> account.
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="fw-bold text-dark mb-1">2. Anti-Spam & Fair Usage Booking Limits</h6>
+                    <ul class="ps-3 mb-0 small text-secondary" style="line-height: 1.8;">
+                        <li class="mb-1.5"><strong>Max 1 Active Booking Per User Per Day:</strong> Restricted to 1 active reservation per calendar date.</li>
+                        <li class="mb-1.5"><strong>Max 4 Hours Per Reservation:</strong> Single booking sessions cannot exceed 4 consecutive hours.</li>
+                        <li class="mb-1.5"><strong>Max 30 Days Advance Booking:</strong> Reservations can only be scheduled up to 30 days in advance.</li>
+                        <li class="mb-0"><strong>Rate Limiting Cooldown:</strong> A 5-minute cooldown is enforced between consecutive reservation submissions.</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="fw-bold text-dark mb-1">3. Strict Misuse & Account Block Policy</h6>
+                    <p class="small text-secondary mb-0">
+                        Attempting to flood the reservation system, double-book slots intentionally, submit fake details, or bypass security controls constitutes a violation of the system rules. Any detected violation will result in immediate revocation of reservation privileges and we will block your account from accessing the site again.
+                    </p>
+                </div>
+
+                <div>
+                    <h6 class="fw-bold text-dark mb-1">4. Cancellations & Facility Care</h6>
+                    <p class="small text-secondary mb-0">
+                        If a scheduled activity is cancelled, the requester must notify facility administrators or cancel the booking promptly to free the slot for other personnel.
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="modal-footer border-0 pt-0 px-3 d-flex justify-content-start gap-3">
+                <button type="button" class="btn btn-outline-secondary px-4 py-2.5 rounded-3 fw-medium" data-bs-dismiss="modal" style="font-size: 0.875rem;">Not right now...</button>
+                <button type="button" id="btnAgreeTerms" class="btn btn-primary px-4 py-2.5 rounded-3 fw-bold" data-bs-dismiss="modal" style="font-size: 0.875rem;">I agree with terms</button>
+            </div>
         </div>
     </div>
 </div>
