@@ -12,8 +12,22 @@ $(document).ready(function () {
     }
 
     // 2. Real-time Live Availability Badge Check & Schedule Matrix Grid
-    function loadScheduleGridAndCheck() {
-        const date = $('#checker_date_input').val() || $('#reservation_date').val();
+    function loadScheduleGridAndCheck(sourceId) {
+        let date;
+        if (sourceId === 'checker_date_input') {
+            date = $('#checker_date_input').val();
+            if (date && $('#reservation_date').length) {
+                $('#reservation_date').val(date);
+            }
+        } else if (sourceId === 'reservation_date') {
+            date = $('#reservation_date').val();
+            if (date && $('#checker_date_input').length) {
+                $('#checker_date_input').val(date);
+            }
+        } else {
+            date = $('#checker_date_input').val() || $('#reservation_date').val();
+        }
+
         const startTime = $('#start_time').val();
         const endTime = $('#end_time').val();
         const $badge = $('#liveAvailabilityBadge');
@@ -22,12 +36,8 @@ $(document).ready(function () {
         if (!date) return;
 
         // Ensure both date inputs are synced
-        if ($('#checker_date_input').length && $('#checker_date_input').val() !== date) {
-            $('#checker_date_input').val(date);
-        }
-        if ($('#reservation_date').length && $('#reservation_date').val() !== date) {
-            $('#reservation_date').val(date);
-        }
+        if ($('#checker_date_input').length) $('#checker_date_input').val(date);
+        if ($('#reservation_date').length) $('#reservation_date').val(date);
 
         // Fetch daily schedule matrix for date
         if ($grid.length) {
@@ -51,11 +61,23 @@ $(document).ready(function () {
                             console.log(slot);
                             const isOccupied = slot.status === 'OCCUPIED';
                             if (isOccupied) {
+                                const reqName = slot.requester_name || 'Official Booking';
+                                const office = slot.project_team_office || 'N/A';
+                                const purpose = slot.purpose || 'Official Activity';
+                                const timeFmt = (slot.occ_start_time && slot.occ_end_time) ? `${slot.occ_start_time} – ${slot.occ_end_time}` : slot.label;
+
                                 html += `
                                     <div class="col-6 col-sm-4 col-md-3">
-                                        <div style="height: 80px;" class="p-2 border rounded text-center bg-danger-subtle text-danger border-danger-subtle opacity-75 d-flex flex-column align-items-center justify-content-center">
+                                        <div style="height: 80px; cursor: pointer;" 
+                                             class="p-2 border rounded text-center bg-danger-subtle text-danger border-danger-subtle slot-blocked-chip transition-all d-flex flex-column align-items-center justify-content-center"
+                                             data-date="${escapeHtml(data.formatted_date)}"
+                                             data-time="${escapeHtml(timeFmt)}"
+                                             data-requester="${escapeHtml(reqName)}"
+                                             data-office="${escapeHtml(office)}"
+                                             data-purpose="${escapeHtml(purpose)}"
+                                             title="Click to view reservation details for ${slot.label}">
                                             <div class="fw-bold small text-dark">${slot.label}</div>
-                                            <span class="badge bg-danger mt-1">BLOCKED</span>
+                                            <span class="badge bg-danger mt-1"><i class="bi bi-info-circle me-1"></i>BLOCKED</span>
                                         </div>
                                     </div>
                                 `;
@@ -101,21 +123,106 @@ $(document).ready(function () {
         }
     }
 
-    // Event listener for Date & Time changes with two-way syncing
-    $('#reservation_date').on('change input', function() {
-        const selectedDate = $(this).val();
-        $('#checker_date_input').val(selectedDate);
-        loadScheduleGridAndCheck();
+    // Helper to safely escape HTML attributes
+    function escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // Click handler for Blocked / Occupied Slot Chips to display Reservation Pop-up Modal
+    $(document).on('click', '.slot-blocked-chip', function(e) {
+        e.preventDefault();
+        const $chip = $(this).closest('.slot-blocked-chip');
+        const date = $chip.attr('data-date') || '';
+        const time = $chip.attr('data-time') || '';
+        const requester = $chip.attr('data-requester') || 'Official Booking';
+        const office = $chip.attr('data-office') || 'N/A';
+        const purpose = $chip.attr('data-purpose') || 'Official Activity';
+
+        const modalEl = document.getElementById('blockedSlotDetailModal');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+            $('#blockedModalDate').text(date);
+            $('#blockedModalTime').text(time);
+            $('#blockedModalRequester').text(requester);
+            $('#blockedModalOffice').text(office);
+            $('#blockedModalPurpose').text(purpose);
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Time Slot Reserved',
+                html: `
+                    <div class="text-start p-2" style="font-size: 0.9rem; color: #1e293b;">
+                        <div class="p-2.5 mb-3 rounded bg-light border">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <span class="text-uppercase text-muted fw-bold d-block" style="font-size: 0.68rem;">Date</span>
+                                    <strong class="text-dark">${escapeHtml(date)}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-uppercase text-muted fw-bold d-block" style="font-size: 0.68rem;">Time Slot</span>
+                                    <strong class="text-dark">${escapeHtml(time)}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-uppercase text-muted fw-bold d-block" style="font-size: 0.68rem;">Requester</span>
+                            <span class="fw-bold text-dark">${escapeHtml(requester)}</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-uppercase text-muted fw-bold d-block" style="font-size: 0.68rem;">Office / Team</span>
+                            <span class="fw-medium text-dark">${escapeHtml(office)}</span>
+                        </div>
+                        <div>
+                            <span class="text-uppercase text-muted fw-bold d-block" style="font-size: 0.68rem;">Purpose / Activity</span>
+                            <div class="p-2 mt-1 bg-light rounded border text-dark">${escapeHtml(purpose)}</div>
+                        </div>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonColor: '#951a1d',
+                confirmButtonText: 'Close',
+                customClass: { confirmButton: 'btn btn-primary px-4' },
+                buttonsStyling: false
+            });
+        }
     });
 
-    $('#checker_date_input').on('change input', function() {
-        const selectedDate = $(this).val();
-        $('#reservation_date').val(selectedDate);
-        loadScheduleGridAndCheck();
-    });
+    // Global SweetAlert2 Logout Confirmation Trigger
+    $(document).on('click', 'a[href*="logout"], .btn-logout-confirm', function(e) {
+        e.preventDefault();
+        const logoutUrl = $(this).attr('href');
 
-    $('#start_time, #end_time').on('change input', function() {
-        loadScheduleGridAndCheck();
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Log Out?',
+                text: 'Are you sure you want to log out of your active session?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#951a1d',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: '<i class="bi bi-box-arrow-right me-1"></i> Yes, Log Out',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: 'btn btn-danger px-4 me-2',
+                    cancelButton: 'btn btn-secondary px-4'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = logoutUrl;
+                }
+            });
+        } else {
+            if (confirm('Are you sure you want to log out of your active session?')) {
+                window.location.href = logoutUrl;
+            }
+        }
     });
 
     // Click handler for Available Slot Picker Chips
@@ -131,7 +238,20 @@ $(document).ready(function () {
         }
     });
 
-    if ($('#reservation_date').val()) {
+    // Event listeners for date and time inputs to update calendar grid dynamically
+    $(document).on('change input blur', '#checker_date_input', function () {
+        loadScheduleGridAndCheck('checker_date_input');
+    });
+
+    $(document).on('change input blur', '#reservation_date', function () {
+        loadScheduleGridAndCheck('reservation_date');
+    });
+
+    $(document).on('change input', '#start_time, #end_time', function () {
+        loadScheduleGridAndCheck();
+    });
+
+    if ($('#reservation_date').val() || $('#checker_date_input').val()) {
         loadScheduleGridAndCheck();
     }
 
@@ -353,16 +473,36 @@ $(document).ready(function () {
 
                     data.slots.forEach(slot => {
                         const isAvailable = slot.status === 'AVAILABLE';
-                        const badgeClass = isAvailable ? 'slot-available' : 'slot-occupied';
-
-                        html += `
-                            <div class="col-6 col-md-4 col-lg-3">
-                                <div class="p-3 border rounded text-center ${badgeClass}">
-                                    <div class="fw-bold mt-1">${slot.label}</div>
-                                    <div class="small text-uppercase mt-1">${slot.status}</div>
+                        if (isAvailable) {
+                            html += `
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="p-3 border rounded text-center slot-available">
+                                        <div class="fw-bold mt-1">${slot.label}</div>
+                                        <div class="small text-uppercase mt-1">AVAILABLE</div>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
+                        } else {
+                            const reqName = slot.requester_name || 'Official Booking';
+                            const office = slot.project_team_office || 'N/A';
+                            const purpose = slot.purpose || 'Official Activity';
+                            const timeFmt = (slot.occ_start_time && slot.occ_end_time) ? `${slot.occ_start_time} – ${slot.occ_end_time}` : slot.label;
+
+                            html += `
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div style="cursor: pointer;" class="p-3 border rounded text-center slot-occupied slot-blocked-chip"
+                                         data-date="${escapeHtml(data.formatted_date)}"
+                                         data-time="${escapeHtml(timeFmt)}"
+                                         data-requester="${escapeHtml(reqName)}"
+                                         data-office="${escapeHtml(office)}"
+                                         data-purpose="${escapeHtml(purpose)}"
+                                         title="Click to view reservation details for ${slot.label}">
+                                        <div class="fw-bold mt-1">${slot.label}</div>
+                                        <div class="small text-uppercase mt-1"><i class="bi bi-info-circle me-1"></i>OCCUPIED</div>
+                                    </div>
+                                </div>
+                            `;
+                        }
                     });
 
                     html += `
@@ -527,11 +667,11 @@ window.openReservationViewModal = function(btn) {
 
     let statusBadge = '';
     if (status === 'CONFIRMED') {
-        statusBadge = '<span class="badge bg-success fs-6 px-3 py-1.5 fw-semibold">Confirmed</span>';
+        statusBadge = '<span class="badge bg-success px-2.5 py-1 fw-semibold">Confirmed</span>';
     } else if (status === 'CANCELLED') {
-        statusBadge = '<span class="badge bg-warning text-dark fs-6 px-3 py-1.5 fw-semibold"><i class="bi bi-x-circle me-1"></i>Cancelled</span>';
+        statusBadge = '<span class="badge bg-warning text-dark px-2.5 py-1 fw-semibold"><i class="bi bi-x-circle me-1"></i>Cancelled</span>';
     } else {
-        statusBadge = '<span class="badge bg-danger fs-6 px-3 py-1.5 fw-semibold">Rejected</span>';
+        statusBadge = '<span class="badge bg-danger px-2.5 py-1 fw-semibold">Rejected</span>';
     }
     const statusBadgeEl = document.getElementById('modalStatusBadge');
     if (statusBadgeEl) statusBadgeEl.innerHTML = statusBadge;

@@ -15,3 +15,14 @@
     RewriteCond %{REQUEST_FILENAME}.php -f
     RewriteRule ^(.+)$ $1.php [L]
 </IfModule>
+
+# Security Protection: Block direct browser access to sensitive files & config directory
+<FilesMatch "^\.env|\.git|\.sql$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteRule ^config/ - [F,L]
+    RewriteRule ^database/ - [F,L]
+</IfModule>

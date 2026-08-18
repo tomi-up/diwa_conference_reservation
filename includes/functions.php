@@ -110,15 +110,20 @@ function build_query_url(array $new_params = []): string {
  * Retrieve key-value array of all system settings from database
  */
 function get_system_settings(?PDO $pdo = null): array {
-    if (!$pdo) {
-        $pdo = get_db_connection();
+    try {
+        if (!$pdo) {
+            $pdo = get_db_connection();
+        }
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM system_settings");
+        $settings = [];
+        while ($row = $stmt->fetch()) {
+            $settings[$row['setting_key']] = $row['setting_value'];
+        }
+        return $settings;
+    } catch (\Throwable $e) {
+        error_log("Failed to fetch system settings: " . $e->getMessage());
+        return [];
     }
-    $stmt = $pdo->query("SELECT setting_key, setting_value FROM system_settings");
-    $settings = [];
-    while ($row = $stmt->fetch()) {
-        $settings[$row['setting_key']] = $row['setting_value'];
-    }
-    return $settings;
 }
 
 /**
