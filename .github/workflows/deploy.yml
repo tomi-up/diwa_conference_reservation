@@ -10,6 +10,7 @@ jobs:
   web-deploy:
     name: Sync to InfinityFree
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -22,14 +23,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: htdocs/
           exclude: |
-            **/.git*
-            **/.git*/**
-            **/.github*/**
-            .env
-            .htaccess
-            README.md
-            composer.json
-            composer.lock
-            scratch/**
-            **/.idea*
-
+            **/*
+            !ftp-test.txt
