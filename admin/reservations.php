@@ -196,65 +196,91 @@ require_once __DIR__ . '/../includes/admin_header.php';
 
 <!-- View Reservation Detail Pop-up Modal -->
 <div class="modal fade" id="reservationDetailModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg rounded-3">
-            <div class="modal-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="modal-title fw-bold text-dark mb-0" id="reservationModalLabel">Conference Room Reservation</h5>
-                    <span id="modalResCode" class="font-monospace fw-bold text-danger fs-6"></span>
-                </div>
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
+        <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="modal-header bg-white px-4 py-3 border-bottom d-flex align-items-center justify-content-between">
+                <h5 class="modal-title fw-bold text-dark mb-0 fs-6" id="reservationModalLabel">
+                    <i class="bi bi-bookmark-check text-primary me-2"></i>Reservation Details
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
+            <!-- Modal Body -->
             <div class="modal-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-                    <span class="small text-muted fw-bold text-uppercase">Status</span>
-                    <div id="modalStatusBadge"></div>
-                </div>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <div class="small text-muted fw-bold text-uppercase mb-1">Requester</div>
-                        <div id="modalRequesterName" class="fs-5 fw-bold text-dark"></div>
+                <!-- Status & Code Bar -->
+                <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded-3 border mb-3">
+                    <div>
+                        <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.68rem; letter-spacing: 0.05em;">Reservation Code</div>
+                        <span id="modalResCode" class="font-monospace fw-bold text-danger fs-6"></span>
                     </div>
-                    <div class="col-md-6">
-                        <div class="small text-muted fw-bold text-uppercase mb-1">Email</div>
-                        <div id="modalRequesterEmail" class="fs-6 fw-semibold text-dark"></div>
+                    <div class="text-end">
+                        <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.68rem; letter-spacing: 0.05em;">Status</div>
+                        <div id="modalStatusBadge"></div>
                     </div>
                 </div>
 
+                <!-- Requester Information -->
+                <div class="card border mb-3">
+                    <div class="card-body p-3">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">Requester</div>
+                                <div id="modalRequesterName" class="fw-bold text-dark" style="font-size: 0.925rem;"></div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">Email</div>
+                                <div id="modalRequesterEmail" class="fw-medium text-dark text-break" style="font-size: 0.875rem;"></div>
+                            </div>
+                            <div class="col-12 pt-2 border-top">
+                                <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">Office / Team</div>
+                                <div id="modalOfficeTeam" class="text-dark fw-medium" style="font-size: 0.875rem;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Details -->
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded border bg-white h-100">
+                            <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">
+                                <i class="bi bi-calendar-event me-1 text-primary"></i>Date
+                            </div>
+                            <div id="modalDate" class="fw-bold text-dark" style="font-size: 0.875rem;"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded border bg-white h-100">
+                            <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">
+                                <i class="bi bi-clock me-1 text-primary"></i>Time Slot
+                            </div>
+                            <div id="modalTime" class="fw-bold text-dark" style="font-size: 0.875rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Purpose -->
                 <div class="mb-3">
-                    <div class="small text-muted fw-bold text-uppercase mb-1">Office / Team</div>
-                    <div id="modalOfficeTeam" class="fs-6 text-dark fw-medium"></div>
+                    <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">Purpose</div>
+                    <div id="modalPurpose" class="p-3 bg-light rounded border text-dark" style="white-space: pre-wrap; font-size: 0.875rem; min-height: 50px;"></div>
                 </div>
 
-                <div class="mb-3">
-                    <div class="small text-muted fw-bold text-uppercase mb-1">Purpose</div>
-                    <div id="modalPurpose" class="p-3 bg-light rounded border text-dark fs-6" style="white-space: pre-wrap;"></div>
-                </div>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <div class="small text-muted fw-bold text-uppercase mb-1">Date</div>
-                        <div id="modalDate" class="fs-6 fw-bold text-dark"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="small text-muted fw-bold text-uppercase mb-1">Time</div>
-                        <div id="modalTime" class="fs-6 fw-bold text-dark"></div>
-                    </div>
-                </div>
-
-                <div id="modalReasonWrapper" class="mb-3" style="display: none;">
-                    <div class="small text-danger fw-bold text-uppercase mb-1">Reason for Cancellation</div>
-                    <div id="modalReasonText" class="p-3 bg-danger-subtle text-danger rounded border border-danger-subtle fw-semibold"></div>
+                <!-- Cancellation Reason (if applicable) -->
+                <div id="modalReasonWrapper" class="mt-3" style="display: none;">
+                    <div class="text-uppercase text-danger fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">Reason for Cancellation</div>
+                    <div id="modalReasonText" class="p-3 bg-danger-subtle text-danger rounded border border-danger-subtle fw-semibold" style="font-size: 0.85rem;"></div>
                 </div>
             </div>
-            <div class="modal-footer bg-light justify-content-between py-3">
-                <form method="POST" action="reservations">
+
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-light px-4 py-3 border-top d-flex justify-content-between align-items-center">
+                <form method="POST" action="reservations" class="m-0">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="resend_email">
                     <input type="hidden" name="reservation_id" id="modalResendId" value="">
                     <button type="submit" class="btn btn-outline-primary btn-sm fw-semibold px-3 py-1.5">
-                        <i class="bi bi-envelope-at me-1.5"></i> Resend Email
+                        <i class="bi bi-envelope-at me-1"></i> Resend Email
                     </button>
                 </form>
 

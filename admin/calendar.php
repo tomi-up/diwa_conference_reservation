@@ -188,29 +188,29 @@ require_once __DIR__ . '/../includes/admin_header.php';
 
 <!-- Manage Active Blocked Schedules Modal -->
 <div class="modal fade" id="manageBlocksModal" tabindex="-1" aria-labelledby="manageBlocksModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
         <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-dark text-white py-3">
-                <h5 class="modal-title fw-bold" id="manageBlocksModalLabel">
+            <div class="modal-header bg-dark text-white py-3 px-4">
+                <h5 class="modal-title fw-bold fs-6" id="manageBlocksModalLabel">
                     <i class="bi bi-slash-circle text-danger me-2"></i>Active Blocked Schedules
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="small text-muted fw-bold text-uppercase">Currently Blocked Room Periods</span>
-                    <button type="button" class="btn btn-danger btn-sm fw-bold px-3" data-bs-toggle="modal" data-bs-target="#blockScheduleModal">
+                    <span class="small text-muted fw-bold text-uppercase" style="font-size: 0.725rem; letter-spacing: 0.04em;">Currently Blocked Periods</span>
+                    <button type="button" class="btn btn-danger btn-sm fw-bold px-3 py-1" data-bs-toggle="modal" data-bs-target="#blockScheduleModal">
                         <i class="bi bi-plus-circle me-1"></i> Add New Block
                     </button>
                 </div>
 
                 <?php if (empty($blocked_schedules_list)): ?>
-                    <div class="text-center py-4 text-muted bg-light rounded border">
+                    <div class="text-center py-4 text-muted bg-light rounded border small">
                         No active room blocks set. The conference room is currently open for standard bookings.
                     </div>
                 <?php else: ?>
                     <div class="table-responsive border rounded">
-                        <table class="table table-hover align-middle mb-0">
+                        <table class="table table-hover align-middle mb-0 small">
                             <thead class="table-light">
                                 <tr>
                                     <th class="ps-3">Date</th>
@@ -233,7 +233,7 @@ require_once __DIR__ . '/../includes/admin_header.php';
                                                 <input type="hidden" name="action" value="cancel_reservation">
                                                 <input type="hidden" name="reservation_id" value="<?= $block['id'] ?>">
                                                 <input type="hidden" name="cancellation_reason" class="cancellation-reason-input" value="Unblocked by Admin">
-                                                <button type="button" class="btn btn-sm btn-outline-danger fw-semibold px-2.5 py-1" onclick="confirmCancelReservation(this)">
+                                                <button type="button" class="btn btn-sm btn-outline-danger fw-semibold px-2 py-0.5" onclick="confirmCancelReservation(this)">
                                                     <i class="bi bi-trash me-1"></i> Unblock
                                                 </button>
                                             </form>
@@ -245,7 +245,7 @@ require_once __DIR__ . '/../includes/admin_header.php';
                     </div>
                 <?php endif; ?>
             </div>
-            <div class="modal-footer bg-light justify-content-end">
+            <div class="modal-footer bg-light justify-content-end py-2.5 px-4 border-top">
                 <button type="button" class="btn btn-secondary btn-sm px-4 fw-semibold" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -254,10 +254,10 @@ require_once __DIR__ . '/../includes/admin_header.php';
 
 <!-- Block Conference Room Creation Modal -->
 <div class="modal fade" id="blockScheduleModal" tabindex="-1" aria-labelledby="blockModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
         <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-danger text-white py-3">
-                <h5 class="modal-title fw-bold" id="blockModalLabel">
+            <div class="modal-header bg-danger text-white py-3 px-4">
+                <h5 class="modal-title fw-bold fs-6" id="blockModalLabel">
                     <i class="bi bi-slash-circle me-2"></i>Block Conference Room
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -271,29 +271,29 @@ require_once __DIR__ . '/../includes/admin_header.php';
                     </p>
 
                     <div class="mb-3">
-                        <label for="block_date" class="form-label fw-semibold">Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="block_date" name="block_date" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" required>
+                        <label for="block_date" class="form-label fw-semibold small">Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control form-control-sm" id="block_date" name="block_date" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" required>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label for="block_start_time" class="form-label fw-semibold">Start Time <span class="text-danger">*</span></label>
-                            <input type="time" class="form-control" id="block_start_time" name="block_start_time" value="13:00" min="07:00" max="18:00" step="1800" required>
+                            <label for="block_start_time" class="form-label fw-semibold small">Start Time <span class="text-danger">*</span></label>
+                            <input type="time" class="form-control form-control-sm" id="block_start_time" name="block_start_time" value="13:00" min="07:00" max="18:00" step="1800" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="block_end_time" class="form-label fw-semibold">End Time <span class="text-danger">*</span></label>
-                            <input type="time" class="form-control" id="block_end_time" name="block_end_time" value="17:00" min="07:00" max="18:00" step="1800" required>
+                            <label for="block_end_time" class="form-label fw-semibold small">End Time <span class="text-danger">*</span></label>
+                            <input type="time" class="form-control form-control-sm" id="block_end_time" name="block_end_time" value="17:00" min="07:00" max="18:00" step="1800" required>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="block_reason" class="form-label fw-semibold">Reason <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="block_reason" name="block_reason" value="Official Office Activity" placeholder="e.g., Official Office Activity, Facility Maintenance" required>
+                    <div class="mb-2">
+                        <label for="block_reason" class="form-label fw-semibold small">Reason <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-sm" id="block_reason" name="block_reason" value="Official Office Activity" placeholder="e.g., Official Office Activity, Facility Maintenance" required>
                     </div>
                 </div>
-                <div class="modal-footer bg-light justify-content-end">
-                    <button type="button" class="btn btn-secondary fw-semibold px-3" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger fw-bold px-4">
+                <div class="modal-footer bg-light justify-content-end py-2.5 px-4 border-top">
+                    <button type="button" class="btn btn-secondary btn-sm fw-semibold px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger btn-sm fw-bold px-4">
                         Block Schedule
                     </button>
                 </div>
@@ -304,48 +304,81 @@ require_once __DIR__ . '/../includes/admin_header.php';
 
 <!-- Interactive Event Detail Pop-up Modal -->
 <div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-3">
-            <div class="modal-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="modal-title fw-bold text-dark mb-0" id="eventModalLabel">Conference Room Reservation</h5>
-                    <span id="modalEventCode" class="font-monospace fw-bold text-danger fs-6"></span>
-                </div>
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
+        <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="modal-header bg-white px-4 py-3 border-bottom d-flex align-items-center justify-content-between">
+                <h5 class="modal-title fw-bold text-dark mb-0 fs-6" id="eventModalLabel">
+                    <i class="bi bi-bookmark-check text-primary me-2"></i>Reservation Details
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
+            <!-- Modal Body -->
             <div class="modal-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-                    <span class="small text-muted fw-bold text-uppercase">Status</span>
-                    <div id="modalEventStatusBadge"></div>
+                <!-- Status & Code Bar -->
+                <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded-3 border mb-3">
+                    <div>
+                        <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.68rem; letter-spacing: 0.05em;">Reservation Code</div>
+                        <span id="modalEventCode" class="font-monospace fw-bold text-danger fs-6"></span>
+                    </div>
+                    <div class="text-end">
+                        <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.68rem; letter-spacing: 0.05em;">Status</div>
+                        <div id="modalEventStatusBadge"></div>
+                    </div>
                 </div>
 
+                <!-- Schedule Details -->
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded border bg-white h-100">
+                            <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">
+                                <i class="bi bi-calendar-event me-1 text-primary"></i>Date
+                            </div>
+                            <div id="modalEventDate" class="fw-bold text-dark" style="font-size: 0.875rem;"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded border bg-white h-100">
+                            <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">
+                                <i class="bi bi-clock me-1 text-primary"></i>Time Slot
+                            </div>
+                            <div id="modalEventTime" class="fw-bold text-dark" style="font-size: 0.875rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Requester Information -->
+                <div id="modalRequesterWrapper" class="card border mb-3">
+                    <div class="card-body p-3">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">Requester</div>
+                                <div id="modalEventRequester" class="fw-bold text-dark" style="font-size: 0.925rem;"></div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">Email</div>
+                                <div id="modalEventEmail" class="fw-medium text-dark text-break" style="font-size: 0.875rem;"></div>
+                            </div>
+                            <div id="modalOfficeWrapper" class="col-12 pt-2 border-top">
+                                <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">Office / Team</div>
+                                <div id="modalEventOffice" class="text-dark fw-medium" style="font-size: 0.875rem;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Purpose -->
                 <div class="mb-3">
-                    <div class="small text-muted fw-bold text-uppercase mb-1">Time Slot</div>
-                    <div id="modalEventTime" class="fs-5 fw-bold text-dark"></div>
-                    <div id="modalEventDate" class="small text-muted"></div>
-                </div>
-
-                <div id="modalRequesterWrapper" class="mb-3">
-                    <div class="small text-muted fw-bold text-uppercase mb-1">Requester</div>
-                    <div id="modalEventRequester" class="fs-6 fw-bold text-dark"></div>
-                    <div id="modalEventEmail" class="small text-muted"></div>
-                </div>
-
-                <div id="modalOfficeWrapper" class="mb-3">
-                    <div class="small text-muted fw-bold text-uppercase mb-1">Office / Team</div>
-                    <div id="modalEventOffice" class="fs-6 text-dark fw-medium"></div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="small text-muted fw-bold text-uppercase mb-1">Purpose / Activity</div>
-                    <div id="modalEventPurpose" class="p-3 bg-light rounded border text-dark fs-6" style="white-space: pre-wrap;"></div>
+                    <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.04em;">Purpose / Activity</div>
+                    <div id="modalEventPurpose" class="p-3 bg-light rounded border text-dark" style="white-space: pre-wrap; font-size: 0.875rem; min-height: 50px;"></div>
                 </div>
             </div>
-            <div class="modal-footer bg-light justify-content-between py-3">
+            <div class="modal-footer bg-light justify-content-between py-2.5 px-4 border-top">
                 <div id="modalEventActions">
                     <!-- Dynamic View/Cancel Actions -->
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm px-4 fw-semibold" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary btn-sm px-4 py-1 fw-semibold" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -396,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const badge = document.getElementById('modalEventStatusBadge');
             if (props.is_blocked) {
                 document.getElementById('eventModalLabel').textContent = 'Blocked Schedule';
-                badge.innerHTML = '<span class="badge bg-danger fs-6 px-3 py-1.5 fw-semibold">Blocked</span>';
+                badge.innerHTML = '<span class="badge bg-danger px-2.5 py-1 fw-semibold">Blocked</span>';
                 document.getElementById('modalRequesterWrapper').style.display = 'none';
                 document.getElementById('modalOfficeWrapper').style.display = 'none';
             } else {
@@ -408,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('modalEventOffice').textContent = props.project_team_office;
 
                 if (props.status === 'CONFIRMED') {
-                    badge.innerHTML = '<span class="badge bg-success fs-6 px-3 py-1.5 fw-semibold">Confirmed</span>';
+                    badge.innerHTML = '<span class="badge bg-success px-2.5 py-1 fw-semibold">Confirmed</span>';
                 }
             }
 

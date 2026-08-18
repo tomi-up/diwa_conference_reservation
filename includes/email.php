@@ -70,7 +70,62 @@ function render_email_template(string $template_name, array $variables, ?PDO $pd
 }
 
 /**
- * Send email using PHPMailer and log result
+ * Send email via Resend HTTP API (Port 443 HTTPS cURL - 100% compatible with InfinityFree free hosting)
+ */
+function send_email_via_resend(string $api_key, string $from, string $to, string $subject, string $html_body): array {
+    $url = 'https://api.resend.com/emails';
+
+    // Process embedded CID image references to web URLs for HTTP API HTML compatibility
+    $processed_html = str_replace(
+        ['cid:diwa_logo', 'cid:email_signature'],
+        [
+            APP_URL . '/assets/images/diwa_logo_landscape.png',
+            APP_URL . '/assets/images/signature.png'
+        ],
+        $html_body
+    );
+
+    $payload = [
+        'from'    => $from,
+        'to'      => [$to],
+        'subject' => $subject,
+        'html'    => $processed_html
+    ];
+
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_POST           => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER     => [
+            'Authorization: Bearer ' . trim($api_key),
+            'Content-Type: application/json'
+        ],
+        CURLOPT_POSTFIELDS     => json_encode($payload),
+        CURLOPT_TIMEOUT        => 15,
+        CURLOPT_SSL_VERIFYPEER => true
+    ]);
+
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
+    curl_close($ch);
+
+    if ($curl_error) {
+        return ['success' => false, 'error' => 'cURL Error: ' . $curl_error];
+    }
+
+    $data = json_decode($response, true);
+
+    if ($http_code >= 200 && $http_code < 300 && isset($data['id'])) {
+        return ['success' => true, 'id' => $data['id']];
+    }
+
+    $msg = isset($data['message']) ? $data['message'] : ($response ?: 'HTTP ' . $http_code);
+    return ['success' => false, 'error' => 'Resend API Error: ' . $msg];
+}
+
+/**
+ * Send email using Resend HTTP API (Primary) or PHPMailer SMTP (Fallback) and log result
  */
 function dispatch_email(string $recipient_email, string $subject, string $html_body, string $email_type, ?int $reservation_id = null, ?PDO $pdo = null): bool {
     if (!$pdo) {
@@ -78,6 +133,23 @@ function dispatch_email(string $recipient_email, string $subject, string $html_b
     }
 
     $mail_cfg = get_mail_config();
+    $resend_key = $mail_cfg['resend_api_key'] ?? '';
+
+    // 1. Primary Dispatch Method: Resend HTTP API (HTTPS cURL - Port 443)
+    if (!empty($resend_key)) {
+        $from = !empty($mail_cfg['resend_from_email']) ? $mail_cfg['resend_from_email'] : 'DIWA Center Reservations <onboarding@resend.dev>';
+        $resend_result = send_email_via_resend($resend_key, $from, $recipient_email, $subject, $html_body);
+
+        if ($resend_result['success']) {
+            log_email_attempt($reservation_id, $recipient_email, $email_type, $subject, 'SENT', 'Sent via Resend HTTP API (' . $resend_result['id'] . ')', $pdo);
+            return true;
+        } else {
+            // Log Resend API error message
+            log_email_attempt($reservation_id, $recipient_email, $email_type, $subject, 'FAILED', $resend_result['error'], $pdo);
+        }
+    }
+
+    // 2. Secondary Dispatch Method: PHPMailer SMTP / Native PHP mail()
     $mail = new PHPMailer(true);
 
     try {
@@ -129,13 +201,25 @@ function dispatch_email(string $recipient_email, string $subject, string $html_b
         log_email_attempt($reservation_id, $recipient_email, $email_type, $subject, 'SENT', null, $pdo);
         return true;
 
-    } catch (Exception $e) {
-        // Log FAILED status (DO NOT DELETE RESERVATION!)
-        log_email_attempt($reservation_id, $recipient_email, $email_type, $subject, 'FAILED', $e->getMessage(), $pdo);
-        return false;
     } catch (\Throwable $e) {
-        log_email_attempt($reservation_id, $recipient_email, $email_type, $subject, 'FAILED', $e->getMessage(), $pdo);
-        return false;
+        // Fallback: Try native PHP mail() if external SMTP port 587/465 is blocked by hosting
+        try {
+            $fallback_mail = new PHPMailer(true);
+            $fallback_mail->isMail();
+            $fallback_mail->setFrom($mail_cfg['from_email'], $mail_cfg['from_name']);
+            $fallback_mail->addAddress($recipient_email);
+            $fallback_mail->isHTML(true);
+            $fallback_mail->Subject = $subject;
+            $fallback_mail->Body    = $html_body;
+            $fallback_mail->send();
+
+            log_email_attempt($reservation_id, $recipient_email, $email_type, $subject, 'SENT', 'Sent via native PHP mail() fallback', $pdo);
+            return true;
+        } catch (\Throwable $fallbackErr) {
+            // Log FAILED status (DO NOT DELETE RESERVATION!)
+            log_email_attempt($reservation_id, $recipient_email, $email_type, $subject, 'FAILED', $e->getMessage(), $pdo);
+            return false;
+        }
     }
 }
 

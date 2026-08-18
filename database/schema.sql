@@ -1,8 +1,8 @@
 -- Conference Room Reservation System Database Schema
 -- Single Conference Room (DIWA Center Conference Room)
 
-CREATE DATABASE IF NOT EXISTS `conference_reservation` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `conference_reservation`;
+-- CREATE DATABASE IF NOT EXISTS `conference_reservation` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- USE `conference_reservation`;
 
 -- --------------------------------------------------------
 -- Table: admins
@@ -95,9 +95,11 @@ ON DUPLICATE KEY UPDATE `setting_key` = VALUES(`setting_key`);
 
 -- --------------------------------------------------------
 -- Seed Data: Default Administrator
--- Email: admin@example.com
--- Password: AdminPassword123!
+-- Email: admin@diwaconf.com
+-- Password: P@sSW0rd321
 -- --------------------------------------------------------
 INSERT INTO `admins` (`id`, `name`, `email`, `password_hash`, `is_active`) VALUES
-(1, 'System Administrator', 'admin@example.com', '$2y$10$489X5N7zl6XWuPzBgjq/oO8XTohkoFXJxfTo5l7VsGzxiFYxcj55S', 1)
+(1, 'Gail', 'admin@diwaconf.com', '$2y$10$AhTS9dFAI0SCfKv1SNoniOSUCjzlY3dPC.wyQEE4wgKAfHI/X.IwO', 1),
+(2, 'System Administrator', 'admin@example.com', '$2y$10$489X5N7zl6XWuPzBgjq/oO8XTohkoFXJxfTo5l7VsGzxiFYxcj55S', 1)
 ON DUPLICATE KEY UPDATE `email` = VALUES(`email`), `password_hash` = VALUES(`password_hash`);
+
