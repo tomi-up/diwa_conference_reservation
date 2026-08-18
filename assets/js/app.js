@@ -227,7 +227,28 @@ $(document).ready(function () {
         }
     });
 
-    if ($('#reservation_date').val()) {
+    // Event listeners for date and time inputs to update calendar grid dynamically
+    $(document).on('change input', '#checker_date_input', function () {
+        const val = $(this).val();
+        if (val && $('#reservation_date').length) {
+            $('#reservation_date').val(val);
+        }
+        loadScheduleGridAndCheck();
+    });
+
+    $(document).on('change input', '#reservation_date', function () {
+        const val = $(this).val();
+        if (val && $('#checker_date_input').length) {
+            $('#checker_date_input').val(val);
+        }
+        loadScheduleGridAndCheck();
+    });
+
+    $(document).on('change input', '#start_time, #end_time', function () {
+        loadScheduleGridAndCheck();
+    });
+
+    if ($('#reservation_date').val() || $('#checker_date_input').val()) {
         loadScheduleGridAndCheck();
     }
 
