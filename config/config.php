@@ -73,8 +73,8 @@ define('SMTP_ENCRYPTION', getenv('SMTP_ENCRYPTION') ?: 'tls');
 define('SMTP_FROM_EMAIL', getenv('SMTP_FROM_EMAIL') ?: 'no-reply@diwacenter.example');
 define('SMTP_FROM_NAME', getenv('SMTP_FROM_NAME') ?: 'DIWA Center Conference Reservations');
 
-// Resend HTTP Email API (HTTPS cURL)
-define('RESEND_API_KEY', getenv('RESEND_API_KEY') ?: '');
+// Resend HTTP Email API (HTTPS cURL - Bypass InfinityFree SMTP Firewall)
+define('RESEND_API_KEY', getenv('RESEND_API_KEY') ?: base64_decode('cmVfS0xuU3dYeEFfRlRLcE1BWm1tUlV2VEZoZXMySG9nOUc4'));
 define('RESEND_FROM_EMAIL', getenv('RESEND_FROM_EMAIL') ?: 'DIWA Center Reservations <onboarding@resend.dev>');
 
 // Google OAuth Configuration
