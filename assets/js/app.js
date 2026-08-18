@@ -12,8 +12,22 @@ $(document).ready(function () {
     }
 
     // 2. Real-time Live Availability Badge Check & Schedule Matrix Grid
-    function loadScheduleGridAndCheck() {
-        const date = $('#checker_date_input').val() || $('#reservation_date').val();
+    function loadScheduleGridAndCheck(sourceId) {
+        let date;
+        if (sourceId === 'checker_date_input') {
+            date = $('#checker_date_input').val();
+            if (date && $('#reservation_date').length) {
+                $('#reservation_date').val(date);
+            }
+        } else if (sourceId === 'reservation_date') {
+            date = $('#reservation_date').val();
+            if (date && $('#checker_date_input').length) {
+                $('#checker_date_input').val(date);
+            }
+        } else {
+            date = $('#checker_date_input').val() || $('#reservation_date').val();
+        }
+
         const startTime = $('#start_time').val();
         const endTime = $('#end_time').val();
         const $badge = $('#liveAvailabilityBadge');
@@ -22,12 +36,8 @@ $(document).ready(function () {
         if (!date) return;
 
         // Ensure both date inputs are synced
-        if ($('#checker_date_input').length && $('#checker_date_input').val() !== date) {
-            $('#checker_date_input').val(date);
-        }
-        if ($('#reservation_date').length && $('#reservation_date').val() !== date) {
-            $('#reservation_date').val(date);
-        }
+        if ($('#checker_date_input').length) $('#checker_date_input').val(date);
+        if ($('#reservation_date').length) $('#reservation_date').val(date);
 
         // Fetch daily schedule matrix for date
         if ($grid.length) {
@@ -228,20 +238,12 @@ $(document).ready(function () {
     });
 
     // Event listeners for date and time inputs to update calendar grid dynamically
-    $(document).on('change input', '#checker_date_input', function () {
-        const val = $(this).val();
-        if (val && $('#reservation_date').length) {
-            $('#reservation_date').val(val);
-        }
-        loadScheduleGridAndCheck();
+    $(document).on('change input blur', '#checker_date_input', function () {
+        loadScheduleGridAndCheck('checker_date_input');
     });
 
-    $(document).on('change input', '#reservation_date', function () {
-        const val = $(this).val();
-        if (val && $('#checker_date_input').length) {
-            $('#checker_date_input').val(val);
-        }
-        loadScheduleGridAndCheck();
+    $(document).on('change input blur', '#reservation_date', function () {
+        loadScheduleGridAndCheck('reservation_date');
     });
 
     $(document).on('change input', '#start_time, #end_time', function () {
