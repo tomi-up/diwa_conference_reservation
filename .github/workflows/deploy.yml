@@ -23,5 +23,14 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: htdocs/
           exclude: |
-            **/*
-            !ftp-test.txt
+            **/.git*
+            **/.git*/**
+            **/.github*/**
+            **/.idea*
+            **/.idea*/**
+            .env
+            .htaccess
+            README.md
+            composer.json
+            composer.lock
+            scratch/**
