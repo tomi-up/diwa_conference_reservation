@@ -76,11 +76,18 @@ function send_email_via_resend(string $api_key, string $from, string $to, string
     $url = 'https://api.resend.com/emails';
 
     // Process embedded CID image references to web URLs for HTTP API HTML compatibility
+    $sig_filename = 'signature.jpg';
+    if (file_exists(__DIR__ . '/../assets/images/signature.png')) {
+        $sig_filename = 'signature.png';
+    } elseif (file_exists(__DIR__ . '/../assets/images/signature.jpg')) {
+        $sig_filename = 'signature.jpg';
+    }
+
     $processed_html = str_replace(
         ['cid:diwa_logo', 'cid:email_signature'],
         [
             APP_URL . '/assets/images/diwa_logo_landscape.png',
-            APP_URL . '/assets/images/signature.png'
+            APP_URL . '/assets/images/' . $sig_filename
         ],
         $html_body
     );
