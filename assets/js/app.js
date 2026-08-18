@@ -58,6 +58,7 @@ $(document).ready(function () {
                         `;
 
                         data.slots.forEach(slot => {
+                            console.log(slot);
                             const isOccupied = slot.status === 'OCCUPIED';
                             if (isOccupied) {
                                 const reqName = slot.requester_name || 'Official Booking';

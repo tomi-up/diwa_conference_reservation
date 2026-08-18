@@ -200,15 +200,15 @@ body {
 }
 
 .btn-outline-secondary {
-    border-color: var(--border-color);
+    border-color: var(--text-secondary);
     color: var(--text-secondary);
     background-color: #ffffff;
 }
 
 .btn-outline-secondary:hover {
-    background-color: var(--page-bg);
-    color: var(--text-primary);
-    border-color: #cbd5e1;
+    background-color: var(--text-secondary);
+    color: #fff;
+    border-color: var(--text-secondary);
 }
 
 /* Status Badges */

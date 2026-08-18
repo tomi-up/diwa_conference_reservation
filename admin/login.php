@@ -73,7 +73,7 @@ $flash = get_flash_message();
 
 <div class="login-card p-4 p-sm-5">
     <div class="text-center mb-4">
-        <img src="<?= APP_URL ?>/assets/images/diwa_logo.png" alt="DIWA Logo" style="max-height: 80px; width: auto;" class="mb-3">
+        <img src="<?= APP_URL ?>/assets/images/diwa_logo-no_word.png" alt="DIWA Logo" style="max-height: 80px; width: auto;" class="mb-3">
         <h3 class="fw-bold text-dark mb-1">Admin Portal</h3>
         <p class="text-muted small">Conference Room Reservation System</p>
     </div>

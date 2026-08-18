@@ -28,6 +28,7 @@ $flash = get_flash_message();
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/admin-calendar.css">
 </head>
 <body>
 
