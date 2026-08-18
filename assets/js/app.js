@@ -788,9 +788,18 @@ window.startBookingTutorial = function() {
                 }
             },
             {
+                element: '#terms_accepted',
+                popover: {
+                    title: 'Step 5: Accept Responsible Use Policy',
+                    description: 'Read and agree to the <strong>Responsible Use Policy & Terms of Service</strong>. The system automatically remembers your acceptance so you only need to accept it once on your first visit!',
+                    side: 'top',
+                    align: 'start'
+                }
+            },
+            {
                 element: '#reservationForm button[type="submit"]',
                 popover: {
-                    title: 'Step 5: Submit Request',
+                    title: 'Step 6: Submit Request',
                     description: 'Click <strong>Submit Reservation Request</strong> to confirm your booking and receive an instant email notification!',
                     side: 'top',
                     align: 'center'
