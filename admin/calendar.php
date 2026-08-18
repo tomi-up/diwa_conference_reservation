@@ -339,11 +339,30 @@ document.addEventListener('DOMContentLoaded', function() {
         slotMaxTime: '18:00:00',
         allDaySlot: false,
         displayEventTime: false, // Prevents duplicate raw time string header above clean title
+
+        buttonText: {
+            today: 'Today',
+            month: 'Month',
+            week: 'Week',
+            day: 'Day'
+        },
+
+        slotLabelFormat: {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: false
+        },
+
+        dayHeaderFormat: {
+            weekday: 'short'
+        },
+
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
+        
         height: 'auto',
         events: '../api/calendar_events',
         selectable: true,
