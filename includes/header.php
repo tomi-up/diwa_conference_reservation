@@ -106,11 +106,16 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
     <?php 
     $flash = get_flash_message();
     if ($flash): 
+        $isDanger = ($flash['type'] === 'danger');
+        $bgClass = $isDanger ? 'bg-danger-subtle text-danger border-danger-subtle' : 'bg-light text-dark border';
+        $iconClass = $isDanger ? 'bi-exclamation-triangle-fill text-danger' : 'bi-info-circle-fill text-primary';
     ?>
-        <div class="alert alert-<?= e($flash['type']) ?> alert-dismissible fade show border-0 shadow-sm d-flex align-items-center p-3" role="alert">
-            <i class="bi bi-info-circle-fill fs-4 text-<?= e($flash['type']) ?> me-3"></i>
-            <div><?= e($flash['message']) ?></div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert alert-dismissible fade show border shadow-sm rounded-3 p-3 my-3 d-flex align-items-center justify-content-between <?= $bgClass ?>" role="alert" style="max-width: 800px; margin: 1rem auto;">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi <?= $iconClass ?> fs-4 flex-shrink-0"></i>
+                <div><?= e($flash['message']) ?></div>
+            </div>
+            <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php endif; ?>
 </div>
@@ -120,23 +125,33 @@ function showAuthAlert(type, message) {
     const container = document.getElementById('globalAuthAlertContainer');
     if (!container) return;
     
-    const icon = (type === 'danger') ? 'bi-exclamation-triangle-fill text-danger' : 
-                 (type === 'warning') ? 'bi-exclamation-circle-fill text-warning' : 
-                 (type === 'success') ? 'bi-check-circle-fill text-success' : 'bi-info-circle-fill text-info';
-                 
-    const title = (type === 'danger') ? 'Access Restricted' : 'Notice';
+    const isDanger = (type === 'danger');
+    const bgClass = isDanger ? 'bg-danger-subtle text-danger border-danger-subtle' : 'bg-light text-dark border';
+    const iconClass = isDanger ? 'bi-exclamation-triangle-fill text-danger' : 'bi-info-circle-fill text-primary';
+    const title = isDanger ? 'Access Restricted' : 'Notice';
     
     container.innerHTML = `
-        <div class="alert alert-${type} alert-dismissible fade show border-0 shadow-sm d-flex align-items-start p-3 mb-3" role="alert">
-            <i class="bi ${icon} fs-4 me-3 mt-1"></i>
-            <div class="flex-grow-1">
-                <h6 class="fw-bold mb-1">${title}</h6>
-                <div class="small">${escapeHtml(message)}</div>
+        <div class="alert alert-dismissible fade show border shadow-sm rounded-3 p-3 my-3 d-flex align-items-center justify-content-between ${bgClass}" role="alert" style="max-width: 800px; margin: 1rem auto; transition: all 0.3s ease;">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi ${iconClass} fs-4 flex-shrink-0"></i>
+                <div>
+                    <h6 class="fw-bold mb-0" style="font-size: 0.95rem;">${title}</h6>
+                    <div class="small opacity-90">${escapeHtml(message)}</div>
+                </div>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     `;
     container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Auto dismiss after 8 seconds
+    setTimeout(() => {
+        const alertEl = container.querySelector('.alert');
+        if (alertEl && window.bootstrap && window.bootstrap.Alert) {
+            const bsAlert = window.bootstrap.Alert.getOrCreateInstance(alertEl);
+            if (bsAlert) bsAlert.close();
+        }
+    }, 8000);
 }
 
 function escapeHtml(str) {
