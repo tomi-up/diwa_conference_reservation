@@ -17,26 +17,31 @@ use PHPMailer\PHPMailer\Exception;
  * Log email delivery status to email_logs table
  */
 function log_email_attempt(?int $reservation_id, string $recipient_email, string $email_type, string $subject, string $status, ?string $error_message = null, ?PDO $pdo = null): int {
-    if (!$pdo) {
-        $pdo = get_db_connection();
+    try {
+        if (!$pdo) {
+            $pdo = get_db_connection();
+        }
+
+        $stmt = $pdo->prepare("
+            INSERT INTO email_logs (reservation_id, recipient_email, email_type, subject, status, error_message, sent_at)
+            VALUES (:reservation_id, :recipient_email, :email_type, :subject, :status, :error_message, :sent_at)
+        ");
+
+        $stmt->execute([
+            'reservation_id'  => $reservation_id,
+            'recipient_email' => $recipient_email,
+            'email_type'      => $email_type,
+            'subject'         => $subject,
+            'status'          => $status,
+            'error_message'   => $error_message,
+            'sent_at'         => ($status === 'SENT') ? date('Y-m-d H:i:s') : null
+        ]);
+
+        return (int)$pdo->lastInsertId();
+    } catch (\Throwable $e) {
+        error_log("Failed to log email attempt: " . $e->getMessage());
+        return 0;
     }
-
-    $stmt = $pdo->prepare("
-        INSERT INTO email_logs (reservation_id, recipient_email, email_type, subject, status, error_message, sent_at)
-        VALUES (:reservation_id, :recipient_email, :email_type, :subject, :status, :error_message, :sent_at)
-    ");
-
-    $stmt->execute([
-        'reservation_id'  => $reservation_id,
-        'recipient_email' => $recipient_email,
-        'email_type'      => $email_type,
-        'subject'         => $subject,
-        'status'          => $status,
-        'error_message'   => $error_message,
-        'sent_at'         => ($status === 'SENT') ? date('Y-m-d H:i:s') : null
-    ]);
-
-    return (int)$pdo->lastInsertId();
 }
 
 /**
@@ -167,6 +172,13 @@ function dispatch_email(string $recipient_email, string $subject, string $html_b
         $mail->Password   = $mail_cfg['password'];
         $mail->SMTPSecure = $mail_cfg['encryption'];
         $mail->SMTPAuth   = !empty($mail_cfg['username']);
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer'       => false,
+                'verify_peer_name'  => false,
+                'allow_self_signed' => true
+            ]
+        ];
 
         $mail->setFrom($mail_cfg['from_email'], $mail_cfg['from_name']);
         $mail->addAddress($recipient_email);

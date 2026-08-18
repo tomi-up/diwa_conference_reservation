@@ -64,18 +64,18 @@ define('DB_USER', (getenv('DB_USER') && getenv('DB_USER') !== 'root') ? getenv('
 define('DB_PASS', getenv('DB_PASS') ? getenv('DB_PASS') : ($is_infinityfree ? 'FLMe8kR8XaUh' : ''));
 define('DB_CHARSET', 'utf8mb4');
 
-// SMTP Credentials (PHPMailer)
-define('SMTP_HOST', getenv('SMTP_HOST') ?: '127.0.0.1');
-define('SMTP_PORT', (int)(getenv('SMTP_PORT') ?: 587));
-define('SMTP_USERNAME', getenv('SMTP_USERNAME') ?: '');
-define('SMTP_PASSWORD', getenv('SMTP_PASSWORD') ?: '');
-define('SMTP_ENCRYPTION', getenv('SMTP_ENCRYPTION') ?: 'tls');
-define('SMTP_FROM_EMAIL', getenv('SMTP_FROM_EMAIL') ?: 'no-reply@diwacenter.example');
+// SMTP Credentials (PHPMailer - Gmail SSL 465)
+define('SMTP_HOST', getenv('SMTP_HOST') ?: 'smtp.gmail.com');
+define('SMTP_PORT', (int)(getenv('SMTP_PORT') ?: 465));
+define('SMTP_USERNAME', getenv('SMTP_USERNAME') ?: 'tomi.getsintouch@gmail.com');
+define('SMTP_PASSWORD', getenv('SMTP_PASSWORD') ?: 'grkv mfhn kkwf ycph');
+define('SMTP_ENCRYPTION', getenv('SMTP_ENCRYPTION') ?: 'ssl');
+define('SMTP_FROM_EMAIL', getenv('SMTP_FROM_EMAIL') ?: 'tomi.getsintouch@gmail.com');
 define('SMTP_FROM_NAME', getenv('SMTP_FROM_NAME') ?: 'DIWA Center Conference Reservations');
 
-// Resend HTTP Email API (HTTPS cURL - Bypass InfinityFree SMTP Firewall)
-define('RESEND_API_KEY', getenv('RESEND_API_KEY') ?: base64_decode('cmVfS0xuU3dYeEFfRlRLcE1BWm1tUlV2VEZoZXMySG9nOUc4'));
-define('RESEND_FROM_EMAIL', getenv('RESEND_FROM_EMAIL') ?: 'DIWA Center Reservations <onboarding@resend.dev>');
+// Resend HTTP Email API (Disabled by default to use Gmail SMTP)
+define('RESEND_API_KEY', getenv('RESEND_API_KEY') ?: '');
+define('RESEND_FROM_EMAIL', getenv('RESEND_FROM_EMAIL') ?: '');
 
 // Google OAuth Configuration
 define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: '721603219362-sa613qs2pejt4f8ekpep88k5pn9mp4dk.apps.googleusercontent.com');
