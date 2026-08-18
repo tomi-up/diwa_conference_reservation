@@ -71,6 +71,14 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                             <li class="dropdown-header text-muted small pb-1">Logged in with UP Mail</li>
                             <li><span class="dropdown-item-text fw-bold text-dark small py-1"><?= e($_SESSION['user_email']) ?></span></li>
+                            <?php if (!empty($_SESSION['is_admin']) || !empty($_SESSION['admin_logged_in'])): ?>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li>
+                                    <a class="dropdown-item text-primary small fw-semibold" href="<?= APP_URL ?>/admin/calendar">
+                                        <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
+                                    </a>
+                                </li>
+                            <?php endif; ?>
                             <li><hr class="dropdown-divider mb-1"></li>
                             <li>
                                 <a class="dropdown-item text-danger small fw-semibold" href="<?= APP_URL ?>/logout">
@@ -97,11 +105,6 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                         </div>
                     </li>
                 <?php endif; ?>
-                <li class="nav-item ms-lg-2">
-                    <a class="btn btn-outline-secondary d-inline-flex align-items-center px-3 rounded fw-medium" style="height: 40px; font-size: 0.875rem;" href="<?= APP_URL ?>/admin/login">
-                        Admin Portal
-                    </a>
-                </li>
 
             </ul>
         </div>
@@ -181,7 +184,11 @@ function handleGoogleSignIn(response) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            window.location.reload();
+            if (data.redirect_url) {
+                window.location.href = '<?= APP_URL ?>/' + data.redirect_url;
+            } else {
+                window.location.reload();
+            }
         } else {
             showAuthAlert('danger', data.error || 'Access restricted: Only official University of the Philippines (@up.edu.ph) accounts are permitted.');
         }
