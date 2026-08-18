@@ -692,4 +692,92 @@ window.openReservationViewModal = function(btn) {
     }
 };
 
+// 5. Interactive Step-by-Step Guided Tutorial (Driver.js)
+window.startBookingTutorial = function() {
+    if (typeof window.driver === 'undefined' || typeof window.driver.js === 'undefined') {
+        return;
+    }
+
+    const driverObj = window.driver.js.driver({
+        showProgress: true,
+        animate: true,
+        allowClose: true,
+        doneBtnText: 'Awesome! Got it',
+        closeBtnText: 'Skip Tutorial',
+        nextBtnText: 'Next →',
+        prevBtnText: '← Back',
+        steps: [
+            {
+                element: '#btnStartTutorial',
+                popover: {
+                    title: 'Welcome to DIWA Center Portal',
+                    description: 'Let\'s take a quick 30-second tour on how to check room availability and make a reservation.',
+                    side: 'bottom',
+                    align: 'center'
+                }
+            },
+            {
+                element: $('#tour_signin_callout').length ? '#tour_signin_callout' : '.navbar',
+                popover: {
+                    title: 'Step 1: UP Mail Authentication',
+                    description: 'To reserve the conference room, sign in with your official <strong>@up.edu.ph</strong> account using the Google Sign-In button.',
+                    side: 'bottom',
+                    align: 'start'
+                }
+            },
+            {
+                element: '#checker_date_input',
+                popover: {
+                    title: 'Step 2: Select Date',
+                    description: 'Use this date picker to select your target meeting date. The schedule matrix below updates live.',
+                    side: 'bottom',
+                    align: 'start'
+                }
+            },
+            {
+                element: '#reservationScheduleGrid',
+                popover: {
+                    title: 'Step 3: Interactive Time Slots',
+                    description: 'Click any green <strong>AVAILABLE</strong> slot chip to automatically pick its start and end times for your form!',
+                    side: 'top',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#project_team_office',
+                popover: {
+                    title: 'Step 4: Select Project / Team / Office',
+                    description: 'Select your Project, Team, or Office from the drop-down menu and provide your meeting agenda details.',
+                    side: 'top',
+                    align: 'start'
+                }
+            },
+            {
+                element: '#reservationForm button[type="submit"]',
+                popover: {
+                    title: 'Step 5: Submit Request',
+                    description: 'Click <strong>Submit Reservation Request</strong> to confirm your booking and receive an instant email notification!',
+                    side: 'top',
+                    align: 'center'
+                }
+            }
+        ]
+    });
+
+    driverObj.drive();
+};
+
+$(document).on('click', '#btnStartTutorial', function (e) {
+    e.preventDefault();
+    window.startBookingTutorial();
+});
+
+// Auto-suggest tutorial for first-time visitors on Reserve page
+if (window.location.pathname.includes('reserve') && !localStorage.getItem('diwa_tutorial_seen')) {
+    setTimeout(function() {
+        window.startBookingTutorial();
+        localStorage.setItem('diwa_tutorial_seen', 'true');
+    }, 1000);
+}
+
 });

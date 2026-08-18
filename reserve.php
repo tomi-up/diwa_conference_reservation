@@ -158,7 +158,7 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="card-body p-4">
                         <?php if (!$is_logged_in): ?>
-                            <div class="alert alert-warning border-0 shadow-sm mb-4">
+                            <div id="tour_signin_callout" class="alert alert-warning border-0 shadow-sm mb-4">
                                 <div class="d-flex align-items-start">
                                     <i class="bi bi-lock-fill fs-4 text-warning me-3 mt-1"></i>
                                     <div>
@@ -216,9 +216,22 @@ require_once __DIR__ . '/includes/header.php';
                                 <label for="project_team_office" class="form-label fw-semibold">
                                     Project / Team / Office <span class="text-danger">*</span>
                                 </label>
-                                <input type="text" class="form-control" id="project_team_office" name="project_team_office" 
-                                       value="<?= e($form_data['project_team_office']) ?>" 
-                                       <?= !$is_logged_in ? 'disabled' : '' ?> required>
+                                <select class="form-select" id="project_team_office" name="project_team_office" 
+                                        <?= !$is_logged_in ? 'disabled' : '' ?> required>
+                                    <option value="" <?= empty($form_data['project_team_office']) ? 'selected' : '' ?> disabled>-- Select Project / Team / Office --</option>
+                                    <?php
+                                    $offices = [
+                                        'Ops Team',
+                                        'RESCUE Project',
+                                        'IRDSS Project',
+                                        'Wolbachia Project',
+                                        'Scaling Up of Diwa App Project'
+                                    ];
+                                    foreach ($offices as $off):
+                                    ?>
+                                        <option value="<?= e($off) ?>" <?= ($form_data['project_team_office'] === $off) ? 'selected' : '' ?>><?= e($off) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
 
                             <div class="mb-3">

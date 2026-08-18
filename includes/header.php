@@ -27,6 +27,8 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/style.css">
+    <!-- Driver.js Guided Tour CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css">
     <!-- Google Identity Services (GSI) SDK -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -42,7 +44,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarMain">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
                 <li class="nav-item">
                     <a class="nav-link <?= (in_array(basename($_SERVER['PHP_SELF']), ['index.php', 'index'])) ? 'active fw-semibold' : '' ?>" href="<?= APP_URL ?>/index">
                         Home
@@ -52,6 +54,11 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                     <a class="nav-link <?= (in_array(basename($_SERVER['PHP_SELF']), ['reserve.php', 'reserve'])) ? 'active fw-semibold' : '' ?>" href="<?= APP_URL ?>/reserve">
                         Reserve
                     </a>
+                </li>
+                <li class="nav-item ms-lg-2">
+                    <button type="button" id="btnStartTutorial" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm d-inline-flex align-items-center gap-1.5" title="Click to view interactive step-by-step reservation guide">
+                        <i class="bi bi-question-circle-fill text-danger fs-6"></i> How to Book?
+                    </button>
                 </li>
             </ul>
             <ul class="navbar-nav align-items-center gap-2">
