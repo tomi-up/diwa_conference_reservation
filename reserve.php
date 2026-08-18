@@ -38,7 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $form_data['requester_email'] = $_SESSION['user_email'];
     }
 
-    $form_data['project_team_office'] = sanitize_input($_POST['project_team_office'] ?? '');
+    $raw_office = sanitize_input($_POST['project_team_office'] ?? '');
+    if ($raw_office === 'Others') {
+        $other_office = sanitize_input($_POST['project_team_office_other'] ?? '');
+        $form_data['project_team_office'] = !empty($other_office) ? $other_office : '';
+    } else {
+        $form_data['project_team_office'] = $raw_office;
+    }
     $form_data['purpose']             = sanitize_input($_POST['purpose'] ?? '');
     $form_data['reservation_date']    = sanitize_input($_POST['reservation_date'] ?? '');
     $form_data['start_time']          = sanitize_input($_POST['start_time'] ?? '');
@@ -225,13 +231,24 @@ require_once __DIR__ . '/includes/header.php';
                                         'RESCUE Project',
                                         'IRDSS Project',
                                         'Wolbachia Project',
-                                        'Scaling Up of Diwa App Project'
+                                        'Scaling Up of Diwa App Project',
+                                        'Others'
                                     ];
                                     foreach ($offices as $off):
                                     ?>
                                         <option value="<?= e($off) ?>" <?= ($form_data['project_team_office'] === $off) ? 'selected' : '' ?>><?= e($off) ?></option>
                                     <?php endforeach; ?>
                                 </select>
+                            </div>
+
+                            <div class="mb-3" id="project_team_office_other_wrapper" style="<?= ($form_data['project_team_office'] === 'Others') ? '' : 'display: none;' ?>">
+                                <label for="project_team_office_other" class="form-label fw-semibold">
+                                    Specify Project / Team / Office <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="project_team_office_other" name="project_team_office_other" 
+                                       placeholder="Type your Project / Team / Office name..." 
+                                       value="<?= e($_POST['project_team_office_other'] ?? '') ?>" 
+                                       <?= !$is_logged_in ? 'disabled' : '' ?>>
                             </div>
 
                             <div class="mb-3">

@@ -238,6 +238,17 @@ $(document).ready(function () {
         }
     });
 
+    // Toggle "Others" text fill-up field when "Others" option is selected in dropdown
+    $(document).on('change', '#project_team_office', function () {
+        if ($(this).val() === 'Others') {
+            $('#project_team_office_other_wrapper').slideDown(200);
+            $('#project_team_office_other').prop('required', true).focus();
+        } else {
+            $('#project_team_office_other_wrapper').slideUp(200);
+            $('#project_team_office_other').prop('required', false).val('');
+        }
+    });
+
     // Event listeners for date and time inputs to update calendar grid dynamically
     $(document).on('change input blur', '#checker_date_input', function () {
         loadScheduleGridAndCheck('checker_date_input');
@@ -269,7 +280,10 @@ $(document).ready(function () {
             // Client-side quick field checks
             const name = $('#requester_name').val() ? $('#requester_name').val().trim() : '';
             const email = $('#requester_email').val() ? $('#requester_email').val().trim() : '';
-            const office = $('#project_team_office').val() ? $('#project_team_office').val().trim() : '';
+            let office = $('#project_team_office').val() ? $('#project_team_office').val().trim() : '';
+            if (office === 'Others') {
+                office = $('#project_team_office_other').val() ? $('#project_team_office_other').val().trim() : '';
+            }
             const purpose = $('#purpose').val() ? $('#purpose').val().trim() : '';
             const date = $('#reservation_date').val();
             const startTime = $('#start_time').val();

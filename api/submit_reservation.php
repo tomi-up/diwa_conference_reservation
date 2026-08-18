@@ -27,11 +27,19 @@ if (!verify_csrf_token($token)) {
     ], 403);
 }
 
+$raw_office = sanitize_input($_POST['project_team_office'] ?? '');
+if ($raw_office === 'Others') {
+    $other_office = sanitize_input($_POST['project_team_office_other'] ?? '');
+    $project_office = !empty($other_office) ? $other_office : '';
+} else {
+    $project_office = $raw_office;
+}
+
 // Input Data Processing
 $form_data = [
     'requester_name'      => sanitize_input($_POST['requester_name'] ?? ''),
     'requester_email'     => sanitize_input($_POST['requester_email'] ?? ''),
-    'project_team_office' => sanitize_input($_POST['project_team_office'] ?? ''),
+    'project_team_office' => $project_office,
     'purpose'             => sanitize_input($_POST['purpose'] ?? ''),
     'reservation_date'    => sanitize_input($_POST['reservation_date'] ?? ''),
     'start_time'          => sanitize_input($_POST['start_time'] ?? ''),
