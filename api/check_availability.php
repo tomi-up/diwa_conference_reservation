@@ -36,21 +36,21 @@ if (!empty($start_time) && !empty($end_time)) {
             'is_valid'   => false,
             'status'     => 'INVALID_TIME',
             'message'    => 'End time must be later than start time.',
-            'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0"><i class="bi bi-warning-circle-fill me-2 text-warning fs-5"></i> End time must be later than start time.</div>'
+            'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0">End time must be later than start time.</div>'
         ];
     } elseif ($start_time < '07:00' || $end_time > '18:00') {
         $response['slot_check'] = [
             'is_valid'   => false,
             'status'     => 'OUT_OF_BOUNDS',
             'message'    => 'Reservation hours are strictly between 7:00 AM and 6:00 PM.',
-            'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0"><i class="bi bi-clock-fill me-2 text-warning fs-5"></i> Reservation hours are strictly between 7:00 AM and 6:00 PM.</div>'
+            'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0">Reservation hours are strictly between 7:00 AM and 6:00 PM.</div>'
         ];
     } elseif ($date === date('Y-m-d') && $start_time <= date('H:i')) {
         $response['slot_check'] = [
             'is_valid'   => false,
             'status'     => 'PAST',
             'message'    => 'This time has already passed today.',
-            'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0"><i class="bi bi-clock-history me-2 text-warning fs-5"></i> This time has already passed today. Please select a later time.</div>'
+            'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0">This time has already passed today. Please select a later time.</div>'
         ];
     } else {
         $conflict = has_schedule_conflict($date, $start_time, $end_time, null, $pdo);
@@ -60,7 +60,7 @@ if (!empty($start_time) && !empty($end_time)) {
                 'is_available' => false,
                 'status'     => 'UNAVAILABLE',
                 'message'    => 'Selected time is not valid or unavailable due to schedule overlap.',
-                'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0"><i class="bi bi-exclamation-circle-fill me-2 text-warning fs-5"></i> Selected time is unavailable due to schedule overlap. Please select an available slot.</div>'
+                'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0">Selected time is unavailable due to schedule overlap. Please select an available slot.</div>'
             ];
         } else {
             $response['slot_check'] = [

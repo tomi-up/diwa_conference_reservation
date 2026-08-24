@@ -36,17 +36,18 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
 </head>
 <body>
 
-<!-- High-Visibility Clean Navigation Header -->
-<nav class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm bg-white">
+<!-- header -->
+<nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
         <a class="navbar-brand" href="<?= APP_URL ?>/index">
-            <img src="<?= APP_URL ?>/assets/images/diwa_logo.png" alt="DIWA Logo" class="brand-logo-landscape">
+            <img src="<?= APP_URL ?>/assets/images/diwa_logo-white.png" alt="DIWA Logo" class="brand-logo-landscape">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarMain">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
+        <div class="collapse navbar-collapse flex flex-row justify-right" id="navbarMain">
+            <!--
+            <ul class="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
                 <li class="nav-item">
                     <a class="nav-link <?= (in_array(basename($_SERVER['PHP_SELF']), ['index.php', 'index'])) ? 'active fw-semibold' : '' ?>" href="<?= APP_URL ?>/index">
                         Home
@@ -63,45 +64,78 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                     </button>
                 </li>
             </ul>
-            <ul class="navbar-nav align-items-center gap-2">
+            -->
+            <ul class="navbar-nav align-items-center ms-lg-auto">
                 <?php if (is_user_logged_in()): ?>
+
+                    <!-- Logged in -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle btn btn-light border px-3 py-1.5 d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="badge bg-danger rounded-pill px-2">UP</span>
-                            <span class="fw-semibold text-dark small"><?= e($_SESSION['user_name']) ?></span>
+                        <a class="nav-link p-0 d-flex align-items-center gap-2 text-decoration-none"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+
+                            <div class="text-end lh-sm">
+                                <div class="fw-medium text-white small">
+                                    <?= e($_SESSION['user_name']) ?>
+                                </div>
+                                <div class="text-white-50" style="font-size: 0.7rem;">
+                                    <?= e($_SESSION['user_email']) ?>
+                                </div>
+                            </div>
+
+                            <?php if (!empty($_SESSION['user_picture'])): ?>
+                                <img
+                                    src="<?= e($_SESSION['user_picture']) ?>"
+                                    alt="<?= e($_SESSION['user_name']) ?>"
+                                    class="user-avatar"
+                                >
+                            <?php else: ?>
+                                <span class="user-avatar user-avatar-fallback">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+                            <?php endif; ?>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                            <li class="dropdown-header text-muted small pb-1">Logged in with UP Mail</li>
-                            <li><span class="dropdown-item-text fw-bold text-dark small py-1"><?= e($_SESSION['user_email']) ?></span></li>
-                            <li><hr class="dropdown-divider my-1"></li>
-                            <li>
-                                <a class="dropdown-item text-dark small fw-semibold" href="<?= APP_URL ?>/my-reservations">
-                                   My Reservations
-                                </a>
-                            </li>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-0">
                             <?php if (!empty($_SESSION['is_admin']) || !empty($_SESSION['admin_logged_in'])): ?>
-                                <li><hr class="dropdown-divider my-1"></li>
-                                <li>
-                                    <a class="dropdown-item text-primary small fw-semibold" href="<?= APP_URL ?>/admin/calendar">
+                                <li class="mb-1">
+                                    <a class="dropdown-item text-dark small fw-semibold"
+                                    href="<?= APP_URL ?>/admin/calendar">
                                         Admin Dashboard
                                     </a>
                                 </li>
                             <?php endif; ?>
-                            <li><hr class="dropdown-divider mb-1"></li>
+
+                            <li class="mb-1">
+                                <a class="dropdown-item text-dark small fw-semibold"
+                                href="<?= APP_URL ?>/my-reservations">
+                                    My Reservations
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider mb-2"></li>
+
                             <li>
-                                <a class="dropdown-item text-danger small fw-semibold" href="<?= APP_URL ?>/logout">
-                                    <i class="bi bi-box-arrow-right me-2"></i>Sign Out
+                                <a class="dropdown-item text-danger small fw-semibold"
+                                href="<?= APP_URL ?>/logout">
+                                    <i class="bi bi-box-arrow-right me-2"></i>
+                                    Sign Out
                                 </a>
                             </li>
                         </ul>
                     </li>
+
                 <?php else: ?>
+
                     <li class="nav-item">
                         <div id="g_id_onload"
                             data-client_id="<?= GOOGLE_CLIENT_ID ?>"
                             data-callback="handleGoogleSignIn"
                             data-auto_prompt="false">
                         </div>
+
                         <div class="g_id_signin" 
                             data-type="standard" 
                             data-shape="rectangular" 
@@ -112,8 +146,8 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                             data-logo_alignment="left">
                         </div>
                     </li>
-                <?php endif; ?>
 
+                <?php endif; ?>
             </ul>
         </div>
     </div>
@@ -159,11 +193,15 @@ function handleGoogleSignIn(response) {
         showAuthAlert('danger', 'Google authentication failed. Please try again.');
         return;
     }
-    
+
     fetch('<?= APP_URL ?>/api/google_login.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_token: response.credential })
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id_token: response.credential
+        })
     })
     .then(res => res.json())
     .then(data => {
@@ -174,14 +212,79 @@ function handleGoogleSignIn(response) {
                 window.location.reload();
             }
         } else {
-            showAuthAlert('danger', data.error || 'Access restricted: Only official University of the Philippines (@up.edu.ph) accounts are permitted.');
+            showAuthAlert(
+                'danger',
+                data.error || 'Access restricted: Only official University of the Philippines (@up.edu.ph) accounts are permitted.'
+            );
         }
     })
     .catch(err => {
         console.error('Google Auth Error:', err);
-        showAuthAlert('danger', 'An error occurred while communicating with the server during Google Sign-In.');
+        showAuthAlert(
+            'danger',
+            'An error occurred while communicating with the server during Google Sign-In.'
+        );
     });
 }
+
+
+// Wait until Google Identity Services is loaded
+function initializeGoogleSignIn() {
+    if (typeof google === 'undefined' || !google.accounts) {
+        setTimeout(initializeGoogleSignIn, 100);
+        return;
+    }
+
+    google.accounts.id.initialize({
+        client_id: '<?= GOOGLE_CLIENT_ID ?>',
+        callback: handleGoogleSignIn,
+        auto_select: false
+    });
+
+    console.log('Google Sign-In initialized.');
+}
+
+
+// Initialize Google
+initializeGoogleSignIn();
+
+window.addEventListener('load', function () {
+    if (typeof google !== 'undefined' && google.accounts) {
+        google.accounts.id.initialize({
+            client_id: '<?= GOOGLE_CLIENT_ID ?>',
+            callback: handleGoogleSignIn,
+            auto_select: false
+        });
+
+        google.accounts.id.renderButton(
+            document.getElementById('googleSignInButton'),
+            {
+                type: 'standard',
+                shape: 'rectangular',
+                theme: 'outline',
+                text: 'signin_with',
+                size: 'large',
+                locale: 'en',
+                logo_alignment: 'left'
+            }
+        );
+    }
+});
+
+document.getElementById('btnLogin')?.addEventListener('click', function () {
+    google.accounts.id.prompt((notification) => {
+        console.log('Google prompt notification:', notification);
+
+        if (notification.isNotDisplayed()) {
+            console.log('Google prompt was not displayed:', notification.getNotDisplayedReason());
+        }
+
+        if (notification.isSkippedMoment()) {
+            console.log('Google prompt was skipped:', notification.getSkippedReason());
+        }
+    });
+});
+
 </script>
 
 

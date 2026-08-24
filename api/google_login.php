@@ -112,6 +112,7 @@ try {
     // Extract permanent identifier (google_sub) and user name
     $google_sub = $payload['sub'];
     $name = trim($payload['name'] ?? '');
+    $picture = $payload['picture'] ?? null;
     if (empty($name)) {
         $name = strstr($email, '@', true) ?: 'UP User';
     }
@@ -156,11 +157,12 @@ try {
         session_regenerate_id(true);
     }
 
-    $_SESSION['user_logged_in'] = true;
-    $_SESSION['user_id']        = $user_id;
-    $_SESSION['user_name']      = $name;
-    $_SESSION['user_email']     = $email;
-    $_SESSION['user_google_sub']= $google_sub;
+    $_SESSION['user_logged_in']  = true;
+    $_SESSION['user_id']         = $user_id;
+    $_SESSION['user_name']       = $name;
+    $_SESSION['user_email']      = $email;
+    $_SESSION['user_google_sub'] = $google_sub;
+    $_SESSION['user_picture']    = $picture;
 
     // Check if user is an authorized administrator
     $stmt_admin = $pdo->prepare("SELECT id, name, email FROM admins WHERE email = :email AND is_active = 1 LIMIT 1");

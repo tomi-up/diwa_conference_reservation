@@ -362,10 +362,22 @@ $(document).ready(function () {
 
             let $firstInvalid = null;
             function invalid($field, message) {
+                if (!$field || !$field.length) return;
+
                 $field.addClass('is-invalid');
-                const $feedback = $field.closest('.mb-3, .mb-4, .col-md-4, .col-md-6, .form-check').find('.invalid-feedback').first();
-                if ($feedback.length) $feedback.text(message);
-                if (!$firstInvalid) $firstInvalid = $field;
+
+                const $feedback = $field
+                    .closest('.mb-3, .mb-4, .col-md-4, .col-md-6, .form-check')
+                    .find('.invalid-feedback')
+                    .first();
+
+                if ($feedback.length) {
+                    $feedback.text(message);
+                }
+
+                if (!$firstInvalid) {
+                    $firstInvalid = $field;
+                }
             }
 
             // Client-side quick field checks
@@ -400,7 +412,13 @@ $(document).ready(function () {
             if (!officeValue) {
                 invalid($officeSelect, 'Project / Team / Office is required.');
             } else if (officeValue === 'Others' && !officeOther) {
-                invalid($officeOther, 'Please specify your Project / Team / Office.');
+                $('#project_team_office_other_wrapper').show();
+                $officeOther.prop('required', true);
+
+                invalid(
+                    $officeOther,
+                    'Please specify your Project / Team / Office.'
+                );
             }
 
             if (!purpose) invalid($purpose, 'Purpose of Meeting / Activity is required.');
@@ -449,8 +467,15 @@ $(document).ready(function () {
                 invalid($terms, 'You must accept the Terms & Conditions and Responsible Use Policy.');
             }
 
-            if ($firstInvalid) {
-                $('html, body').animate({ scrollTop: $firstInvalid.offset().top - 140 }, 300);
+            if ($firstInvalid && $firstInvalid.length) {
+                const offset = $firstInvalid.offset();
+
+                if (offset && typeof offset.top === 'number') {
+                    $('html, body').animate({
+                        scrollTop: offset.top - 140
+                    }, 300);
+                }
+
                 $firstInvalid.trigger('focus');
                 return;
             }
