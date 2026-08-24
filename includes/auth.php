@@ -22,8 +22,8 @@ function is_admin_logged_in(): bool {
  */
 function require_admin_login(): void {
     if (!is_admin_logged_in()) {
-        set_flash_message('danger', 'Unauthorized access. Please log in to access the Admin Portal.');
-        redirect(APP_URL . '/admin/login.php');
+        set_flash_message('danger', 'Please sign in with your authorized UP Mail (Google) account to access the Admin Portal.');
+        redirect(APP_URL . '/index');
     }
 }
 

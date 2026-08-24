@@ -17,6 +17,8 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($page_title) ?></title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="<?= APP_URL ?>/assets/images/diwa_logo-no_word.png">
     <!-- Outfit Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,7 +59,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                 </li>
                 <li class="nav-item ms-lg-2">
                     <button type="button" id="btnStartTutorial" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm d-inline-flex align-items-center gap-1.5" title="Click to view interactive step-by-step reservation guide">
-                        <i class="bi bi-question-circle-fill text-danger fs-6"></i> How to Book?
+                             How to Book?
                     </button>
                 </li>
             </ul>
@@ -71,6 +73,20 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                             <li class="dropdown-header text-muted small pb-1">Logged in with UP Mail</li>
                             <li><span class="dropdown-item-text fw-bold text-dark small py-1"><?= e($_SESSION['user_email']) ?></span></li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li>
+                                <a class="dropdown-item text-dark small fw-semibold" href="<?= APP_URL ?>/my-reservations">
+                                   My Reservations
+                                </a>
+                            </li>
+                            <?php if (!empty($_SESSION['is_admin']) || !empty($_SESSION['admin_logged_in'])): ?>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li>
+                                    <a class="dropdown-item text-primary small fw-semibold" href="<?= APP_URL ?>/admin/calendar">
+                                        Admin Dashboard
+                                    </a>
+                                </li>
+                            <?php endif; ?>
                             <li><hr class="dropdown-divider mb-1"></li>
                             <li>
                                 <a class="dropdown-item text-danger small fw-semibold" href="<?= APP_URL ?>/logout">
@@ -97,68 +113,39 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                         </div>
                     </li>
                 <?php endif; ?>
-                <li class="nav-item ms-lg-2">
-                    <a class="btn btn-outline-secondary d-inline-flex align-items-center px-3 rounded fw-medium" style="height: 40px; font-size: 0.875rem;" href="<?= APP_URL ?>/admin/login">
-                        Admin Portal
-                    </a>
-                </li>
 
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- Global Alert Container for Notifications & Auth Errors -->
-<div id="globalAuthAlertContainer" class="container">
-    <?php 
-    $flash = get_flash_message();
-    if ($flash): 
-        $isDanger = ($flash['type'] === 'danger');
-        $bgClass = $isDanger ? 'bg-danger-subtle text-danger border-danger-subtle' : 'bg-light text-dark border';
-        $iconClass = $isDanger ? 'bi-exclamation-triangle-fill text-danger' : 'bi-info-circle-fill text-primary';
-    ?>
-        <div class="alert alert-dismissible fade show border shadow-sm rounded-3 p-3 my-3 d-flex align-items-center justify-content-between <?= $bgClass ?>" role="alert" style="max-width: 800px; margin: 1rem auto;">
-            <div class="d-flex align-items-center gap-3">
-                <i class="bi <?= $iconClass ?> fs-4 flex-shrink-0"></i>
-                <div><?= e($flash['message']) ?></div>
-            </div>
-            <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php endif; ?>
-</div>
+<!-- Global Alert Container (kept for layout compatibility; alerts now render via SweetAlert2) -->
+<div id="globalAuthAlertContainer" class="container"></div>
+<?php
+$flash = get_flash_message();
+if ($flash):
+?>
+    <script>window.globalFlashMessage = { type: <?= json_encode($flash['type']) ?>, message: <?= json_encode($flash['message']) ?> };</script>
+<?php endif; ?>
 
 <script>
 function showAuthAlert(type, message) {
-    const container = document.getElementById('globalAuthAlertContainer');
-    if (!container) return;
-    
     const isDanger = (type === 'danger');
-    const bgClass = isDanger ? 'bg-danger-subtle text-danger border-danger-subtle' : 'bg-light text-dark border';
-    const iconClass = isDanger ? 'bi-exclamation-triangle-fill text-danger' : 'bi-info-circle-fill text-primary';
     const title = isDanger ? 'Access Restricted' : 'Notice';
-    
-    container.innerHTML = `
-        <div class="alert alert-dismissible fade show border shadow-sm rounded-3 p-3 my-3 d-flex align-items-center justify-content-between ${bgClass}" role="alert" style="max-width: 800px; margin: 1rem auto; transition: all 0.3s ease;">
-            <div class="d-flex align-items-center gap-3">
-                <i class="bi ${iconClass} fs-4 flex-shrink-0"></i>
-                <div>
-                    <h6 class="fw-bold mb-0" style="font-size: 0.95rem;">${title}</h6>
-                    <div class="small opacity-90">${escapeHtml(message)}</div>
-                </div>
-            </div>
-            <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    `;
-    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-    // Auto dismiss after 8 seconds
-    setTimeout(() => {
-        const alertEl = container.querySelector('.alert');
-        if (alertEl && window.bootstrap && window.bootstrap.Alert) {
-            const bsAlert = window.bootstrap.Alert.getOrCreateInstance(alertEl);
-            if (bsAlert) bsAlert.close();
-        }
-    }, 8000);
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: isDanger ? 'error' : 'info',
+            title: title,
+            text: message,
+            confirmButtonColor: '#951a1d',
+            confirmButtonText: 'Got it',
+            customClass: { confirmButton: 'btn btn-primary px-4' },
+            buttonsStyling: false
+        });
+    } else {
+        alert(title + ': ' + message);
+    }
 }
 
 function escapeHtml(str) {
@@ -181,7 +168,11 @@ function handleGoogleSignIn(response) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            window.location.reload();
+            if (data.redirect_url) {
+                window.location.href = '<?= APP_URL ?>/' + data.redirect_url;
+            } else {
+                window.location.reload();
+            }
         } else {
             showAuthAlert('danger', data.error || 'Access restricted: Only official University of the Philippines (@up.edu.ph) accounts are permitted.');
         }

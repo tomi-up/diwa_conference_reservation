@@ -77,6 +77,10 @@ function create_reservation(array $data, ?PDO $pdo = null): array {
         return ['success' => false, 'error' => 'VALIDATION_FAILED', 'message' => 'Reservation date cannot be in the past.'];
     }
 
+    if ($reservation_date === $today && $start_time <= date('H:i')) {
+        return ['success' => false, 'error' => 'VALIDATION_FAILED', 'message' => 'This time has already passed today. Please select a later time.'];
+    }
+
     if (strtotime($end_time) <= strtotime($start_time)) {
         return ['success' => false, 'error' => 'VALIDATION_FAILED', 'message' => 'End time must be later than start time.'];
     }
@@ -273,6 +277,27 @@ function get_reservations_paginated(array $filters = [], int $page = 1, int $per
         'current_page'  => $page,
         'per_page'      => $per_page
     ];
+}
+
+/**
+ * Fetch all reservations belonging to a specific user, most recent first
+ */
+function get_user_reservations(int $user_id, ?PDO $pdo = null): array {
+    if (!$pdo) {
+        $pdo = get_db_connection();
+    }
+    $stmt = $pdo->prepare("
+        SELECT r.*
+        FROM reservations r
+        WHERE r.user_id = :user_id
+        ORDER BY r.reservation_date DESC, r.start_time DESC
+    ");
+    $stmt->execute(['user_id' => $user_id]);
+    $rows = $stmt->fetchAll();
+    foreach ($rows as &$r) {
+        $r['room_name'] = CONFERENCE_ROOM_NAME;
+    }
+    return $rows;
 }
 
 /**

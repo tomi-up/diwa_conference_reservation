@@ -4,6 +4,49 @@
 
 $(document).ready(function () {
 
+    // -1. Show any server-side flash message (login/logout notices, action confirmations,
+    // sitewide errors set via set_flash_message()) as a SweetAlert2 popup
+    if (window.globalFlashMessage) {
+        const flashIconMap = { success: 'success', danger: 'error', warning: 'warning', info: 'info' };
+        const flashTitleMap = { success: 'Success', danger: 'Error', warning: 'Notice', info: 'Notice' };
+        const flashType = window.globalFlashMessage.type;
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: flashIconMap[flashType] || 'info',
+                title: flashTitleMap[flashType] || 'Notice',
+                text: window.globalFlashMessage.message,
+                confirmButtonColor: '#951a1d',
+                confirmButtonText: 'Got it',
+                customClass: { confirmButton: 'btn btn-primary px-4' },
+                buttonsStyling: false
+            });
+        } else {
+            alert(window.globalFlashMessage.message);
+        }
+    }
+
+    // 0. Show server-side reservation form validation errors as a SweetAlert2 popup
+    if (window.reservationFormErrors && window.reservationFormErrors.length) {
+        const errorListHtml = '<ul class="text-start ps-3 mb-0">' +
+            window.reservationFormErrors.map(err => `<li>${escapeHtml(err)}</li>`).join('') +
+            '</ul>';
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Please correct the following issues',
+                html: errorListHtml,
+                confirmButtonColor: '#951a1d',
+                confirmButtonText: 'Got it',
+                customClass: { confirmButton: 'btn btn-primary px-4' },
+                buttonsStyling: false
+            });
+        } else {
+            alert(window.reservationFormErrors.join('\n'));
+        }
+    }
+
     // 1. Enforce minimum date = today on reservation form date input
     const $dateInput = $('#reservation_date');
     if ($dateInput.length) {
@@ -58,8 +101,8 @@ $(document).ready(function () {
                         `;
 
                         data.slots.forEach(slot => {
-                            console.log(slot);
                             const isOccupied = slot.status === 'OCCUPIED';
+                            const isPast = slot.status === 'PAST';
                             if (isOccupied) {
                                 const reqName = slot.requester_name || 'Official Booking';
                                 const office = slot.project_team_office || 'N/A';
@@ -77,7 +120,18 @@ $(document).ready(function () {
                                              data-purpose="${escapeHtml(purpose)}"
                                              title="Click to view reservation details for ${slot.label}">
                                             <div class="fw-bold small text-dark">${slot.label}</div>
-                                            <span class="badge bg-danger mt-1"><i class="bi bi-info-circle me-1"></i>BLOCKED</span>
+                                            <span class="badge bg-danger mt-1">BLOCKED</span>
+                                        </div>
+                                    </div>
+                                `;
+                            } else if (isPast) {
+                                html += `
+                                    <div class="col-6 col-sm-4 col-md-3">
+                                        <div style="height: 80px; cursor: not-allowed;"
+                                             class="p-2 border rounded text-center bg-light text-muted transition-all d-flex flex-column align-items-center justify-content-center"
+                                             title="${slot.label} has already passed today">
+                                            <div class="fw-bold small text-muted">${slot.label}</div>
+                                            <span class="badge bg-secondary mt-1">PAST</span>
                                         </div>
                                     </div>
                                 `;
@@ -238,6 +292,17 @@ $(document).ready(function () {
         }
     });
 
+    // Toggle "Others" text fill-up field when "Others" option is selected in dropdown
+    $(document).on('change', '#project_team_office', function () {
+        if ($(this).val() === 'Others') {
+            $('#project_team_office_other_wrapper').slideDown(200);
+            $('#project_team_office_other').prop('required', true).focus();
+        } else {
+            $('#project_team_office_other_wrapper').slideUp(200);
+            $('#project_team_office_other').prop('required', false).val('');
+        }
+    });
+
     // Event listeners for date and time inputs to update calendar grid dynamically
     $(document).on('change input blur', '#checker_date_input', function () {
         loadScheduleGridAndCheck('checker_date_input');
@@ -255,6 +320,32 @@ $(document).ready(function () {
         loadScheduleGridAndCheck();
     }
 
+    // Clear a field's invalid state as soon as the user starts correcting it
+    $(document).on('input change', '#reservationForm .is-invalid', function () {
+        $(this).removeClass('is-invalid');
+    });
+
+    // Shared SweetAlert2 popup for reservation submission failures (validation, conflict, rate limit, etc.)
+    function showSubmitFailureAlert(title, messages, icon) {
+        const listHtml = '<ul class="text-start ps-3 mb-0">' +
+            messages.map(m => `<li>${escapeHtml(m)}</li>`).join('') +
+            '</ul>';
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: icon || 'warning',
+                title: title,
+                html: listHtml,
+                confirmButtonColor: '#951a1d',
+                confirmButtonText: 'Got it',
+                customClass: { confirmButton: 'btn btn-primary px-4' },
+                buttonsStyling: false
+            });
+        } else {
+            alert(messages.join('\n'));
+        }
+    }
+
     // 3. jQuery / AJAX Form Submission (No Page Reload!)
     const $reservationForm = $('#reservationForm');
     if ($reservationForm.length) {
@@ -263,48 +354,106 @@ $(document).ready(function () {
 
             const $form = $(this);
             const $btn = $form.find('button[type="submit"]');
-            const $alertContainer = $('#formAlertContainer');
             const originalBtnText = $btn.html();
 
+            // Reset previous field-level validation state
+            $form.find('.is-invalid').removeClass('is-invalid');
+            $form.find('.invalid-feedback').text('');
+
+            let $firstInvalid = null;
+            function invalid($field, message) {
+                $field.addClass('is-invalid');
+                const $feedback = $field.closest('.mb-3, .mb-4, .col-md-4, .col-md-6, .form-check').find('.invalid-feedback').first();
+                if ($feedback.length) $feedback.text(message);
+                if (!$firstInvalid) $firstInvalid = $field;
+            }
+
             // Client-side quick field checks
-            const name = $('#requester_name').val() ? $('#requester_name').val().trim() : '';
-            const email = $('#requester_email').val() ? $('#requester_email').val().trim() : '';
-            const office = $('#project_team_office').val() ? $('#project_team_office').val().trim() : '';
-            const purpose = $('#purpose').val() ? $('#purpose').val().trim() : '';
-            const date = $('#reservation_date').val();
-            const startTime = $('#start_time').val();
-            const endTime = $('#end_time').val();
+            const $name = $('#requester_name');
+            const $email = $('#requester_email');
+            const $officeSelect = $('#project_team_office');
+            const $officeOther = $('#project_team_office_other');
+            const $purpose = $('#purpose');
+            const $date = $('#reservation_date');
+            const $startTime = $('#start_time');
+            const $endTime = $('#end_time');
+            const $terms = $('#terms_accepted');
 
-            const errors = [];
-            if (!name || !email || !office || !purpose || !date || !startTime || !endTime) {
-                errors.push('All required fields must be completed.');
-            }
-            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                errors.push('Please enter a valid email address.');
-            }
-            if (startTime && endTime && startTime >= endTime) {
-                errors.push('End time must be later than start time.');
-            }
-            if (startTime < '07:00' || endTime > '18:00') {
-                errors.push('Reservation hours are strictly between 7:00 AM and 6:00 PM.');
+            const name = $name.val() ? $name.val().trim() : '';
+            const email = $email.val() ? $email.val().trim() : '';
+            const officeValue = $officeSelect.val() ? $officeSelect.val().trim() : '';
+            const officeOther = $officeOther.val() ? $officeOther.val().trim() : '';
+            const purpose = $purpose.val() ? $purpose.val().trim() : '';
+            const date = $date.val();
+            const startTime = $startTime.val();
+            const endTime = $endTime.val();
+            const termsAccepted = $terms.is(':checked');
+
+            if (!name) invalid($name, 'Name of Requesting Personnel is required.');
+
+            if (!email) {
+                invalid($email, 'Email Address is required.');
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                invalid($email, 'Please enter a valid email address.');
             }
 
-            if (errors.length > 0) {
-                $alertContainer.html(`
-                    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
-                        <strong>Please correct the following errors:</strong>
-                        <ul class="mb-0 mt-2 ps-3">
-                            ${errors.map(err => `<li>${err}</li>`).join('')}
-                        </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `);
-                $('html, body').animate({ scrollTop: $alertContainer.offset().top - 100 }, 300);
+            if (!officeValue) {
+                invalid($officeSelect, 'Project / Team / Office is required.');
+            } else if (officeValue === 'Others' && !officeOther) {
+                invalid($officeOther, 'Please specify your Project / Team / Office.');
+            }
+
+            if (!purpose) invalid($purpose, 'Purpose of Meeting / Activity is required.');
+
+            if (!date) {
+                invalid($date, 'Reservation Date is required.');
+            } else {
+                const maxAdvanceDate = new Date();
+                maxAdvanceDate.setDate(maxAdvanceDate.getDate() + 30);
+                const selectedDate = new Date(date);
+                if (selectedDate > maxAdvanceDate) {
+                    invalid($date, 'Reservations can only be booked up to 30 days in advance.');
+                }
+            }
+
+            if (!startTime) invalid($startTime, 'Start Time is required.');
+            if (!endTime) invalid($endTime, 'End Time is required.');
+
+            if (startTime && endTime) {
+                if (startTime < '07:00' || endTime > '18:00') {
+                    invalid($startTime, 'Reservation hours are strictly between 7:00 AM and 6:00 PM.');
+                } else if (startTime >= endTime) {
+                    invalid($endTime, 'End time must be later than start time.');
+                } else {
+                    const startMin = parseInt(startTime.split(':')[0]) * 60 + parseInt(startTime.split(':')[1]);
+                    const endMin = parseInt(endTime.split(':')[0]) * 60 + parseInt(endTime.split(':')[1]);
+                    if (endMin - startMin > 240) {
+                        invalid($endTime, 'Single reservation sessions cannot exceed 4 hours.');
+                    }
+                }
+            }
+
+            // Same-day past-time guard - mirrors the server-side rule in create_reservation()
+            if (date && startTime && !$startTime.hasClass('is-invalid')) {
+                const now = new Date();
+                const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+                if (date === todayStr) {
+                    const nowHHMM = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+                    if (startTime <= nowHHMM) {
+                        invalid($startTime, 'This time has already passed today. Please select a later time.');
+                    }
+                }
+            }
+
+            if (!termsAccepted) {
+                invalid($terms, 'You must accept the Terms & Conditions and Responsible Use Policy.');
+            }
+
+            if ($firstInvalid) {
+                $('html, body').animate({ scrollTop: $firstInvalid.offset().top - 140 }, 300);
+                $firstInvalid.trigger('focus');
                 return;
             }
-
-            // Clear previous alerts
-            $alertContainer.html('');
 
             // UI Loading state on Submit Button
             $btn.prop('disabled', true).html(`
@@ -390,37 +539,22 @@ $(document).ready(function () {
                         });
 
                     } else {
-                        // Display error message inline without reloading
-                        const errList = res.errors ? res.errors.map(e => `<li>${e}</li>`).join('') : `<li>${res.message}</li>`;
-                        $alertContainer.html(`
-                            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
-                                <strong>Submission Failed:</strong>
-                                <ul class="mb-0 mt-2 ps-3">${errList}</ul>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        `);
+                        // Show the failure as a SweetAlert2 popup instead of an inline banner
+                        const errList = (res.errors && res.errors.length) ? res.errors : [res.message || 'Failed to submit reservation request.'];
                         $btn.prop('disabled', false).html(originalBtnText);
-                        $('html, body').animate({ scrollTop: $alertContainer.offset().top - 100 }, 300);
+                        showSubmitFailureAlert('Submission Failed', errList);
                     }
                 },
                 error: function (xhr) {
                     $btn.prop('disabled', false).html(originalBtnText);
-                    let errMessage = 'An unexpected error occurred while processing your request. Please try again.';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errMessage = xhr.responseJSON.message;
-                    }
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        errMessage = xhr.responseJSON.errors.join('<br>');
+                    let errList = ['An unexpected error occurred while processing your request. Please try again.'];
+                    if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.length) {
+                        errList = xhr.responseJSON.errors;
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errList = [xhr.responseJSON.message];
                     }
 
-                    $alertContainer.html(`
-                        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
-                            <strong><i class="bi bi-exclamation-triangle-fill me-2"></i> Submission Warning / Conflict:</strong>
-                            <div class="mt-1">${errMessage}</div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    `);
-                    $('html, body').animate({ scrollTop: $alertContainer.offset().top - 100 }, 300);
+                    showSubmitFailureAlert('Submission Warning / Conflict', errList);
                 }
             });
         });
@@ -456,7 +590,8 @@ $(document).ready(function () {
                 dataType: 'json',
                 success: function (data) {
                     if (!data.success) {
-                        $results.html(`<div class="alert alert-danger">${data.message}</div>`);
+                        $results.html('');
+                        showSubmitFailureAlert('Unable to Load Schedule', [data.message || 'An error occurred while fetching availability.'], 'error');
                         return;
                     }
 
@@ -473,12 +608,22 @@ $(document).ready(function () {
 
                     data.slots.forEach(slot => {
                         const isAvailable = slot.status === 'AVAILABLE';
+                        const isPast = slot.status === 'PAST';
                         if (isAvailable) {
                             html += `
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="p-3 border rounded text-center slot-available">
                                         <div class="fw-bold mt-1">${slot.label}</div>
                                         <div class="small text-uppercase mt-1">AVAILABLE</div>
+                                    </div>
+                                </div>
+                            `;
+                        } else if (isPast) {
+                            html += `
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="p-3 border rounded text-center bg-light text-muted" title="${slot.label} has already passed today">
+                                        <div class="fw-bold mt-1">${slot.label}</div>
+                                        <div class="small text-uppercase mt-1">PAST</div>
                                     </div>
                                 </div>
                             `;
@@ -519,7 +664,8 @@ $(document).ready(function () {
                     $results.html(html);
                 },
                 error: function () {
-                    $results.html(`<div class="alert alert-danger">An error occurred while fetching availability. Please try again.</div>`);
+                    $results.html('');
+                    showSubmitFailureAlert('Unable to Load Schedule', ['An error occurred while fetching availability. Please try again.'], 'error');
                 }
             });
         });
@@ -628,6 +774,89 @@ window.confirmCancelReservation = function(buttonElement) {
     }
 };
 
+// Global SweetAlert2 AJAX Cancel Confirmation Trigger (Self-Service - My Reservations page)
+window.confirmCancelMyReservation = function(buttonElement) {
+    const form = buttonElement.closest('form');
+    const resIdInput = form ? form.querySelector('input[name="reservation_id"]') : null;
+    const csrfInput  = form ? form.querySelector('input[name="csrf_token"]') : null;
+    const reservationId = resIdInput ? resIdInput.value : '';
+    const csrfToken = csrfInput ? csrfInput.value : '';
+
+    const doCancel = function () {
+        $.ajax({
+            url: 'api/cancel_my_reservation.php',
+            type: 'POST',
+            data: {
+                reservation_id: reservationId,
+                csrf_token: csrfToken
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cancelled',
+                            text: res.message,
+                            confirmButtonColor: '#951a1d',
+                            customClass: { confirmButton: 'btn btn-primary px-4' },
+                            buttonsStyling: false
+                        }).then(() => window.location.reload());
+                    } else {
+                        window.location.reload();
+                    }
+                } else if (typeof Swal !== 'undefined') {
+                    Swal.fire('Error', res.message || 'Failed to cancel reservation.', 'error');
+                } else {
+                    alert(res.message || 'Failed to cancel reservation.');
+                }
+            },
+            error: function (xhr) {
+                const errMsg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'An error occurred while processing cancellation.';
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire('Error', errMsg, 'error');
+                } else {
+                    alert(errMsg);
+                }
+            }
+        });
+    };
+
+    if (typeof Swal === 'undefined') {
+        if (confirm('Cancel this reservation? This will free up the time slot for other users and cannot be undone.')) {
+            doCancel();
+        }
+        return;
+    }
+
+    Swal.fire({
+        title: 'Cancel Reservation?',
+        text: 'This will free up the time slot for other users. This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#951a1d',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: '<i class="bi bi-x-circle me-1"></i> Yes, Cancel Reservation',
+        cancelButtonText: 'Keep Reservation',
+        customClass: {
+            confirmButton: 'btn btn-danger px-4 me-2',
+            cancelButton: 'btn btn-secondary px-4'
+        },
+        buttonsStyling: false
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        Swal.fire({
+            title: 'Cancelling Reservation...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        doCancel();
+    });
+};
+
 // Global Vanilla JS & jQuery Pop-up Modal View Details Handler
 window.openReservationViewModal = function(btn) {
     const id = btn.getAttribute('data-id');
@@ -710,7 +939,7 @@ window.startBookingTutorial = function() {
             {
                 element: '#btnStartTutorial',
                 popover: {
-                    title: 'Welcome to DIWA Center Portal',
+                    title: 'Welcome to Conference Reservation System',
                     description: 'Let\'s take a quick 30-second tour on how to check room availability and make a reservation.',
                     side: 'bottom',
                     align: 'center'
@@ -753,9 +982,18 @@ window.startBookingTutorial = function() {
                 }
             },
             {
+                element: '#terms_accepted',
+                popover: {
+                    title: 'Step 5: Accept Responsible Use Policy',
+                    description: 'Read and agree to the <strong>Responsible Use Policy & Terms of Service</strong>. The system automatically remembers your acceptance so you only need to accept it once on your first visit!',
+                    side: 'top',
+                    align: 'start'
+                }
+            },
+            {
                 element: '#reservationForm button[type="submit"]',
                 popover: {
-                    title: 'Step 5: Submit Request',
+                    title: 'Step 6: Submit Request',
                     description: 'Click <strong>Submit Reservation Request</strong> to confirm your booking and receive an instant email notification!',
                     side: 'top',
                     align: 'center'
@@ -769,15 +1007,48 @@ window.startBookingTutorial = function() {
 
 $(document).on('click', '#btnStartTutorial', function (e) {
     e.preventDefault();
-    window.startBookingTutorial();
+    if (window.location.pathname.includes('reserve')) {
+        window.startBookingTutorial();
+    } else {
+        // Tutorial steps target elements that only exist on the Reserve page
+        // (schedule grid, form fields) - go there first, then auto-run it.
+        sessionStorage.setItem('diwa_pending_tutorial', 'true');
+        window.location.href = 'reserve';
+    }
 });
 
-// Auto-suggest tutorial for first-time visitors on Reserve page
-if (window.location.pathname.includes('reserve') && !localStorage.getItem('diwa_tutorial_seen')) {
-    setTimeout(function() {
-        window.startBookingTutorial();
-        localStorage.setItem('diwa_tutorial_seen', 'true');
-    }, 1000);
+// Auto-suggest tutorial for first-time visitors on Reserve page, or when the
+// user asked for it via the "How to Book?" button on another page.
+if (window.location.pathname.includes('reserve')) {
+    const cameFromTutorialLink = sessionStorage.getItem('diwa_pending_tutorial');
+    if (cameFromTutorialLink) sessionStorage.removeItem('diwa_pending_tutorial');
+
+    if (cameFromTutorialLink || !localStorage.getItem('diwa_tutorial_seen')) {
+        setTimeout(function() {
+            window.startBookingTutorial();
+            localStorage.setItem('diwa_tutorial_seen', 'true');
+        }, 1000);
+    }
 }
+
+// 6. Terms & Conditions Auto-Check & Persistence Handler
+function syncTermsAcceptanceState() {
+    const email = $('#requester_email').val() ? $('#requester_email').val().trim().toLowerCase() : '';
+    const key = email ? 'diwa_terms_accepted_' + email : 'diwa_terms_accepted_global';
+    if (localStorage.getItem(key) === 'true') {
+        $('#terms_accepted').prop('checked', true);
+    }
+}
+
+syncTermsAcceptanceState();
+
+$(document).on('click', '#btnAgreeTerms', function () {
+    const email = $('#requester_email').val() ? $('#requester_email').val().trim().toLowerCase() : '';
+    const key = email ? 'diwa_terms_accepted_' + email : 'diwa_terms_accepted_global';
+    
+    localStorage.setItem(key, 'true');
+    localStorage.setItem('diwa_terms_accepted_global', 'true');
+    $('#terms_accepted').prop('checked', true);
+});
 
 });

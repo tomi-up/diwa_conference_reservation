@@ -162,10 +162,30 @@ try {
     $_SESSION['user_email']     = $email;
     $_SESSION['user_google_sub']= $google_sub;
 
+    // Check if user is an authorized administrator
+    $stmt_admin = $pdo->prepare("SELECT id, name, email FROM admins WHERE email = :email AND is_active = 1 LIMIT 1");
+    $stmt_admin->execute(['email' => $email]);
+    $admin_record = $stmt_admin->fetch();
+
+    $is_admin = false;
+    $redirect_url = null;
+
+    if ($admin_record) {
+        $is_admin = true;
+        $_SESSION['admin_logged_in'] = true;
+        $_SESSION['admin_id']        = (int)$admin_record['id'];
+        $_SESSION['admin_name']      = $admin_record['name'];
+        $_SESSION['admin_email']     = $email;
+        $_SESSION['is_admin']        = true;
+        $redirect_url                = 'admin/calendar';
+    }
+
     echo json_encode([
-        'success' => true,
-        'message' => 'Successfully signed in with UP Mail.',
-        'user'    => [
+        'success'      => true,
+        'message'      => 'Successfully signed in with UP Mail.',
+        'is_admin'     => $is_admin,
+        'redirect_url' => $redirect_url,
+        'user'         => [
             'id'    => $user_id,
             'name'  => $name,
             'email' => $email

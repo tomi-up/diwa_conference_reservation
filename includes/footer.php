@@ -78,7 +78,7 @@
             <!-- Text -->
             <div class="footer-text">
                 <p style="color: #32444e;" class="mb-1 fw-semibold">
-                    &copy; <?= date('Y') ?> DIWA Center Conference Services. All rights reserved.
+                    &copy; <?= date('Y') ?> UP Mindanao &ndash; DiWA Center Conference Services. All rights reserved.
                 </p>
                 <span class="small" style="color: #32444e70;">
                     Made by <strong style="color: #f87171;">Maylotechy</strong> and <strong style="color: #f87171;">Centuriee</strong>

@@ -45,6 +45,13 @@ if (!empty($start_time) && !empty($end_time)) {
             'message'    => 'Reservation hours are strictly between 7:00 AM and 6:00 PM.',
             'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0"><i class="bi bi-clock-fill me-2 text-warning fs-5"></i> Reservation hours are strictly between 7:00 AM and 6:00 PM.</div>'
         ];
+    } elseif ($date === date('Y-m-d') && $start_time <= date('H:i')) {
+        $response['slot_check'] = [
+            'is_valid'   => false,
+            'status'     => 'PAST',
+            'message'    => 'This time has already passed today.',
+            'badge_html' => '<div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis p-3 rounded-3 text-center mb-0"><i class="bi bi-clock-history me-2 text-warning fs-5"></i> This time has already passed today. Please select a later time.</div>'
+        ];
     } else {
         $conflict = has_schedule_conflict($date, $start_time, $end_time, null, $pdo);
         if ($conflict) {
