@@ -23,6 +23,44 @@ $form_data = [
     'end_time'            => '11:00'
 ];
 
+$user_reservations = [];
+
+if ($is_logged_in) {
+    $user_reservations = get_user_reservations(
+        (int)$_SESSION['user_id'],
+        $pdo
+    );
+}
+
+$now = time();
+$upcoming = [];
+$history = [];
+
+foreach ($user_reservations as $res) {
+    $start_timestamp = strtotime(
+        $res['reservation_date'] . ' ' . $res['start_time']
+    );
+
+    $res['is_upcoming'] =
+        ($res['status'] === 'CONFIRMED' && $start_timestamp >= $now);
+
+    $res['can_cancel'] =
+        ($res['status'] === 'CONFIRMED' &&
+         ($start_timestamp - $now) >= 86400);
+
+    if ($res['is_upcoming']) {
+        $upcoming[] = $res;
+    } else {
+        $history[] = $res;
+    }
+}
+
+$status_badge_map = [
+    'CONFIRMED' => 'bg-success',
+    'CANCELLED' => 'bg-warning text-dark',
+    'REJECTED'  => 'bg-danger',
+];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_POST[CSRF_TOKEN_NAME] ?? '';
     if (!verify_csrf_token($token)) {
@@ -178,33 +216,36 @@ require_once __DIR__ . '/includes/new_header.php';
                     ">
 
                     <!-- Header / Tabs -->
-                    <div class="w-100 d-flex align-items-center"
+                    <div class="w-100 d-flex align-items-end position-relative"
                         style="
                             height: 60px;
                             min-height: 60px;
-                            border-bottom: 1px solid #DEE2E6;
                             padding: 0 24px;
                         ">
 
-                        <div class="d-flex align-items-center gap-2">
-
+                        <div class="d-flex align-items-center">
+    
                             <!-- Calendar Tab -->
                             <button type="button"
-                                class="reservation-tab active"
+                                class="header-tab active"
                                 id="calendarTab">
-                                <i class="bi bi-calendar3 me-2"></i>
-                                Calendar
+                                CALENDAR
                             </button>
 
-                            <!-- My Reservations Tab -->
+                            <!-- Reservations Tab -->
                             <button type="button"
-                                class="reservation-tab"
+                                class="header-tab"
                                 id="myReservationsTab">
-                                <i class="bi bi-calendar-check me-2"></i>
-                                My Reservations
+                                MY RESERVATIONS
                             </button>
 
                         </div>
+
+                        <!-- Bottom border -->
+                        <div class="position-absolute bottom-0 start-0 w-100"
+                            style="height: 1px; background-color: #DEE2E6;">
+                        </div>
+
                     </div>
 
 
@@ -215,7 +256,7 @@ require_once __DIR__ . '/includes/new_header.php';
                     
                         <!-- Calendar Area -->
                         <div class="w-100"
-                            style="height: 60%; min-height: 60%; padding: 20px 24px;">
+                            style="height: 60%; min-height: 60%; padding: 20px 24px; background-color: #FFFDFD;">
 
                             <div class="h-100 d-flex flex-column">
 
@@ -302,27 +343,354 @@ require_once __DIR__ . '/includes/new_header.php';
                         </div>
                     </div>
 
-                    <!-- My Reservations View -->
+                    <!-- reservations -->
                     <div id="myReservationsView"
                         class="w-100 h-100"
-                        style="display: none; padding: 24px;">
+                        style="display: none; padding: 24px; overflow: hidden; background-color: #FFFDFD;">
 
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <div>
-                                <h5 class="fw-bold mb-1">My Reservations</h5>
-                                <p class="text-muted small mb-0">
-                                    View and manage your conference room reservations.
-                                </p>
-                            </div>
+                        <!-- select -->
+                        <div class="d-flex gap-2 mb-3 flex-shrink-0">
+
+                            <button type="button"
+                                class="btn btn-sm reservation-filter-btn active"
+                                data-filter="all">
+                                ALL
+                            </button>
+
+                            <button type="button"
+                                class="btn btn-sm reservation-filter-btn"
+                                data-filter="upcoming">
+                                UPCOMING
+                            </button>
+
+                            <button type="button"
+                                class="btn btn-sm reservation-filter-btn"
+                                data-filter="history">
+                                HISTORY
+                            </button>
+
                         </div>
 
-                        <!-- Reservations will go here -->
-                        <div id="myReservationsList">
+                        <!-- Reservations -->
+                        <div id="myReservationsList"
+                            style="
+                            height: 100%;
+                            width: 100%;
+                            overflow-y: auto;
+                            overflow-x: hidden;
+                            padding-right: 8px;
+                            padding-bottom: 24px;
+                        ">
 
-                            <div class="text-center py-5 text-muted">
-                                <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
-                                You don't have any reservations yet.
-                            </div>
+                            <?php if (!$is_logged_in): ?>
+
+                                <div class="text-center py-5 text-muted">
+                                    <i class="bi bi-lock fs-2 d-block mb-2"></i>
+                                    <div class="fw-semibold mb-1">Sign in to view your reservations</div>
+                                    <div class="small">
+                                        Please sign in with your UP Mail account.
+                                    </div>
+                                </div>
+
+                            <?php elseif (empty($user_reservations)): ?>
+
+                                <div class="text-center py-5 text-muted">
+                                    <div class="small">
+                                        You have not reserved the room yet.
+                                    </div>
+                                </div>
+
+                            <?php else: ?>
+
+                                <?php
+                                    $project_colors = [
+                                        'DiWA Core' => '#DB7877',
+                                        'Ops Team' => '#4fa576',
+                                        'RESCUE Project' => '#8A94D8',
+                                        'IRDSS Project' => '#dbc57b',
+                                        'Wolbachia Project' => '#8E8E8E',
+                                        'Scaling Up of Diwa App Project' => '#ad4d72',
+                                        'RabDash DC' => '#db7860',
+                                        'Others' => '#8e6ad1'
+                                    ];
+                                ?>
+
+                                <!-- UPCOMING -->
+
+                                <?php if (empty($upcoming)): ?>
+
+                                    <div class="text-muted small mb-4">
+                                        No upcoming reservations.
+                                    </div>
+
+                                <?php else: ?>
+
+                                    <?php
+                                    $upcoming_by_date = [];
+
+                                    foreach ($upcoming as $res) {
+                                        $upcoming_by_date[$res['reservation_date']][] = $res;
+                                    }
+                                    ?>
+
+                                    <?php foreach ($upcoming_by_date as $date => $date_reservations): ?>
+
+                                        <div class="reservation-item w-100" data-reservation-filter="upcoming">
+
+                                            <!-- DATE HEADER -->
+                                            <div class="d-flex align-items-center gap-2">
+
+                                                <div class="fw-light text-nowrap" style="color: #a1a5aa;">
+                                                    <?= e(strtoupper(date('M j Y', strtotime($date)))) ?>
+                                                </div>
+
+                                                <div class="flex-grow-1"
+                                                    style="height: 1px; background-color: #dee2e6;">
+                                                </div>
+
+                                            </div>
+
+                                            <?php foreach ($date_reservations as $res): ?>
+
+                                                <?php
+                                                $circle_color =
+                                                    $project_colors[$res['project_team_office']]
+                                                    ?? '#6c757d';
+
+                                                $badge_class =
+                                                    $status_badge_map[$res['status']]
+                                                    ?? 'bg-secondary';
+                                                ?>
+
+                                                <div class="d-flex align-items-center pb-3">
+
+                                                    <!-- Start Time -->
+                                                    <div class="d-flex flex-column justify-content-center text-black" style="width: 50px;">
+                                                        <h5 class="fw-bolder mb-0"><?= e(date('H:i', strtotime($res['start_time']))) ?></h5>
+                                                    </div>
+
+                                                    <!-- Circle -->
+                                                    <div class="me-2 ms-4">
+                                                        <span
+                                                            class="d-block rounded-circle"
+                                                            style="
+                                                                width: 10px;
+                                                                height: 10px;
+                                                                background-color: <?= e($circle_color) ?>;
+                                                            ">
+                                                        </span>
+                                                    </div>
+
+                                                    <!-- Reservation Information -->
+                                                    <div class="flex-grow-1">
+
+                                                        <!-- Title -->
+                                                        <div class="fw-semibold text-black">
+                                                            <h4 class="fw-bold m-0"><?= e($res['purpose']) ?></h4>
+                                                        </div>
+
+                                                        <!-- Details -->
+                                                        <div class="small text-muted d-flex align-items-center gap-2" style="font-size: 12.25px;">
+                                                            <span>
+                                                                <?= e(date('H:i', strtotime($res['start_time']))) ?>
+                                                                &ndash;
+                                                                <?= e(date('H:i', strtotime($res['end_time']))) ?>
+                                                            </span>
+
+                                                            <span>
+                                                                <?= e($res['project_team_office']) ?>
+                                                            </span>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <!-- Action -->
+                                                    <div class="d-flex align-items-center ms-3 flex-shrink-0 reservation-btn-group">
+
+                                                        <?php if ($res['can_cancel']): ?>
+
+                                                            <form class="d-inline">
+
+                                                                <?= csrf_field() ?>
+
+                                                                <input
+                                                                    type="hidden"
+                                                                    name="reservation_id"
+                                                                    value="<?= (int)$res['id'] ?>"
+                                                                >
+
+                                                                <button
+                                                                    type="button"
+                                                                    class="fw-bold"
+                                                                    onclick="confirmCancelMyReservation(this)"
+                                                                >
+                                                                    CANCEL
+                                                                </button>
+
+                                                            </form>
+
+                                                        <?php else: ?>
+
+                                                            <span
+                                                                class="reservation-cancel-disabled ms-3"
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="top"
+                                                                title="Cancellation window closed"
+                                                            >
+                                                                CANCEL
+                                                            </span>
+
+                                                        <?php endif; ?>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        <?php endforeach; ?>
+
+                                    <?php endforeach; ?>
+
+                                <?php endif; ?>
+
+
+                                <!-- HISTORY -->
+
+                                <?php if (empty($history)): ?>
+
+                                    <div class="text-muted small">
+                                        No past or cancelled reservations.
+                                    </div>
+
+                                <?php else: ?>
+
+                                    <?php
+                                    $history_by_date = [];
+
+                                    foreach ($history as $res) {
+                                        $history_by_date[$res['reservation_date']][] = $res;
+                                    }
+                                    ?>
+
+                                    <?php foreach ($history_by_date as $date => $date_reservations): ?>
+
+                                        <div class="reservation-item w-100"
+                                            data-reservation-filter="history">
+
+                                            <!-- DATE HEADER -->
+                                            <div class="d-flex align-items-center gap-2">
+
+                                                <div class="fw-light text-nowrap" style="color: #a1a5aa;">
+                                                    <?= e(strtoupper(date('M j Y', strtotime($date)))) ?>
+                                                </div>
+
+                                                <div class="flex-grow-1"
+                                                    style="height: 1px; background-color: #dee2e6;">
+                                                </div>
+
+                                            </div>
+
+                                            <?php foreach ($date_reservations as $res): ?>
+
+                                                <?php
+                                                $circle_color =
+                                                    $project_colors[$res['project_team_office']]
+                                                    ?? '#6c757d';
+
+                                                $badge_class =
+                                                    $status_badge_map[$res['status']]
+                                                    ?? 'bg-secondary';
+                                                ?>
+
+                                                <div class="d-flex align-items-center pb-3">
+
+                                                    <!-- Start Time -->
+                                                    <div
+                                                        class="d-flex flex-column justify-content-center text-black"
+                                                        style="width: 50px;"
+                                                    >
+                                                        <h5 class="fw-bolder mb-0">
+                                                            <?= e(date('H:i', strtotime($res['start_time']))) ?>
+                                                        </h5>
+                                                    </div>
+
+                                                    <!-- Circle -->
+                                                    <div class="me-2 ms-4">
+                                                        <span
+                                                            class="d-block rounded-circle"
+                                                            style="
+                                                                width: 10px;
+                                                                height: 10px;
+                                                                background-color: <?= e($circle_color) ?>;
+                                                            ">
+                                                        </span>
+                                                    </div>
+
+                                                    <!-- Reservation Information -->
+                                                    <div class="flex-grow-1">
+
+                                                        <!-- Title -->
+                                                        <div class="fw-semibold text-black">
+                                                            <h4 class="fw-bold m-0">
+                                                                <?= e($res['purpose']) ?>
+                                                            </h4>
+                                                        </div>
+
+                                                        <!-- Details -->
+                                                        <div
+                                                            class="small text-muted d-flex align-items-center gap-2"
+                                                            style="font-size: 12.25px;"
+                                                        >
+
+                                                            <span>
+                                                                <?= e(date('H:i', strtotime($res['start_time']))) ?>
+                                                                &ndash;
+                                                                <?= e(date('H:i', strtotime($res['end_time']))) ?>
+                                                            </span>
+
+                                                            <span>
+                                                                <?= e($res['project_team_office']) ?>
+                                                            </span>
+
+                                                        </div>
+
+                                                        <?php if (
+                                                            $res['status'] !== 'CONFIRMED' &&
+                                                            !empty($res['rejection_reason'])
+                                                        ): ?>
+
+                                                            <!--
+                                                            <div class="small text-muted mt-1">
+                                                                <strong>Reason:</strong>
+                                                                <?= e($res['rejection_reason']) ?>
+                                                            </div>
+                                                            -->
+
+                                                        <?php endif; ?>
+
+                                                    </div>
+
+                                                    <!-- Status Badge -->
+                                                    <div class="d-flex align-items-center ms-3 flex-shrink-0">
+                                                        <span class="badge <?= $badge_class ?>">
+                                                            <?= e($res['status']) ?>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+
+                                            <?php endforeach; ?>
+
+                                        </div>
+
+                                    <?php endforeach; ?>
+
+                                <?php endif; ?>
+
+                            <?php endif; ?>
 
                         </div>
 
@@ -437,11 +805,13 @@ require_once __DIR__ . '/includes/new_header.php';
 
                                         <?php
                                         $offices = [
+                                            'DiWA Core',
                                             'Ops Team',
-                                            'RESCUE Project',
-                                            'IRDSS Project',
-                                            'Wolbachia Project',
                                             'Scaling Up of Diwa App Project',
+                                            'RabDash DC',
+                                            'RESCUE Project',
+                                            'Wolbachia Project',
+                                            'IRDSS Project',
                                             'Others'
                                         ];
 
@@ -488,12 +858,10 @@ require_once __DIR__ . '/includes/new_header.php';
 
                                         <label class="form-check-label small text-muted fw-normal mb-0"
                                             for="terms_accepted">
-                                            I have read and agree to the
-                                            <a href="#"
-                                            class="fw-bold text-danger text-decoration-underline ms-1"
+                                            I have read and agree to the <a href="#"
+                                            class="fw-bold text-danger text-decoration-underline"
                                             data-bs-toggle="modal"
-                                            data-bs-target="#termsModal">
-                                                Responsible Use Policy & Terms of Service
+                                            data-bs-target="#termsModal">Responsible Use Policy & Terms of Service
                                             </a>
                                             <span class="text-danger">*</span>
                                         </label>
@@ -520,7 +888,6 @@ require_once __DIR__ . '/includes/new_header.php';
                         </form>
 
                     </div>
-                    </div>
                 </div>
             </div>
 
@@ -528,7 +895,7 @@ require_once __DIR__ . '/includes/new_header.php';
     </div>
 </div>
 
-<script src="<?= APP_URL ?>/assets/js/user_calendar.js?v=<?= filemtime(__DIR__ . '/assets/js/reservation.js') ?>"></script>
+<script src="<?= APP_URL ?>/assets/js/user_calendar.js?v=<?= filemtime(__DIR__ . '/assets/js/user_calendar.js') ?>"></script>
 <?php require_once __DIR__ . '/includes/new_footer.php'; ?>
 
 <!--

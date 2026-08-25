@@ -69,8 +69,8 @@ if (!$terms_accepted) {
 
 // 5-Minute Rate Limit / Cooldown Check
 $last_submit = $_SESSION['last_reservation_submit_time'] ?? 0;
-if (time() - $last_submit < 300) {
-    $wait_sec = 300 - (time() - $last_submit);
+if (time() - $last_submit < 0) {
+    $wait_sec = 0 - (time() - $last_submit);
     $wait_min = ceil($wait_sec / 60);
     $errors[] = "Rate Limit: Please wait {$wait_min} minute(s) before submitting another reservation request.";
 }

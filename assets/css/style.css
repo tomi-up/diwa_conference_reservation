@@ -345,3 +345,85 @@ body {
 .nav-login-btn:focus {
     outline: none;
 }
+
+.header-tab {
+    height: 60px;
+    padding: 28px 20px 8px;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+
+    font-family: var(--font-family-sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6c757d;
+
+    cursor: pointer;
+    position: relative;
+}
+
+.header-tab:hover {
+    color: #818b94;
+}
+
+.header-tab.active {
+    color: #000;
+}
+
+.header-tab.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background-color: #000;
+}
+
+.reservation-filter-btn {
+    border: none;
+    background: none;
+    color: #6c757d;
+    font-weight: 600;
+    padding: 0;
+    text-decoration: none;
+    font-size: 0.8em;
+}
+
+.reservation-filter-btn:hover {
+    color: #000;
+}
+
+.reservation-filter-btn.active {
+    color: #000;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+}
+
+.reservation-btn-group button {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    color: #CA3436;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.reservation-btn-group button:hover {
+    text-decoration: underline;
+}
+
+.reservation-cancel-disabled {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    color: #ce585a;
+    font-size: 0.875rem;
+    font-weight: 600;
+}

@@ -5,29 +5,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const calendarView = document.getElementById('calendarView');
     const myReservationsView = document.getElementById('myReservationsView');
+    const reservationFilter = document.getElementById('reservationFilter');
 
 
     function showCalendar() {
-
-        // Show calendar
         calendarView.style.display = 'flex';
         myReservationsView.style.display = 'none';
 
-        // Active tab
         calendarTab.classList.add('active');
         myReservationsTab.classList.remove('active');
+
+        reservationFilter.style.display = 'none';
     }
 
 
     function showMyReservations() {
-
-        // Show reservations
         calendarView.style.display = 'none';
         myReservationsView.style.display = 'block';
 
-        // Active tab
         calendarTab.classList.remove('active');
         myReservationsTab.classList.add('active');
+
+        reservationFilter.style.display = 'block';
     }
 
 
@@ -39,6 +38,46 @@ document.addEventListener('DOMContentLoaded', function () {
     myReservationsTab.addEventListener('click', function () {
         showMyReservations();
     });
+
+    const reservationFilterButtons =
+    document.querySelectorAll('.reservation-filter-btn');
+
+        reservationFilterButtons.forEach(function (button) {
+
+            button.addEventListener('click', function () {
+
+                const selectedFilter = this.dataset.filter;
+
+                // Update active button
+                reservationFilterButtons.forEach(function (btn) {
+                    btn.classList.remove('active');
+                });
+
+                this.classList.add('active');
+
+                // Filter reservations
+                const reservationItems =
+                    document.querySelectorAll('.reservation-item');
+
+                reservationItems.forEach(function (item) {
+
+                    const itemFilter =
+                        item.dataset.reservationFilter;
+
+                    if (
+                        selectedFilter === 'all' ||
+                        selectedFilter === itemFilter
+                    ) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+
+                });
+
+            });
+
+        });
 
     /** CALENDAR */
     const calendarDays = document.getElementById('calendarDays');
@@ -420,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (dayReservations.length === 0) {
 
             reservationContainer.innerHTML = `
-                <div class="text-muted">
+                <div class="text-muted py-2">
                     No reservations scheduled for this date.
                 </div>
             `;
@@ -458,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 : projectColors[props.project_team_office] ?? '#6c757d';
 
             return `
-                <div class="d-flex flex-col align-items-center py-2">
+                <div class="d-flex flex-col align-items-center py-2 mb-2 border-top">
 
                     <!-- Start Time -->
                     <div class="d-flex flex-column justify-content-center text-black" style="width: 50px;">
@@ -481,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="flex-grow-1">
 
                         <!-- Title -->
-                        <div class="fw-semibold text-dark">
+                        <div class="fw-semibold text-black">
                             <h4 class="fw-bold m-0">${props.is_blocked ? 'Unavailable' : props.purpose}</h4>
                         </div>
 

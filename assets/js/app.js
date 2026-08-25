@@ -483,7 +483,7 @@ $(document).ready(function () {
             // UI Loading state on Submit Button
             $btn.prop('disabled', true).html(`
                 <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Submitting Reservation...
+                RESERVING...
             `);
 
             // Perform jQuery AJAX POST Request
@@ -497,61 +497,100 @@ $(document).ready(function () {
                         // Render smooth inline Success Card without reloading page!
                         const d = res.details;
                         const successCardHtml = `
-                            <div class="row">
-                                <div class="col-lg-1 col-xl-1"></div>
-                                <div class="col-lg-10 col-xl-10">
-                                    <div class="border shadow-sm bg-white mb-5 overflow-hidden">
-                                        <div class="card-header bg-success text-white py-3 text-center">
-                                            <h4 class="mb-0 fw-bold"><i class="bi bi-check-circle-fill me-2"></i> Reservation Confirmed!</h4>
-                                        </div>
-                                        <div class="card-body p-4 p-md-5">
-                                            <div class="alert alert-success border-0 bg-success-subtle text-success-emphasis p-3 mb-4 rounded-3 d-flex align-items-center">
-                                                <i class="bi bi-check-circle-fill fs-3 me-3 text-success"></i>
-                                                <div>
-                                                    <strong>Reservation Request Submitted!</strong><br>
-                                                    Your reservation details have been successfully recorded for <u>${d.requester_email}</u>.
-                                                </div>
-                                            </div>
+                            <div class="h-100 d-flex justify-content-center">
+                                <div class="bg-white border shadow-sm h-100 overflow-hidden d-flex flex-column"
+                                    style="width: 60%;">
 
-                                            <!-- DIWA Styled Callout Box -->
-                                            <div style="background-color: #fdf2f2; border: 1px solid #fecaca; border-left: 5px solid #951a1d; padding: 20px 24px; border-radius: 6px;" class="mb-4">
-                                                <h5 style="color: #951a1d;" class="fw-bold mb-3 border-bottom pb-2">Reservation Details</h5>
-                                                <div class="row g-2 font-size-14">
-                                                    <div class="col-sm-4 text-secondary fw-semibold">Reservation ID:</div>
-                                                    <div class="col-sm-8 text-end fw-bold text-danger font-monospace fs-6">${d.formatted_id}</div>
-                                                    
-                                                    <div class="col-sm-4 text-secondary fw-semibold">Requesting Personnel:</div>
-                                                    <div class="col-sm-8 text-end text-dark fw-bold">${d.requester_name}</div>
-
-                                                    <div class="col-sm-4 text-secondary fw-semibold">Facility / Room:</div>
-                                                    <div class="col-sm-8 text-end text-dark">${d.room_name}</div>
-
-                                                    <div class="col-sm-4 text-secondary fw-semibold">Date:</div>
-                                                    <div class="col-sm-8 text-end text-dark">${d.reservation_date}</div>
-
-                                                    <div class="col-sm-4 text-secondary fw-semibold">Time:</div>
-                                                    <div class="col-sm-8 text-end text-dark">${d.start_time} &ndash; ${d.end_time}</div>
-
-                                                    <div class="col-sm-4 text-secondary fw-semibold">Project / Office:</div>
-                                                    <div class="col-sm-8 text-end text-dark">${d.project_team_office}</div>
-
-                                                    <div class="col-sm-4 text-secondary fw-semibold">Purpose:</div>
-                                                    <div class="col-sm-8 text-end text-dark">${d.purpose}</div>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                                                <button type="button" id="btnBookAnother" class="btn btn-primary px-4 py-2">
-                                                    <i class="bi bi-plus-circle me-1"></i> Make Another Reservation
-                                                </button>
-                                                <a href="availability.php?date=${d.raw_date}" class="btn btn-outline-secondary px-4 py-2">
-                                                    <i class="bi bi-calendar-week me-1"></i> View Schedule Matrix
-                                                </a>
-                                            </div>
-                                        </div>
+                                    <!-- Header -->
+                                    <div class="d-flex align-items-center justify-content-center border-bottom flex-shrink-0"
+                                        style="height: 60px; min-height: 60px;">
+                                        <h4 class="fw-bold mb-0">RESERVATION CONFIRMED</h4>
                                     </div>
+
+                                    <!-- Details -->
+                                    <div class="p-4 flex-grow-1 overflow-auto">
+
+                                        <h5 class="fw-bolder mb-4">Here are the details to your reservation:</h5>
+
+                                        <div class="mb-3">
+                                            <div class="text-muted small mb-1">RESERVATION ID</div>
+                                            <div class="fw-bold text-danger font-monospace">
+                                                ${d.formatted_id}
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="text-muted small">Requester</div>
+                                            <div class="fw-semibold">${d.requester_name}</div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="text-muted small">Date</div>
+                                            <div class="fw-semibold">${d.reservation_date}</div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="text-muted small">Time</div>
+                                            <div class="fw-semibold">
+                                                ${d.start_time}&ndash;${d.end_time}
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="text-muted small">Project</div>
+                                            <div class="fw-semibold">${d.project_team_office}</div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <div class="text-muted small">Purpose</div>
+                                            <div class="fw-semibold">${d.purpose}</div>
+                                        </div>
+
+                                        <p class="small text-muted mb-3">
+                                            A confirmation has been sent to your email.
+                                        </p>
+
+                                    </div>
+
+                                    <!-- FIXED BOTTOM ACTIONS -->
+                                    <div class="d-flex flex-shrink-0 border-top" style="height: 80px;">
+
+                                        <!-- Add to Google Calendar -->
+                                        <button type="button"
+                                                id="addToGoogleCalendarBtn"
+                                                class="btn btn-primary w-50 flex-fill fw-bold rounded-0 border-0"
+                                                style="
+                                                    height: 80px;
+                                                    font-size: 1.05rem;
+                                                    background-color: #EEE;
+                                                    color: #2e2e2e;
+                                                "
+                                                onclick="addToGoogleCalendar()">
+
+                                            <i class="bi bi-google me-2"></i>
+                                            ADD TO GOOGLE CALENDAR
+
+                                        </button>
+
+                                        <!-- Back -->
+                                        <button type="button"
+                                                id="backToCalendarBtn"
+                                                class="btn btn-primary w-50 flex-fill fw-bold rounded-0 border-0"
+                                                style="
+                                                    height: 80px;
+                                                    font-size: 1.05rem;
+                                                    background-color: #CA3436;
+                                                "
+                                                onclick="window.location.href='reserve?date=${d.raw_date}'">
+
+                                            <i class="bi bi-arrow-left me-2"></i>
+                                            BACK
+
+                                        </button>
+
+                                    </div>
+
                                 </div>
-                                <div class="col-lg-1 col-xl-1"></div>
                             </div>
                         `;
 
