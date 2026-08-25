@@ -250,7 +250,7 @@ require_once __DIR__ . '/includes/new_header.php';
                     ">
 
                     <!-- Header -->
-                    <div style="height: 70px;"
+                    <div style="height: 60px; min-height: 60px;"
                         class="card-header bg-white py-3 border-bottom d-flex align-items-center">
                         <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 20px;">
                             FILL YOUR DETAILS
