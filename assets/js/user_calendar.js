@@ -10,6 +10,23 @@ document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const initialCalendarDate = urlParams.get('date');
 
+    const projectColors = {
+        'DiWA Core': '#DB7877',
+        'Ops Team': '#4fa576',
+        'RESCUE Project': '#8A94D8',
+        'IRDSS Project': '#dbc57b',
+        'Wolbachia Project': '#8E8E8E',
+        'Scaling Up of Diwa App Project': '#ad4d72',
+        'RabDash DC': '#db7860',
+        'Others': '#8e6ad1'
+    };
+
+    function reservationDotColor(props) {
+        return props.is_blocked
+            ? '#c5303f'
+            : projectColors[props.project_team_office] ?? '#6c757d';
+    }
+
 
     function showCalendar() {
         calendarView.style.display = 'flex';
@@ -317,10 +334,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Add reservation indicator
+        * Add reservation indicator, colored to match the first reservation's project
         */
         if (dayReservations.length > 0) {
             cell.classList.add('has-reservations');
+            cell.style.setProperty(
+                '--reservation-dot-color',
+                reservationDotColor(dayReservations[0].extendedProps)
+            );
         }
 
 
@@ -421,9 +442,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /*
+     * Convert 24-hour "HH:MM" time to 12-hour "H:MM AM/PM" for display
+     */
+    function formatTime12h(time24) {
+        if (!time24) return '';
+        const [hStr, mStr] = time24.split(':');
+        let h = parseInt(hStr, 10);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${mStr} ${ampm}`;
+    }
+
+
+    /*
      * display reservations for selected date
      *
-     * 
+     *
      */
     function showReservations(date) {
 
@@ -492,28 +526,15 @@ document.addEventListener('DOMContentLoaded', function () {
         reservationContainer.innerHTML = dayReservations.map(reservation => {
 
             const props = reservation.extendedProps;
-            
-            const projectColors = {
-                'DiWA Core': '#DB7877',
-                'Ops Team': '#4fa576',
-                'RESCUE Project': '#8A94D8',
-                'IRDSS Project': '#dbc57b',
-                'Wolbachia Project': '#8E8E8E',
-                'Scaling Up of Diwa App Project': '#ad4d72',
-                'RabDash DC': '#db7860',
-                'Others': '#8e6ad1'
-            };
 
-            const circleColor = props.is_blocked
-                ? '#c5303f'
-                : projectColors[props.project_team_office] ?? '#6c757d';
+            const circleColor = reservationDotColor(props);
 
             return `
                 <div class="d-flex flex-col align-items-center py-2 mb-2 border-top">
 
                     <!-- Start Time -->
                     <div class="d-flex flex-column justify-content-center text-black" style="width: 50px;">
-                        <h5 class="fw-bolder mb-0">${props.start_time_fmt}</h5>
+                        <h5 class="fw-bolder mb-0">${formatTime12h(props.start_time_fmt)}</h5>
                     </div>
 
                     <!-- Circle -->
@@ -538,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <!-- Details -->
                         <div class="small text-muted d-flex align-items-center gap-2">
-                            <span>${props.start_time_fmt}–${props.end_time_fmt}</span>
+                            <span>${formatTime12h(props.start_time_fmt)}–${formatTime12h(props.end_time_fmt)}</span>
 
                             ${!props.is_blocked ? `
                                 <span>${props.project_team_office ?? ''}</span>
