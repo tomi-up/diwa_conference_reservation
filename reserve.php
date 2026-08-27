@@ -692,6 +692,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                         id="reservation_date"
                                         name="reservation_date"
                                         min="<?= date('Y-m-d') ?>"
+                                        <?= !$is_logged_in ? 'disabled' : '' ?>
                                         required>
 
                                     <div class="invalid-feedback"></div>
@@ -711,6 +712,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             min="07:00"
                                             max="18:00"
                                             step="1800"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required>
 
                                         <div class="invalid-feedback"></div>
@@ -728,6 +730,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             min="07:00"
                                             max="18:00"
                                             step="1800"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required>
 
                                         <div class="invalid-feedback"></div>
@@ -748,6 +751,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                     <select class="form-select"
                                             id="project_team_office"
                                             name="project_team_office"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required>
 
                                         <option value="" selected disabled hidden>
@@ -789,6 +793,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             name="purpose"
                                             rows="4"
                                             style="resize: none;"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required></textarea>
 
                                     <div class="invalid-feedback"></div>
@@ -831,7 +836,8 @@ require_once __DIR__ . '/includes/new_header.php';
                                         height: 80px;
                                         font-size: 1.15rem;
                                         background-color: #CA3436;
-                                    ">
+                                    "
+                                    <?= !$is_logged_in ? 'disabled' : '' ?>>
                                 <i class="bi bi-calendar-check me-2"></i>
                                 RESERVE NOW
                             </button>
@@ -889,7 +895,7 @@ require_once __DIR__ . '/includes/new_header.php';
                 <div class="mb-4">
                     <h6 class="fw-bold text-dark mb-1">2. Anti-Spam & Fair Usage Booking Limits</h6>
                     <ul class="ps-3 mb-0 small text-secondary" style="line-height: 1.8;">
-                        <li class="mb-1.5"><strong>Max 1 Active Booking Per User Per Day:</strong> Restricted to 1 active reservation per calendar date.</li>
+                        <li class="mb-1.5"><strong>Max 2 Active Bookings Per User Per Day:</strong> Restricted to 2 active reservations per calendar date.</li>
                         <li class="mb-1.5"><strong>Max 4 Hours Per Reservation:</strong> Single booking sessions cannot exceed 4 consecutive hours.</li>
                         <li class="mb-1.5"><strong>Max 30 Days Advance Booking:</strong> Reservations can only be scheduled up to 30 days in advance.</li>
                         <li class="mb-0"><strong>Rate Limiting Cooldown:</strong> A 5-minute cooldown is enforced between consecutive reservation submissions.</li>

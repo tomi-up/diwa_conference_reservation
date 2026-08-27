@@ -120,7 +120,7 @@
     content: '';
     width: 5px;
     height: 5px;
-    background-color: #951a1d;
+    background-color: var(--reservation-dot-color, #951a1d);
     border-radius: 50%;
     position: absolute;
     right: 0;
