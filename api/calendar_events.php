@@ -7,7 +7,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/auth.php';
 
-if (!is_admin_logged_in()) {
+if (!is_admin_logged_in() && !is_user_logged_in()) {
     json_response(['error' => 'Unauthorized'], 401);
 }
 
@@ -44,11 +44,46 @@ foreach ($reservations as $res) {
     $is_blocked = ($res['project_team_office'] === 'ADMIN_BLOCK');
 
     if ($is_blocked) {
-        $color = '#ef4444'; // Red for Blocked / Unavailable
+        $color = '#ef4444';
         $title = 'Blocked: ' . $res['purpose'];
     } else {
-        $color = '#166534'; // Green for Confirmed
-        $title = date('g:i A', strtotime($res['start_time'])) . ' · ' . $res['requester_name'];
+        $color = '#166534';
+
+        if (is_admin_logged_in()) {
+            $title = date('g:i A', strtotime($res['start_time']))
+                . ' · '
+                . $res['requester_name'];
+        } else {
+            $title = date('g:i A', strtotime($res['start_time']))
+                . ' · Reserved';
+        }
+    }
+
+    $extendedProps = [
+        'id'               => $res['id'],
+        'purpose'          => $res['purpose'],
+        'status'           => $res['status'],
+        'is_blocked'       => $is_blocked,
+        'start_time_fmt'   => date('H:i', strtotime($res['start_time'])),
+        'end_time_fmt'     => date('H:i', strtotime($res['end_time'])),
+        'date_fmt'         => format_date($res['reservation_date']),
+        'requester_name'      => $res['requester_name'],
+        'project_team_office' => $res['project_team_office']
+    ];
+
+    // only to admins
+    if (is_admin_logged_in()) {
+        $extendedProps['reservation_code'] =
+            format_reservation_id($res['id'], $res['created_at']);
+
+        $extendedProps['room_name'] =
+            CONFERENCE_ROOM_NAME;
+
+        $extendedProps['requester_email'] =
+            $res['requester_email'];
+
+        $extendedProps['rejection_reason'] =
+            $res['rejection_reason'] ?? '';
     }
 
     $events[] = [
@@ -59,21 +94,7 @@ foreach ($reservations as $res) {
         'backgroundColor' => $color,
         'borderColor'     => $color,
         'textColor'       => '#ffffff',
-        'extendedProps'   => [
-            'id'                  => $res['id'],
-            'reservation_code'    => format_reservation_id($res['id'], $res['created_at']),
-            'room_name'           => CONFERENCE_ROOM_NAME,
-            'requester_name'      => $res['requester_name'],
-            'requester_email'     => $res['requester_email'],
-            'project_team_office' => $res['project_team_office'],
-            'purpose'             => $res['purpose'],
-            'status'              => $res['status'],
-            'is_blocked'          => $is_blocked,
-            'rejection_reason'    => $res['rejection_reason'] ?? '',
-            'start_time_fmt'      => format_time($res['start_time']),
-            'end_time_fmt'        => format_time($res['end_time']),
-            'date_fmt'            => format_date($res['reservation_date'])
-        ]
+        'extendedProps'   => $extendedProps
     ];
 }
 

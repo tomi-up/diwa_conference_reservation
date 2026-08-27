@@ -14,6 +14,12 @@
     # Internal Rewrite: Route /page -> /page.php
     RewriteCond %{REQUEST_FILENAME}.php -f
     RewriteRule ^(.+)$ $1.php [L]
+
+    # Dynamic 404 Fallback for Non-Existent Pages/URLs
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php !-f
+    RewriteRule ^ 404.php [L]
 </IfModule>
 
 # Security Protection: Block direct browser access to sensitive files & config directory
@@ -26,3 +32,9 @@
     RewriteRule ^config/ - [F,L]
     RewriteRule ^database/ - [F,L]
 </IfModule>
+
+# Custom Error Pages
+ErrorDocument 404 404.php
+ErrorDocument 403 403.php
+ErrorDocument 401 401.php
+

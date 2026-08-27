@@ -55,6 +55,9 @@ function generate_daily_schedule_matrix(string $date, ?PDO $pdo = null): array {
     $start_hour = 7;
     $end_hour = 18;
 
+    $is_today = ($date === date('Y-m-d'));
+    $current_time = date('H:i');
+
     for ($hour = $start_hour; $hour < $end_hour; $hour++) {
         $s_time = sprintf('%02d:00', $hour);
         $e_time = sprintf('%02d:00', $hour + 1);
@@ -68,12 +71,17 @@ function generate_daily_schedule_matrix(string $date, ?PDO $pdo = null): array {
         }
 
         $is_occupied = ($matching_occ !== null);
+        // A slot that already started today can no longer be booked, even if
+        // no one reserved it - it's not "available", it's simply gone.
+        $is_past = (!$is_occupied && $is_today && $s_time <= $current_time);
+
+        $status = $is_occupied ? 'OCCUPIED' : ($is_past ? 'PAST' : 'AVAILABLE');
 
         $slot_data = [
             'start_time' => $s_time,
             'end_time'   => $e_time,
             'label'      => date('gA', strtotime($s_time)) . ' - ' . date('gA', strtotime($e_time)),
-            'status'     => $is_occupied ? 'OCCUPIED' : 'AVAILABLE'
+            'status'     => $status
         ];
 
         if ($is_occupied && $matching_occ) {

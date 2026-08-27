@@ -1,0 +1,129 @@
+/* =========================
+   Reservation Calendar
+   ========================= */
+
+.calendar-nav-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #608498;
+    border: none !important;
+}
+
+.calendar-nav-btn:hover {
+    color: #951a1d;
+}
+
+.calendar-select {
+    width: 100%;
+    height: 30px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 0.85rem;
+}
+
+.calendar-wrapper {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 6px;
+}
+
+.calendar-weekdays > div {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: #6c757d;
+    padding: 6px 0;
+}
+
+.calendar-days {
+    flex: 1;
+    min-height: 0;
+
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+
+    gap: 4px;
+}
+
+/* Automatically allow six calendar rows */
+.calendar-days.six-weeks {
+    grid-template-rows: repeat(6, 1fr);
+}
+
+.calendar-day {
+    position: relative;
+    border: 1px solid transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 0.85rem;
+    color: #212529;
+
+    background-color: #ffffff;
+
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.calendar-day:hover {
+    background-color: #f8f9fa;
+    border-color: #b5d3e2;
+}
+
+.calendar-day.other-month {
+    color: #adb5bd;
+}
+
+.calendar-day.today {
+    font-weight: 700;
+    color: #951a1d;
+}
+
+.calendar-day.selected {
+    border-color: #B3B3B3;
+    font-weight: 600;
+}
+
+/* Reservation indicator */
+.calendar-day.has-reservation::after {
+    content: "";
+    position: absolute;
+
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 5px;
+    height: 5px;
+
+    background-color: #951a1d;
+}
+
+.calendar-day.selected.has-reservation::after {
+    background-color: #ffffff;
+}
+
+.calendar-day.has-reservations::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background-color: #951a1d;
+    border-radius: 50%;
+    position: absolute;
+    right: 0;
+    top: 2px;
+    transform: translateX(-50%);
+}

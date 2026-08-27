@@ -22,8 +22,8 @@ function is_admin_logged_in(): bool {
  */
 function require_admin_login(): void {
     if (!is_admin_logged_in()) {
-        set_flash_message('danger', 'Unauthorized access. Please log in to access the Admin Portal.');
-        redirect(APP_URL . '/admin/login.php');
+        set_flash_message('danger', 'Please sign in with your authorized UP Mail (Google) account to access the Admin Portal.');
+        redirect(APP_URL . '/index');
     }
 }
 
@@ -124,6 +124,17 @@ function logout_user(): void {
     if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
         session_start();
     }
-    unset($_SESSION['user_logged_in'], $_SESSION['user_id'], $_SESSION['user_name'], $_SESSION['user_email'], $_SESSION['user_google_sub']);
+    unset(
+        $_SESSION['user_logged_in'],
+        $_SESSION['user_id'],
+        $_SESSION['user_name'],
+        $_SESSION['user_email'],
+        $_SESSION['user_google_sub'],
+        $_SESSION['user_picture'],
+        $_SESSION['admin_logged_in'],
+        $_SESSION['admin_id'],
+        $_SESSION['admin_name'],
+        $_SESSION['admin_email']
+    );
 }
 

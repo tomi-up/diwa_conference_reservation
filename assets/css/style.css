@@ -50,21 +50,20 @@ body {
     display: flex;
     flex-direction: column;
     letter-spacing: -0.01em;
+    background-color: #431313;
 }
 
 /* Minimalist Clean Light Navbar for Maximum Logo Visibility */
 .navbar {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid var(--border-color);
-    border-top: 3px solid var(--diwa-red);
     padding: 0.75rem 0;
+    height: 80px;
+    background-color:rgba(0, 0, 0, 0);
 }
 
 .navbar-brand {
     font-weight: 700;
     font-size: 1.15rem;
     letter-spacing: -0.02em;
-    color: var(--diwa-slate) !important;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -142,10 +141,9 @@ body {
 
 .form-control, .form-select {
     font-family: var(--font-family-sans);
-    border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
-    background-color: #ffffff;
-    padding: 0.65rem 0.9rem;
+    background-color: #fffdfd;
+    padding: 0.4rem 0.9rem;
     font-size: 0.925rem;
     color: var(--text-primary);
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -288,6 +286,7 @@ body {
 /* Footer */
 .footer {
     margin-top: auto;
+    height: 80px;
     background-color: #ffffff;
     border-top: 1px solid var(--border-color);
     color: var(--diwa-slate);
@@ -319,3 +318,112 @@ body {
     margin: -0.5rem -0.5rem -0.5rem auto;
 }
 
+.user-avatar {
+    display: block;
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+.nav-login-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.nav-login-btn:hover {
+    opacity: 0.9;
+}
+
+.nav-login-btn:focus {
+    outline: none;
+}
+
+.header-tab {
+    height: 60px;
+    padding: 28px 20px 8px;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+
+    font-family: var(--font-family-sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6c757d;
+
+    cursor: pointer;
+    position: relative;
+}
+
+.header-tab:hover {
+    color: #818b94;
+}
+
+.header-tab.active {
+    color: #000;
+}
+
+.header-tab.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background-color: #000;
+}
+
+.reservation-filter-btn {
+    border: none;
+    background: none;
+    color: #6c757d;
+    font-weight: 600;
+    padding: 0;
+    text-decoration: none;
+    font-size: 0.8em;
+}
+
+.reservation-filter-btn:hover {
+    color: #000;
+}
+
+.reservation-filter-btn.active {
+    color: #000;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+}
+
+.reservation-btn-group button {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    color: #CA3436;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.reservation-btn-group button:hover {
+    text-decoration: underline;
+}
+
+.reservation-cancel-disabled {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    color: #ce585a;
+    font-size: 0.875rem;
+    font-weight: 600;
+}

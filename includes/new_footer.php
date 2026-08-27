@@ -63,29 +63,14 @@
 </div>
 
 <!-- Shared Footer -->
-<footer class="footer py-4 mt-auto bg-white border-top">
-    <div class="container">
-        <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-between gap-3 text-center text-md-end">
-            
-            <!-- Picture -->
-            <div class="footer-logo">
-                <img src="<?= APP_URL ?>/assets/images/diwa_logo_landscape.png"
-                     alt="DIWA Center Logo"
-                     class="img-fluid"
-                     style="max-height: 48px; width: auto;">
-            </div>
-
-            <!-- Text -->
-            <div class="footer-text">
-                <p style="color: #32444e;" class="mb-1 fw-semibold">
-                    &copy; <?= date('Y') ?> UP Mindanao &ndash; DiWA Center Conference Services. All rights reserved.
-                </p>
-                <span class="small" style="color: #32444e70;">
-                    Made by <strong style="color: #f87171;">Maylotechy</strong> and <strong style="color: #f87171;">Centuriee</strong>
-                </span>
-            </div>
-
-        </div>
+<footer class="footer border-0" style="z-index: 0; background-color: white;">
+    <div class="container d-flex justify-content-end align-items-center">
+        <span class="small" style="color: #00000050;">
+            Made by
+            <strong>Maylotechy</strong>
+            and
+            <strong>Centuriee</strong>
+        </span>
     </div>
 </footer>
 
