@@ -119,103 +119,40 @@ require_once __DIR__ . '/includes/new_header.php';
 
 <!-- Content Section -->
 <div class="position-relative w-100 d-flex align-items-center py-0"
-     style="height: calc(100vh - 80px - 80px); z-index: 2;">
+     style="min-height: calc(100vh - 80px - 80px); z-index: 2;">
 
     <!-- Bottom white background -->
     <div class="position-absolute start-0 bottom-0 w-100 bg-white"
         style="height: 90px; z-index: 0; border-top: 10px solid #2C0707;">
     </div>
-    
-    <!-- background image -->
-    <!--
-    <img src="<?= APP_URL ?>/assets/images/diwa_header.jpg" class="position-absolute top-0 start-0 w-100 h-100" alt="Background" style="object-fit: cover; z-index: 1; filter: blur(5px);">
-    -->
 
-    <!-- dark tint overlay -->
-    <!--
-    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: 0.4; z-index: 2;"></div>
-    -->
+    <div class="container position-relative" style="z-index: 5; max-width: 1000px;">
 
-    <!-- main content section -->
-    <!--
-    <div class="container position-relative" style="z-index: 3; height: 100%;">
-        <div class="row justify-content-center" style="height: 100%;">
-            <div class="col-12" style="height: 100%;">
-
-                <div class="position-relative text-center"
-                    style="background-color: #ffffff; width: 70vw; height: 100%; margin: auto;">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <img src="<?= APP_URL ?>/assets/images/diwa_logo-no_word.png" alt="DIWA Logo" class="brand-logo-square mb-2" style="max-height: 110px; width: auto;">
-                        </div>
-                        <h3 class="fw-bold text-dark"><?= e(CONFERENCE_ROOM_NAME) ?></h3>
-                        <p class="text-muted mb-4">Do you have an upcoming meeting? Reserve the conference room now!</p>
-                        
-                        <div hidden class="row g-3 justify-content-center mb-4">
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded border text-start">
-                                    <span class="text-muted small fw-semibold d-block">LOCATION</span>
-                                    <strong class="text-dark">DIWA Center Main Office</strong>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded border text-start">
-                                    <span class="text-muted small fw-semibold d-block">CAPACITY</span>
-                                    <strong class="text-dark">15 Persons</strong>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded border text-start">
-                                    <span class="text-muted small fw-semibold d-block">AVAILABILITY</span>
-                                    <strong class="text-success">Automated Checking</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-center">
-                            <a href="reserve" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
-                                <i class="bi bi-calendar-check me-2"></i> Book Reservation
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    -->
-
-    <div class="container position-relative h-100" style="z-index: 5; width: 70%;">
-
-        <div id="reservationCardWrapper" class="row h-100 g-0 shadow-sm" style="z-index: 6;">
+        <div id="reservationCardWrapper" class="row g-0 shadow-sm align-items-stretch" style="z-index: 6;">
 
             <!-- left -->
-            <div class="col-8 h-100">
-                <div class="h-100 d-flex flex-column justify-content-between align-items-center"
+            <div class="col-12 col-lg-8">
+                <div class="h-100 d-flex flex-column"
                     style="
-                      background-color: #ffffff;
-                      border: 1px solid #9CC6DD;
-                      border-right: 1px solid #DEE2E6;
+                        background-color: #ffffff;
+                        border: 1px solid #9CC6DD;
+                        border-right: 1px solid #DEE2E6;
                     ">
 
                     <!-- top -->
-                    <div class="bg-black w-100" style="height: 60%;">
-                        <div class="h-100 d-flex justify-content-center align-items-center">
-                            <img src="<?= APP_URL ?>/assets/images/diwa_header.jpg"
-                                alt="DIWA header"
-                                class="w-100 h-100"
-                                style="object-fit: cover;">
-                        </div>
+                    <div class="reservation-image-header">
+                        <img src="<?= APP_URL ?>/assets/images/diwa_header.jpg"
+                            alt="DIWA header">
                     </div>
 
                     <!-- bottom -->
-                    <div class="w-100 px-4 py-3 d-flex flex-column justify-content-between" style="height: 40%;">
+                    <div class="w-100 px-4 py-4 d-flex flex-column justify-content-between flex-grow-1">
                         <div>
-                            <h1 class="fw-bold text-black mb-1" style="font-size: 36px;">
+                            <h1 class="reservation-title fw-bold text-black mb-1">
                                 <?= e(CONFERENCE_ROOM_NAME) ?> Reservation
                             </h1>
 
-                            <p class="text-muted mb-0" style="font-size: 16px;">
+                            <p class="reservation-subheading text-muted mb-3">
                                 Do you have an upcoming meeting? Reserve the conference room now!
                             </p>
                         </div>
@@ -241,7 +178,7 @@ require_once __DIR__ . '/includes/new_header.php';
 
 
             <!-- RIGHT COLUMN -->
-            <div class="col-4 h-100">
+            <div class="col-12 col-lg-4">
                 <div class="h-100 d-flex flex-column"
                     style="
                       background-color: #FFFDFD;
@@ -258,7 +195,7 @@ require_once __DIR__ . '/includes/new_header.php';
                     </div>
 
                     <!-- form -->
-                    <div class="card-body d-flex flex-column p-0" style="min-height: 0; overflow: hidden;">
+                    <div class="card-body d-flex flex-column p-0 flex-grow-1">
                         <form id="reservationForm"
                             method="POST"
                             action="reserve"
@@ -269,7 +206,7 @@ require_once __DIR__ . '/includes/new_header.php';
                             <?= csrf_field() ?>
 
                             <!-- SCROLLABLE FORM CONTENT -->
-                            <div class="flex-grow-1 overflow-auto p-3" style="min-height: 0;">
+                            <div class="p-3 flex-grow-1">
 
                                 <!-- Date -->
                                 <div class="mb-2">
@@ -289,7 +226,7 @@ require_once __DIR__ . '/includes/new_header.php';
 
                                 <!-- Time -->
                                 <div class="row mb-3">
-                                    <div class="col-6">
+                                    <div class="col-12 col-sm-6">
                                         <label for="start_time" class="form-label fw-normal">
                                             Start Time <span class="text-danger">*</span>
                                         </label>
@@ -306,7 +243,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                         <div class="invalid-feedback"></div>
                                     </div>
 
-                                    <div class="col-6">
+                                    <div class="col-12 col-sm-6">
                                         <label for="end_time" class="form-label fw-normal">
                                             End Time <span class="text-danger">*</span>
                                         </label>
