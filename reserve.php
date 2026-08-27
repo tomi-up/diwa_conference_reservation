@@ -135,80 +135,22 @@ require_once __DIR__ . '/includes/new_header.php';
 ?>
 
 <!-- Content Section -->
-<div class="position-relative w-100 d-flex align-items-center py-0"
-     style="height: calc(100vh - 80px - 80px); z-index: 2;">
+<div id="reservationPage"
+     class="position-relative w-100 d-flex align-items-center py-0"
+     style="min-height: calc(100vh - 80px - 80px); z-index: 2;">
 
     <!-- Bottom white background -->
     <div class="position-absolute start-0 bottom-0 w-100 bg-white"
         style="height: 90px; z-index: 0; border-top: 10px solid #2C0707;">
     </div>
-    
-    <!-- background image -->
-    <!--
-    <img src="<?= APP_URL ?>/assets/images/diwa_header.jpg" class="position-absolute top-0 start-0 w-100 h-100" alt="Background" style="object-fit: cover; z-index: 1; filter: blur(5px);">
-    -->
 
-    <!-- dark tint overlay -->
-    <!--
-    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: 0.4; z-index: 2;"></div>
-    -->
+    <div class="container position-relative" style="z-index: 5; max-width: 1000px;">
 
-    <!-- main content section -->
-    <!--
-    <div class="container position-relative" style="z-index: 3; height: 100%;">
-        <div class="row justify-content-center" style="height: 100%;">
-            <div class="col-12" style="height: 100%;">
-
-                <div class="position-relative text-center"
-                    style="background-color: #ffffff; width: 70vw; height: 100%; margin: auto;">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <img src="<?= APP_URL ?>/assets/images/diwa_logo-no_word.png" alt="DIWA Logo" class="brand-logo-square mb-2" style="max-height: 110px; width: auto;">
-                        </div>
-                        <h3 class="fw-bold text-dark"><?= e(CONFERENCE_ROOM_NAME) ?></h3>
-                        <p class="text-muted mb-4">Do you have an upcoming meeting? Reserve the conference room now!</p>
-                        
-                        <div hidden class="row g-3 justify-content-center mb-4">
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded border text-start">
-                                    <span class="text-muted small fw-semibold d-block">LOCATION</span>
-                                    <strong class="text-dark">DIWA Center Main Office</strong>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded border text-start">
-                                    <span class="text-muted small fw-semibold d-block">CAPACITY</span>
-                                    <strong class="text-dark">15 Persons</strong>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded border text-start">
-                                    <span class="text-muted small fw-semibold d-block">AVAILABILITY</span>
-                                    <strong class="text-success">Automated Checking</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-center">
-                            <a href="reserve" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
-                                <i class="bi bi-calendar-check me-2"></i> Book Reservation
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    -->
-
-    <div class="container position-relative h-100" style="z-index: 5; width: 70%;">
-
-        <div id="reservationCardWrapper" class="row h-100 g-0 shadow-sm" style="z-index: 6;">
+        <div id="reservationCardWrapper" class="row g-0 shadow-sm align-items-stretch" style="z-index: 6;">
 
             <!-- left -->
-            <div class="col-8 h-100">
-                <div class="h-100 d-flex flex-column"
+            <div class="col-12 col-lg-8">
+                <div class="d-flex flex-column h-100"
                     style="
                         background-color: #ffffff;
                         border: 1px solid #9CC6DD;
@@ -216,7 +158,7 @@ require_once __DIR__ . '/includes/new_header.php';
                     ">
 
                     <!-- Header / Tabs -->
-                    <div class="w-100 d-flex align-items-end position-relative"
+                    <div class="w-100 d-flex align-items-end position-relative flex-shrink-0"
                         style="
                             height: 60px;
                             min-height: 60px;
@@ -251,11 +193,11 @@ require_once __DIR__ . '/includes/new_header.php';
 
                     <!-- Calendar View -->
                     <div id="calendarView"
-                        class="w-100"
-                        style="height: calc(100% - 60px); min-height: 0; display: flex; flex-direction: column;">
+                        class="w-100 flex-grow-1 d-flex flex-column"
+                        style="min-height: 0;">
                     
                         <!-- Calendar Area -->
-                        <div class="w-100"
+                        <div class="w-100 calendar-area"
                             style="height: 60%; min-height: 60%; padding: 20px 24px; background-color: #FFFDFD;">
 
                             <div class="h-100 d-flex flex-column">
@@ -318,11 +260,14 @@ require_once __DIR__ . '/includes/new_header.php';
 
 
                         <!-- Reservation Details / Legend Area -->
-                        <div class="w-100 flex-grow-1 d-flex flex-column"
+                        <div class="w-100 reservation-details"
                             style="
                                 min-height: 0;
+                                flex: 1 1 0;
                                 border-top: 1px solid #DEE2E6;
                                 padding: 16px 24px 0;
+                                overflow-y: auto;
+                                overflow-x: hidden;
                             ">
 
                             <div class="d-flex align-items-center gap-2 mb-2 fw-bold flex-shrink-0 text-black">
@@ -345,11 +290,11 @@ require_once __DIR__ . '/includes/new_header.php';
 
                     <!-- reservations -->
                     <div id="myReservationsView"
-                        class="w-100 h-100"
-                        style="display: none; padding: 24px; overflow: hidden; background-color: #FFFDFD;">
+                        class="w-100 flex-grow-1 flex-column d-none"
+                        style="padding: 24px; overflow: hidden; background-color: #FFFDFD; min-height: 0;">
 
                         <!-- select -->
-                        <div class="d-flex gap-2 mb-3 flex-shrink-0">
+                        <div class="d-flex gap-2 mb-3 flex-shrink-0 d-none" id="reservationFilter">
 
                             <button type="button"
                                 class="btn btn-sm reservation-filter-btn active"
@@ -374,13 +319,13 @@ require_once __DIR__ . '/includes/new_header.php';
                         <!-- Reservations -->
                         <div id="myReservationsList"
                             style="
-                            height: 100%;
-                            width: 100%;
-                            overflow-y: auto;
-                            overflow-x: hidden;
-                            padding-right: 8px;
-                            padding-bottom: 24px;
-                        ">
+                                min-height: 0;
+                                width: 100%;
+                                flex: 1 1 0;
+                                overflow-y: auto;
+                                overflow-x: hidden;
+                                padding-right: 8px;
+                            ">
 
                             <?php if (!$is_logged_in): ?>
 
@@ -705,8 +650,9 @@ require_once __DIR__ . '/includes/new_header.php';
             </div>
 
             <!-- RIGHT COLUMN -->
-            <div class="col-4 h-100">
-                <div class="h-100 d-flex flex-column"
+            <div class="col-12 col-lg-4">
+                <div id="reservationFormCard"
+                    class="d-flex flex-column h-100"
                     style="
                       background-color: #FFFDFD;
                       border: 1px solid #5b111199;
@@ -722,7 +668,7 @@ require_once __DIR__ . '/includes/new_header.php';
                     </div>
 
                     <!-- form -->
-                    <div class="card-body d-flex flex-column p-0" style="min-height: 0; overflow: hidden;">
+                    <div class="card-body d-flex flex-column p-0 flex-grow-1">
                         <form id="reservationForm"
                             method="POST"
                             action="reserve"
@@ -733,7 +679,7 @@ require_once __DIR__ . '/includes/new_header.php';
                             <?= csrf_field() ?>
 
                             <!-- SCROLLABLE FORM CONTENT -->
-                            <div class="flex-grow-1 overflow-auto p-3" style="min-height: 0;">
+                            <div class="p-3 flex-grow-1">
 
                                 <!-- Date -->
                                 <div class="mb-2">
@@ -753,7 +699,7 @@ require_once __DIR__ . '/includes/new_header.php';
 
                                 <!-- Time -->
                                 <div class="row mb-3">
-                                    <div class="col-6">
+                                    <div class="col-12 col-sm-6">
                                         <label for="start_time" class="form-label fw-normal">
                                             Start Time <span class="text-danger">*</span>
                                         </label>
@@ -770,7 +716,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                         <div class="invalid-feedback"></div>
                                     </div>
 
-                                    <div class="col-6">
+                                    <div class="col-12 col-sm-6">
                                         <label for="end_time" class="form-label fw-normal">
                                             End Time <span class="text-danger">*</span>
                                         </label>
@@ -900,232 +846,12 @@ require_once __DIR__ . '/includes/new_header.php';
     </div>
 </div>
 
+<script>
+    window.isLoggedIn = <?= json_encode($is_logged_in) ?>;
+</script>
+
 <script src="<?= APP_URL ?>/assets/js/user_calendar.js?v=<?= filemtime(__DIR__ . '/assets/js/user_calendar.js') ?>"></script>
 <?php require_once __DIR__ . '/includes/new_footer.php'; ?>
-
-<!--
-<div class="container-fluid px-lg-5 py-4">
-    <div hidden class="text-center mb-4"><div class="col-lg-2 col-xl-2"></div>
-        <h2 class="fw-bold text-dark mb-1">Conference Room Reservation & Availability</h2>
-        <p class="text-muted small">Complete the form below to reserve the DIWA Center conference room and inspect live schedule availability.</p>
-    </div>
-
-    <div id="formAlertContainer"></div>
-    <?php if (!empty($errors)): ?>
-        <script>window.reservationFormErrors = <?= json_encode(array_values($errors)) ?>;</script>
-    <?php endif; ?>
-
-    <div id="reservationCardWrapper" class="w-24">
-        <div class="row g-4">
-            <div class="col-lg-2 col-xl-2"></div>
-            <div class="col-lg-8 col-xl-8">
-                <div class="border shadow-sm h-100">
-                    <div style="height: 80px;" class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <h5 class="card-title mb-0 fw-bold text-dark">
-                            <i class="bi bi-clock-history text-primary me-2"></i>Availability Checker
-                        </h5>
-                        <div class="d-flex align-items-center gap-2">
-                            <label for="checker_date_input" class="small text-muted fw-semibold mb-0 d-none d-sm-inline">Date:</label>
-                            <input type="date" id="checker_date_input" class="form-control form-control-sm" value="<?= e($form_data['reservation_date']) ?>" min="<?= date('Y-m-d') ?>">
-                        </div>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="p-3 bg-light rounded border mb-3" hidden>
-                            <div class="d-flex align-items-center text-secondary small">
-                                <i class="bi bi-info-circle-fill text-primary me-2 fs-5"></i>
-                                <div>
-                                    <strong>Operating Hours:</strong> 7:00 AM &ndash; 6:00 PM.<br>
-                                    Click any <span class="badge bg-success">AVAILABLE</span> slot chip below to automatically pick its start and end times.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="reservationScheduleGrid">
-                            <div class="text-center text-muted py-5">
-                                <div class="spinner-border text-primary me-2" role="status"></div> Loading schedule availability...
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-xl-2"></div>
-
-            <div class="col-lg-2 col-xl-2"></div>
-            <div class="col-lg-8 col-xl-8">
-                <div class="border shadow-sm h-100">
-                    <div style="height: 80px;" class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-                        <h5 class="card-title mb-0 fw-bold text-dark">
-                            <i class="bi bi-pencil-square text-primary me-2"></i>Reservation Form
-                        </h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <?php if (!$is_logged_in): ?>
-                            <div id="tour_signin_callout" class="alert alert-warning border-0 shadow-sm mb-4">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-lock-fill fs-4 text-warning me-3 mt-1"></i>
-                                    <div>
-                                        <h6 class="fw-bold mb-1">UP Mail Authentication Required</h6>
-                                        <p class="small mb-2 text-dark">
-                                            To reserve the DIWA Center Conference Room, you must sign in with your official <strong>@up.edu.ph</strong> account.
-                                        </p>
-                                        <div class="mt-2">
-                                            <div id="g_id_onload_form"
-                                                 data-client_id="<?= GOOGLE_CLIENT_ID ?>"
-                                                 data-callback="handleGoogleSignIn"
-                                                 data-auto_prompt="false">
-                                            </div>
-                                            <div class="g_id_signin"
-                                                 data-type="standard"
-                                                 data-shape="rectangular"
-                                                 data-theme="filled_blue"
-                                                 data-text="signin_with"
-                                                 data-size="large"
-                                                 data-locale="en"
-                                                 data-logo_alignment="left">
-                                            </div>
-
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-
-                        <form id="reservationForm" method="POST" action="reserve" novalidate>
-                            <?= csrf_field() ?>
-
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6">
-                                    <label for="requester_name" class="form-label fw-semibold">
-                                        Name of Requesting Personnel <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" class="form-control <?= $is_logged_in ? 'bg-light' : '' ?>" id="requester_name" name="requester_name"
-                                           value="<?= e($form_data['requester_name']) ?>" placeholder="Juan dela Cruz"
-                                           <?= $is_logged_in ? 'readonly' : 'disabled' ?> required>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="requester_email" class="form-label fw-semibold">
-                                        Email Address <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="email" class="form-control <?= $is_logged_in ? 'bg-light' : '' ?>" id="requester_email" name="requester_email"
-                                           value="<?= e($form_data['requester_email']) ?>" placeholder="juan@up.edu.ph"
-                                           <?= $is_logged_in ? 'readonly' : 'disabled' ?> required>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="project_team_office" class="form-label fw-semibold">
-                                    Project / Team / Office <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-select" id="project_team_office" name="project_team_office" 
-                                        <?= !$is_logged_in ? 'disabled' : '' ?> required>
-                                    <option value="" <?= empty($form_data['project_team_office']) ? 'selected' : '' ?> disabled>-- Select Project / Team / Office --</option>
-                                    <?php
-                                    $offices = [
-                                        'DiWA Core',
-                                        'Ops Team',
-                                        'Scaling Up of Diwa App Project',
-                                        'RabDash DC',
-                                        'RESCUE Project',
-                                        'Wolbachia Project',
-                                        'IRDSS Project',
-                                        'Others'
-                                    ];
-                                    foreach ($offices as $off):
-                                    ?>
-                                        <option value="<?= e($off) ?>" <?= ($form_data['project_team_office'] === $off) ? 'selected' : '' ?>><?= e($off) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <div class="mb-3" id="project_team_office_other_wrapper" style="<?= ($form_data['project_team_office'] === 'Others') ? '' : 'display: none;' ?>">
-                                <label for="project_team_office_other" class="form-label fw-semibold">
-                                    Specify Project / Team / Office <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="project_team_office_other" name="project_team_office_other"
-                                       placeholder="Type your Project / Team / Office name..."
-                                       value="<?= e($_POST['project_team_office_other'] ?? '') ?>"
-                                       <?= !$is_logged_in ? 'disabled' : '' ?>>
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="purpose" class="form-label fw-semibold">
-                                    Purpose of Meeting / Activity <span class="text-danger">*</span>
-                                </label>
-                                <textarea class="form-control" id="purpose" name="purpose" rows="3"
-                                          placeholder="Provide meeting agenda or objective details..."
-                                          <?= !$is_logged_in ? 'disabled' : '' ?> required><?= e($form_data['purpose']) ?></textarea>
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-4">
-                                    <label for="reservation_date" class="form-label fw-semibold">
-                                        Date <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="date" class="form-control" id="reservation_date" name="reservation_date"
-                                           value="<?= e($form_data['reservation_date']) ?>" min="<?= date('Y-m-d') ?>"
-                                           <?= !$is_logged_in ? 'disabled' : '' ?> required>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="start_time" class="form-label fw-semibold">
-                                        Start Time <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="time" class="form-control" id="start_time" name="start_time"
-                                           value="<?= e($form_data['start_time']) ?>" min="07:00" max="18:00" step="1800"
-                                           <?= !$is_logged_in ? 'disabled' : '' ?> required>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="end_time" class="form-label fw-semibold">
-                                        End Time <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="time" class="form-control" id="end_time" name="end_time"
-                                           value="<?= e($form_data['end_time']) ?>" min="07:00" max="18:00" step="1800"
-                                           <?= !$is_logged_in ? 'disabled' : '' ?> required>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-
-                            <div class="mb-3 text-center">
-                                <div id="liveAvailabilityBadge"></div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="form-check bg-light p-3 rounded border">
-                                    <input class="form-check-input ms-0 me-2" type="checkbox" value="1" id="terms_accepted" name="terms_accepted" <?= !$is_logged_in ? 'disabled' : '' ?> required>
-                                    <label class="form-check-label small text-dark fw-medium" for="terms_accepted">
-                                        I have read and agree to the
-                                        <a href="#" class="fw-bold text-danger text-decoration-underline ms-1" data-bs-toggle="modal" data-bs-target="#termsModal">
-                                            Responsible Use Policy & Terms of Service
-                                        </a> <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-
-                            <div class="d-grid">
-                                <button type="submit" id="reservationFormSubmitBtn" class="btn btn-primary py-2.5 fw-bold fs-6" <?= !$is_logged_in ? 'disabled' : '' ?>>
-                                    <i class="bi bi-calendar-check me-2"></i> Submit Reservation Request
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-lg-2 col-xl-2"></div>
-
-        </div>
-    </div>
-</div>
--->
 
 <!-- Terms & Responsible Use Policy Modal (Vantage Style UI with Original Policy Text) -->
 <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">

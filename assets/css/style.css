@@ -89,6 +89,20 @@ body {
     object-fit: contain;
 }
 
+.reservation-image-header {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.reservation-image-header img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 .nav-link {
     font-size: 0.925rem;
     font-weight: 500;
@@ -311,6 +325,24 @@ body {
 
 /* responsive */
 
+/* Desktop */
+@media (min-width: 992px) {
+    #reservationCardWrapper {
+        align-items: stretch;
+    }
+
+    #reservationCardWrapper > .col-lg-8,
+    #reservationCardWrapper > .col-lg-4 {
+        display: flex;
+    }
+
+    #reservationCardWrapper > .col-lg-8 > div,
+    #reservationCardWrapper > .col-lg-4 > div {
+        width: 100%;
+        height: 100%;
+    }
+}
+
 @media (max-width: 992px) {
     .container {
         padding-left: 3rem;
@@ -325,14 +357,69 @@ body {
     #reservationCardWrapper {
         margin-left: 0;
         margin-right: 0;
+        height: auto !important;
+        min-height: 0 !important;
     }
 
-    #reservationCardWrapper .col-12 {
+    #reservationCardWrapper > .col-12 {
+        height: auto !important;
+        min-height: 0 !important;
         width: 100%;
     }
 
-    #reservationCardWrapper .col-12 > div {
+    #reservationCardWrapper > .col-12 > div {
         height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .reservation-image-header {
+        aspect-ratio: 4 / 1;
+    }
+
+    
+    #reservationPage {
+        height: auto !important;
+        min-height: 0 !important;
+        align-items: flex-start;
+    }
+
+    #reservationPage > .container {
+        width: 90%;
+        height: auto !important;
+    }
+
+    #calendarView {
+        height: auto !important;
+        flex-grow: 0 !important;
+    }
+
+    .calendar-area {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .reservation-details {
+        min-height: 300px !important;
+        flex-grow: 0 !important;
+    }
+
+    #reservationCardWrapper > .col-12.col-lg-4 > div {
+        min-height: 650px;
+        height: auto !important;
+    }
+
+    #reservationForm {
+        height: 650px !important;
+    }
+
+    #myReservationsView {
+        flex: 0 0 min(1000px, 100vh);
+        height: min(1000px, 100vh);
+        max-height: 1000px;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 }
 

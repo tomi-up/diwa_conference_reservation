@@ -12,24 +12,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function showCalendar() {
-        calendarView.style.display = 'flex';
-        myReservationsView.style.display = 'none';
+        calendarView.classList.remove('d-none');
+        calendarView.classList.add('d-flex');
+
+        myReservationsView.classList.add('d-none');
+        myReservationsView.classList.remove('d-flex');
 
         calendarTab.classList.add('active');
         myReservationsTab.classList.remove('active');
 
-        reservationFilter.style.display = 'none';
+        reservationFilter.classList.add('d-none');
     }
 
 
     function showMyReservations() {
-        calendarView.style.display = 'none';
-        myReservationsView.style.display = 'block';
+        calendarView.classList.add('d-none');
+        calendarView.classList.remove('d-flex');
+
+        myReservationsView.classList.remove('d-none');
+        myReservationsView.classList.add('d-flex');
 
         calendarTab.classList.remove('active');
         myReservationsTab.classList.add('active');
 
-        reservationFilter.style.display = 'block';
+        reservationFilter.classList.remove('d-none');
     }
 
 
@@ -464,17 +470,30 @@ document.addEventListener('DOMContentLoaded', function () {
             reservation.start.startsWith(dateString)
         );
 
+        const isLoggedIn = window.isLoggedIn;
+
 
         /*
         * No reservations
         */
         if (dayReservations.length === 0) {
 
-            reservationContainer.innerHTML = `
-                <div class="text-muted py-2">
-                    No reservations scheduled for this date.
-                </div>
-            `;
+            if (!isLoggedIn) {
+                reservationContainer.innerHTML = `
+                    <div class="text-center text-muted">
+                        <div class="fw-semibold mb-1">Sign in to view your reservations</div>
+                        <div class="small">
+                            Please sign in with your UP Mail account.
+                        </div>
+                    </div>
+                `;
+            } else {
+                reservationContainer.innerHTML = `
+                    <div class="text-muted py-2">
+                        No reservations scheduled for this date.
+                    </div>
+                `;
+            }
 
             return;
         }

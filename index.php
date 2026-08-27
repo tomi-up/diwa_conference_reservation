@@ -140,13 +140,9 @@ require_once __DIR__ . '/includes/new_header.php';
                     ">
 
                     <!-- top -->
-                    <div class="bg-black w-100">
-                        <div class="ratio ratio-16x9">
-                            <img src="<?= APP_URL ?>/assets/images/diwa_header.jpg"
-                                alt="DIWA header"
-                                class="w-100 h-100"
-                                style="object-fit: cover;">
-                        </div>
+                    <div class="reservation-image-header">
+                        <img src="<?= APP_URL ?>/assets/images/diwa_header.jpg"
+                            alt="DIWA header">
                     </div>
 
                     <!-- bottom -->
@@ -210,7 +206,7 @@ require_once __DIR__ . '/includes/new_header.php';
                             <?= csrf_field() ?>
 
                             <!-- SCROLLABLE FORM CONTENT -->
-                            <div class="p-3">
+                            <div class="p-3 flex-grow-1">
 
                                 <!-- Date -->
                                 <div class="mb-2">
