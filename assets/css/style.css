@@ -53,11 +53,18 @@ body {
     background-color: #431313;
 }
 
-/* Minimalist Clean Light Navbar for Maximum Logo Visibility */
+/* minimal navbar */
 .navbar {
-    padding: 0.75rem 0;
+    padding: 0.75rem 1.5rem;
     height: 80px;
     background-color:rgba(0, 0, 0, 0);
+}
+
+.navbar .dropdown-menu {
+    position: absolute !important;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem !important;
 }
 
 .navbar-brand {
@@ -286,7 +293,7 @@ body {
 /* Footer */
 .footer {
     margin-top: auto;
-    height: 80px;
+    height: 100px;
     background-color: #ffffff;
     border-top: 1px solid var(--border-color);
     color: var(--diwa-slate);
@@ -294,9 +301,80 @@ body {
     font-size: 0.875rem;
 }
 
-@media (max-width: 767.98px) {
+.reservation-title {
+    font-size: 36px;
+}
+
+.reservation-subheading {
+    font-size: 16px;
+}
+
+/* responsive */
+
+@media (max-width: 992px) {
+    .container {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+
+    #reservationCardWrapper .col-lg-4 > div {
+        border-left: 1px solid #5b111199 !important;
+        border-top: none !important;
+    }
+
+    #reservationCardWrapper {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #reservationCardWrapper .col-12 {
+        width: 100%;
+    }
+
+    #reservationCardWrapper .col-12 > div {
+        height: auto !important;
+    }
+}
+
+@media (max-width: 768px) {
     .footer {
         padding: 1.25rem 0;
+    }
+
+    .reservation-title {
+        font-size: 28px;
+    }
+
+    .reservation-subheading {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .footer {
+        padding: 1.75rem 0;
+    }
+
+    .reservation-title {
+        font-size: 24px;
+    }
+
+    .reservation-subheading {
+        font-size: 12px;
+    }
+
+    #reservationCardWrapper {
+        box-shadow: none !important;
+    }
+
+    #reservationCardWrapper .px-4 {
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
     }
 }
 
