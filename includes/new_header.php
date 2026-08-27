@@ -101,7 +101,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-0">
-                            <?php if (!empty($_SESSION['is_admin']) || !empty($_SESSION['admin_logged_in'])): ?>
+                            <?php if (is_admin_logged_in()): ?>
                                 <li class="mb-1">
                                     <a class="dropdown-item text-dark small fw-semibold"
                                     href="<?= APP_URL ?>/admin/calendar">

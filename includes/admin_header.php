@@ -30,10 +30,10 @@ $flash = get_flash_message();
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/style.css">
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/admin-calendar.css">
 </head>
-<body>
+<body style="background-color: #f8f8f8;">
 
 <!-- High-Visibility Clean Top Navigation Bar -->
-<header class="navbar navbar-light sticky-top flex-md-nowrap p-2 shadow-sm">
+<header class="navbar navbar-light sticky-top flex-md-nowrap p-2 shadow-sm bg-white">
     <div class="container-fluid d-flex align-items-center justify-content-between">
         <a class="navbar-brand me-3" href="<?= APP_URL ?>/admin/index">
             <img src="<?= APP_URL ?>/assets/images/diwa_logo_landscape.png" alt="DIWA Logo" class="brand-logo-landscape">

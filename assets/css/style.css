@@ -142,7 +142,7 @@ body {
 .form-control, .form-select {
     font-family: var(--font-family-sans);
     border: 1px solid var(--border-color);
-    background-color: #ffffff;
+    background-color: #fffdfd;
     padding: 0.4rem 0.9rem;
     font-size: 0.925rem;
     color: var(--text-primary);

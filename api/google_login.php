@@ -172,6 +172,15 @@ try {
     $is_admin = false;
     $redirect_url = null;
 
+    // Clear any previous admin session state
+    unset(
+        $_SESSION['admin_logged_in'],
+        $_SESSION['admin_id'],
+        $_SESSION['admin_name'],
+        $_SESSION['admin_email'],
+        $_SESSION['is_admin']
+    );
+
     if ($admin_record) {
         $is_admin = true;
         $_SESSION['admin_logged_in'] = true;

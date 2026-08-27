@@ -322,7 +322,7 @@ require_once __DIR__ . '/includes/new_header.php';
                             style="
                                 min-height: 0;
                                 border-top: 1px solid #DEE2E6;
-                                padding: 16px 24px;
+                                padding: 16px 24px 0;
                             ">
 
                             <div class="d-flex align-items-center gap-2 mb-2 fw-bold flex-shrink-0 text-black">
@@ -385,7 +385,6 @@ require_once __DIR__ . '/includes/new_header.php';
                             <?php if (!$is_logged_in): ?>
 
                                 <div class="text-center py-5 text-muted">
-                                    <i class="bi bi-lock fs-2 d-block mb-2"></i>
                                     <div class="fw-semibold mb-1">Sign in to view your reservations</div>
                                     <div class="small">
                                         Please sign in with your UP Mail account.
@@ -419,7 +418,7 @@ require_once __DIR__ . '/includes/new_header.php';
 
                                 <?php if (empty($upcoming)): ?>
 
-                                    <div class="text-muted small mb-4">
+                                    <div class="reservation-item empty-filter-message text-muted small mb-4" data-reservation-filter="upcoming">
                                         No upcoming reservations.
                                     </div>
 
@@ -431,6 +430,8 @@ require_once __DIR__ . '/includes/new_header.php';
                                     foreach ($upcoming as $res) {
                                         $upcoming_by_date[$res['reservation_date']][] = $res;
                                     }
+
+                                    ksort($upcoming_by_date);
                                     ?>
 
                                     <?php foreach ($upcoming_by_date as $date => $date_reservations): ?>
@@ -561,7 +562,7 @@ require_once __DIR__ . '/includes/new_header.php';
 
                                 <?php if (empty($history)): ?>
 
-                                    <div class="text-muted small">
+                                    <div class="reservation-item empty-filter-message text-muted small" data-reservation-filter="history">
                                         No past or cancelled reservations.
                                     </div>
 
@@ -673,12 +674,16 @@ require_once __DIR__ . '/includes/new_header.php';
 
                                                     </div>
 
-                                                    <!-- Status Badge -->
-                                                    <div class="d-flex align-items-center ms-3 flex-shrink-0">
-                                                        <span class="badge <?= $badge_class ?>">
-                                                            <?= e($res['status']) ?>
-                                                        </span>
-                                                    </div>
+                                                    <!-- Status Badge (don't show CONFIRMED -->
+                                                    <?php if ($res['status'] !== 'CONFIRMED'): ?>
+
+                                                        <div class="d-flex align-items-center ms-3 flex-shrink-0">
+                                                            <span class="badge <?= $badge_class ?>">
+                                                                <?= e($res['status']) ?>
+                                                            </span>
+                                                        </div>
+
+                                                    <?php endif; ?>
 
                                                 </div>
 
@@ -709,7 +714,7 @@ require_once __DIR__ . '/includes/new_header.php';
                     ">
 
                     <!-- Header -->
-                    <div style="height: 60px; min-height: 60px;"
+                    <div style="height: 60px; min-height: 60px; background-color: #FFFEFE;"
                         class="card-header bg-white py-3 border-bottom d-flex align-items-center">
                         <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 20px;">
                             FILL YOUR DETAILS

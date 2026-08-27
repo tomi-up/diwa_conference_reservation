@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const myReservationsView = document.getElementById('myReservationsView');
     const reservationFilter = document.getElementById('reservationFilter');
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialCalendarDate = urlParams.get('date');
+
 
     function showCalendar() {
         calendarView.style.display = 'flex';
@@ -61,16 +64,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 reservationItems.forEach(function (item) {
 
-                    const itemFilter =
-                        item.dataset.reservationFilter;
+                    const itemFilter = item.dataset.reservationFilter;
+                    const isEmptyMessage = item.classList.contains('empty-filter-message');
 
-                    if (
-                        selectedFilter === 'all' ||
-                        selectedFilter === itemFilter
-                    ) {
-                        item.style.display = '';
+                    if (isEmptyMessage) {
+                        // empty messages only on specific filter
+                        item.style.display =
+                            selectedFilter === itemFilter ? '' : 'none';
+
                     } else {
-                        item.style.display = 'none';
+                        item.style.display =
+                            selectedFilter === 'all' ||
+                            selectedFilter === itemFilter
+                                ? ''
+                                : 'none';
                     }
 
                 });
@@ -87,8 +94,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const prevMonth = document.getElementById('prevMonth');
     const nextMonth = document.getElementById('nextMonth');
 
-    let currentDate = new Date();
-    let selectedDate = new Date();
+    let currentDate = initialCalendarDate
+        ? new Date(initialCalendarDate + 'T00:00:00')
+        : new Date();
+
+    let selectedDate = initialCalendarDate
+        ? new Date(initialCalendarDate + 'T00:00:00')
+        : new Date();
 
     let reservations = [];
 

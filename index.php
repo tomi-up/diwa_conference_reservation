@@ -187,7 +187,7 @@ require_once __DIR__ . '/includes/new_header.php';
 
     <div class="container position-relative h-100" style="z-index: 5; width: 70%;">
 
-        <div class="row h-100 g-0 shadow-sm" style="z-index: 6;">
+        <div id="reservationCardWrapper" class="row h-100 g-0 shadow-sm" style="z-index: 6;">
 
             <!-- left -->
             <div class="col-8 h-100">
@@ -250,178 +250,184 @@ require_once __DIR__ . '/includes/new_header.php';
                     ">
 
                     <!-- Header -->
-                    <div style="height: 60px; min-height: 60px;"
+                    <div style="height: 60px; min-height: 60px; background-color: #FFFEFE;"
                         class="card-header bg-white py-3 border-bottom d-flex align-items-center">
                         <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 20px;">
                             FILL YOUR DETAILS
                         </h5>
                     </div>
 
-                    <!-- Form -->
+                    <!-- form -->
                     <div class="card-body d-flex flex-column p-0" style="min-height: 0; overflow: hidden;">
+                        <form id="reservationForm"
+                            method="POST"
+                            action="reserve"
+                            novalidate
+                            class="d-flex flex-column h-100"
+                            style="min-height: 0;">
 
-                        <form class="p-3 flex-grow-1" id="reservationForm" method="POST" action="<?= e($_SERVER['PHP_SELF']) ?>" novalidate style="overflow-y: auto; min-height: 0;">
                             <?= csrf_field() ?>
 
-                            <!-- Date -->
-                            <div class="mb-2">
-                                <label for="reservation_date" class="form-label fw-normal">
-                                    Date <span class="text-danger">*</span>
-                                </label>
+                            <!-- SCROLLABLE FORM CONTENT -->
+                            <div class="flex-grow-1 overflow-auto p-3" style="min-height: 0;">
 
-                                <input type="date"
-                                    class="form-control"
-                                    id="reservation_date"
-                                    name="reservation_date"
-                                    min="<?= date('Y-m-d') ?>"
-                                    required>
-
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-
-                            <!-- Time -->
-                            <div class="row mb-3">
-
-                                <div class="col-6">
-                                    <label for="start_time" class="form-label fw-normal">
-                                        Start Time <span class="text-danger">*</span>
+                                <!-- Date -->
+                                <div class="mb-2">
+                                    <label for="reservation_date" class="form-label fw-normal">
+                                        Date <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="time"
+                                    <input type="date"
                                         class="form-control"
-                                        id="start_time"
-                                        name="start_time"
-                                        min="07:00"
-                                        max="18:00"
-                                        step="1800"
+                                        id="reservation_date"
+                                        name="reservation_date"
+                                        min="<?= date('Y-m-d') ?>"
                                         required>
 
                                     <div class="invalid-feedback"></div>
                                 </div>
 
-                                <div class="col-6">
-                                    <label for="end_time" class="form-label fw-normal">
-                                        End Time <span class="text-danger">*</span>
+                                <!-- Time -->
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <label for="start_time" class="form-label fw-normal">
+                                            Start Time <span class="text-danger">*</span>
+                                        </label>
+
+                                        <input type="time"
+                                            class="form-control"
+                                            id="start_time"
+                                            name="start_time"
+                                            min="07:00"
+                                            max="18:00"
+                                            step="1800"
+                                            required>
+
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label for="end_time" class="form-label fw-normal">
+                                            End Time <span class="text-danger">*</span>
+                                        </label>
+
+                                        <input type="time"
+                                            class="form-control"
+                                            id="end_time"
+                                            name="end_time"
+                                            min="07:00"
+                                            max="18:00"
+                                            step="1800"
+                                            required>
+
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Availability -->
+                                <div class="mb-3 text-center" style="font-size: 14px;">
+                                    <div id="liveAvailabilityBadge"></div>
+                                </div>
+
+                                <!-- Project -->
+                                <div class="mb-2">
+                                    <label for="project_team_office" class="form-label fw-normal">
+                                        Project <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="time"
-                                        class="form-control"
-                                        id="end_time"
-                                        name="end_time"
-                                        min="07:00"
-                                        max="18:00"
-                                        step="1800"
-                                        required>
+                                    <select class="form-select"
+                                            id="project_team_office"
+                                            name="project_team_office"
+                                            required>
 
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- Availability -->
-                            <div class="mb-3 text-center" style="font-size: 14px;">
-                                <div id="liveAvailabilityBadge"></div>
-                            </div>
-
-                            <!-- Project -->
-                            <div class="mb-2">
-                                <label for="project_team_office" class="form-label fw-normal">
-                                    Project <span class="text-danger">*</span>
-                                </label>
-
-                                <select class="form-select"
-                                        id="project_team_office"
-                                        name="project_team_office"
-                                        required>
-
-                                    <option value="" selected disabled hidden>
-                                        choose an option...
-                                    </option>
-
-                                    <?php
-                                    $offices = [
-                                        'DiWA Core',
-                                        'Ops Team',
-                                        'Scaling Up of Diwa App Project',
-                                        'RabDash DC',
-                                        'RESCUE Project',
-                                        'Wolbachia Project',
-                                        'IRDSS Project',
-                                        'Others'
-                                    ];
-
-                                    foreach ($offices as $off):
-                                    ?>
-                                        <option value="<?= e($off) ?>">
-                                            <?= e($off) ?>
+                                        <option value="" selected disabled hidden>
+                                            choose an option...
                                         </option>
-                                    <?php endforeach; ?>
 
-                                </select>
+                                        <?php
+                                        $offices = [
+                                            'DiWA Core',
+                                            'Ops Team',
+                                            'Scaling Up of Diwa App Project',
+                                            'RabDash DC',
+                                            'RESCUE Project',
+                                            'Wolbachia Project',
+                                            'IRDSS Project',
+                                            'Others'
+                                        ];
 
-                                <div class="invalid-feedback"></div>
-                            </div>
+                                        foreach ($offices as $off):
+                                        ?>
+                                            <option value="<?= e($off) ?>">
+                                                <?= e($off) ?>
+                                            </option>
+                                        <?php endforeach; ?>
 
+                                    </select>
 
-                            <!-- Purpose -->
-                            <div class="mb-4">
-                                <label for="purpose" class="form-label fw-normal">
-                                    Purpose <span class="text-danger">*</span>
-                                </label>
-
-                                <textarea class="form-control"
-                                        id="purpose"
-                                        name="purpose"
-                                        rows="4"
-                                        placeholder=""
-                                        style="resize: none;"
-                                        required></textarea>
-
-                                <div class="invalid-feedback"></div>
-                            </div>
-
-                            <!-- Terms & Conditions Checkbox & Responsible Use Policy Link -->
-                            <div class="mb-2">
-                                <div class="d-flex align-items-start">
-                                    <input
-                                        class="form-check-input ms-0 me-2 flex-shrink-0"
-                                        type="checkbox"
-                                        value="1"
-                                        id="terms_accepted"
-                                        name="terms_accepted"
-                                        <?= !$is_logged_in ? 'disabled' : '' ?>
-                                        required
-                                    >
-
-                                    <label class="form-check-label small text-muted fw-normal mb-0" for="terms_accepted">
-                                        I have read and agree to the <a href="#"
-                                        class="fw-bold text-danger text-decoration-underline"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#termsModal">Responsible Use Policy & Terms of Service
-                                        </a>
-                                        <span class="text-danger">*</span>
-                                    </label>
+                                    <div class="invalid-feedback"></div>
                                 </div>
 
-                                <div class="invalid-feedback"></div>
+                                <!-- Purpose -->
+                                <div class="mb-4">
+                                    <label for="purpose" class="form-label fw-normal">
+                                        Purpose <span class="text-danger">*</span>
+                                    </label>
+
+                                    <textarea class="form-control"
+                                            id="purpose"
+                                            name="purpose"
+                                            rows="4"
+                                            style="resize: none;"
+                                            required></textarea>
+
+                                    <div class="invalid-feedback"></div>
+                                </div>
+
+                                <!-- Terms -->
+                                <div class="mb-2">
+                                    <div class="d-flex align-items-start">
+                                        <input
+                                            class="form-check-input ms-0 me-2 flex-shrink-0"
+                                            type="checkbox"
+                                            value="1"
+                                            id="terms_accepted"
+                                            name="terms_accepted"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
+                                            required
+                                        >
+
+                                        <label class="form-check-label small text-muted fw-normal mb-0"
+                                            for="terms_accepted">
+                                            I have read and agree to the <a href="#"
+                                            class="fw-bold text-danger text-decoration-underline"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#termsModal">Responsible Use Policy & Terms of Service
+                                            </a>
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="invalid-feedback"></div>
+                                </div>
+
                             </div>
 
-                        </form>
-
-                        <!-- BIG BOTTOM BUTTON -->
-                        <div class="flex-shrink-0">
+                            <!-- FIXED BOTTOM BUTTON -->
                             <button type="submit"
-                                    form="reservationForm"
                                     id="reservationFormSubmitBtn"
-                                    class="btn btn-primary w-100 fw-bold rounded-0 border-0"
-                                    style="height: 80px; font-size: 1.15rem; background-color: #CA3436"
-                                    >
-
+                                    class="btn btn-primary w-100 fw-bold rounded-0 border-0 flex-shrink-0"
+                                    style="
+                                        height: 80px;
+                                        font-size: 1.15rem;
+                                        background-color: #CA3436;
+                                    ">
                                 <i class="bi bi-calendar-check me-2"></i>
                                 RESERVE NOW
                             </button>
-                        </div>
+
+                        </form>
+
                     </div>
                 </div>
             </div>
