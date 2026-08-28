@@ -340,14 +340,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Add reservation indicator, colored to match the first reservation's project
+        * reservation indicator, colored to match the first reservation's project
         */
         if (dayReservations.length > 0) {
             cell.classList.add('has-reservations');
-            cell.style.setProperty(
-                '--reservation-dot-color',
-                reservationDotColor(dayReservations[0].extendedProps)
-            );
+
+            const dotsContainer = document.createElement('div');
+            dotsContainer.classList.add('reservation-dots');
+
+            dayReservations.slice(0, 3).forEach(reservation => {
+
+                const dot = document.createElement('span');
+
+                dot.classList.add('reservation-dot');
+
+                dot.style.backgroundColor =
+                    reservationDotColor(reservation.extendedProps);
+
+                dotsContainer.appendChild(dot);
+            });
+
+            cell.appendChild(dotsContainer);
         }
 
 
