@@ -360,7 +360,9 @@ require_once __DIR__ . '/includes/new_header.php';
                                         height: 80px;
                                         font-size: 1.15rem;
                                         background-color: #CA3436;
-                                    ">
+                                    "
+                                    <?= !$is_logged_in ? 'disabled' : '' ?>
+                                    >
                                 <i class="bi bi-calendar-check me-2"></i>
                                 RESERVE NOW
                             </button>
