@@ -219,6 +219,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                         id="reservation_date"
                                         name="reservation_date"
                                         min="<?= date('Y-m-d') ?>"
+                                        <?= !$is_logged_in ? 'disabled' : '' ?>
                                         required>
 
                                     <div class="invalid-feedback"></div>
@@ -238,6 +239,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             min="07:00"
                                             max="18:00"
                                             step="1800"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required>
 
                                         <div class="invalid-feedback"></div>
@@ -255,6 +257,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             min="07:00"
                                             max="18:00"
                                             step="1800"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required>
 
                                         <div class="invalid-feedback"></div>
@@ -275,6 +278,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                     <select class="form-select"
                                             id="project_team_office"
                                             name="project_team_office"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required>
 
                                         <option value="" selected disabled hidden>
@@ -318,6 +322,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             name="purpose"
                                             rows="4"
                                             style="resize: none;"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required></textarea>
 
                                     <div class="invalid-feedback"></div>
