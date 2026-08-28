@@ -411,12 +411,12 @@ require_once __DIR__ . '/includes/new_header.php';
                                                 <div class="d-flex align-items-center pb-3">
 
                                                     <!-- Start Time -->
-                                                    <div class="d-flex flex-column justify-content-center text-black" style="width: 50px;">
-                                                        <h5 class="fw-bolder mb-0"><?= e(date('H:i', strtotime($res['start_time']))) ?></h5>
+                                                    <div class="d-flex flex-column justify-content-center text-black" style="width: 90px;">
+                                                        <h5 class="fw-bolder mb-0"><?= e(date('g:i A', strtotime($res['start_time']))) ?></h5>
                                                     </div>
 
                                                     <!-- Circle -->
-                                                    <div class="me-2 ms-4">
+                                                    <div class="mx-2">
                                                         <span
                                                             class="d-block rounded-circle"
                                                             style="
@@ -438,9 +438,9 @@ require_once __DIR__ . '/includes/new_header.php';
                                                         <!-- Details -->
                                                         <div class="small text-muted d-flex align-items-center gap-2" style="font-size: 12.25px;">
                                                             <span>
-                                                                <?= e(date('H:i', strtotime($res['start_time']))) ?>
+                                                                <?= e(date('g:i A', strtotime($res['start_time']))) ?>
                                                                 &ndash;
-                                                                <?= e(date('H:i', strtotime($res['end_time']))) ?>
+                                                                <?= e(date('g:i A', strtotime($res['end_time']))) ?>
                                                             </span>
 
                                                             <span>
@@ -556,15 +556,15 @@ require_once __DIR__ . '/includes/new_header.php';
                                                     <!-- Start Time -->
                                                     <div
                                                         class="d-flex flex-column justify-content-center text-black"
-                                                        style="width: 50px;"
+                                                        style="width: 90px;"
                                                     >
                                                         <h5 class="fw-bolder mb-0">
-                                                            <?= e(date('H:i', strtotime($res['start_time']))) ?>
+                                                            <?= e(date('g:i A', strtotime($res['start_time']))) ?>
                                                         </h5>
                                                     </div>
 
                                                     <!-- Circle -->
-                                                    <div class="me-2 ms-4">
+                                                    <div class="mx-2">
                                                         <span
                                                             class="d-block rounded-circle"
                                                             style="
@@ -592,9 +592,9 @@ require_once __DIR__ . '/includes/new_header.php';
                                                         >
 
                                                             <span>
-                                                                <?= e(date('H:i', strtotime($res['start_time']))) ?>
+                                                                <?= e(date('g:i A', strtotime($res['start_time']))) ?>
                                                                 &ndash;
-                                                                <?= e(date('H:i', strtotime($res['end_time']))) ?>
+                                                                <?= e(date('g:i A', strtotime($res['end_time']))) ?>
                                                             </span>
 
                                                             <span>

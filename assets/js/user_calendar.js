@@ -552,12 +552,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="d-flex flex-col align-items-center py-2 mb-2 border-top">
 
                     <!-- Start Time -->
-                    <div class="d-flex flex-column justify-content-center text-black" style="width: 50px;">
+                    <div class="d-flex flex-column justify-content-center text-black" style="width: 90px;">
                         <h5 class="fw-bolder mb-0">${formatTime12h(props.start_time_fmt)}</h5>
                     </div>
 
                     <!-- Circle -->
-                    <div class="me-2 ms-4">
+                    <div class="mx-2">
                         <span
                             class="d-block rounded-circle"
                             style="
