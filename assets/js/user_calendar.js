@@ -11,19 +11,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const initialCalendarDate = urlParams.get('date');
 
     const projectColors = {
-        'DiWA Core': '#DB7877',
+        'DiWA Core': '#d1393e',
+        'ISC': '#d1393e',
         'Ops Team': '#4fa576',
-        'RESCUE Project': '#8A94D8',
-        'IRDSS Project': '#dbc57b',
-        'Wolbachia Project': '#8E8E8E',
-        'Scaling Up of Diwa App Project': '#ad4d72',
+        'RESCUE': '#da5b70',
+        'IRDSS': '#cfb767',
+        'Wolbachia': '#7b7ddb',
+        'Scaling Up of Diwa App': '#d1393e',
         'RabDash DC': '#db7860',
+        'MATALab': '#d167c3',
         'Others': '#8e6ad1'
     };
 
     function reservationDotColor(props) {
         return props.is_blocked
-            ? '#c5303f'
+            ? '#444'
             : projectColors[props.project_team_office] ?? '#6c757d';
     }
 

@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'A valid Email Address is required.';
     }
     if (empty($form_data['project_team_office'])) {
-        $errors[] = 'Project / Team / Office is required.';
+        $errors[] = 'Team is required.';
     }
     if (empty($form_data['purpose'])) {
         $errors[] = 'Purpose of Meeting / Activity is required.';
@@ -348,13 +348,15 @@ require_once __DIR__ . '/includes/new_header.php';
 
                                 <?php
                                     $project_colors = [
-                                        'DiWA Core' => '#DB7877',
+                                        'DiWA Core' => '#d1393e',
+                                        'ISC' => '#d1393e',
                                         'Ops Team' => '#4fa576',
-                                        'RESCUE Project' => '#8A94D8',
-                                        'IRDSS Project' => '#dbc57b',
-                                        'Wolbachia Project' => '#8E8E8E',
-                                        'Scaling Up of Diwa App Project' => '#ad4d72',
+                                        'RESCUE' => '#da5b70',
+                                        'IRDSS' => '#cfb767',
+                                        'Wolbachia' => '#7b7ddb',
+                                        'Scaling Up of Diwa App' => '#d1393e',
                                         'RabDash DC' => '#db7860',
+                                        'MATALab' => '#d167c3',
                                         'Others' => '#8e6ad1'
                                     ];
                                 ?>
@@ -745,7 +747,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                 <!-- Project -->
                                 <div class="mb-2">
                                     <label for="project_team_office" class="form-label fw-normal">
-                                        Project <span class="text-danger">*</span>
+                                        Team <span class="text-danger">*</span>
                                     </label>
 
                                     <select class="form-select"
@@ -762,11 +764,13 @@ require_once __DIR__ . '/includes/new_header.php';
                                         $offices = [
                                             'DiWA Core',
                                             'Ops Team',
-                                            'Scaling Up of Diwa App Project',
+                                            'ISC',
+                                            'Scaling Up of Diwa App',
+                                            'RESCUE',
+                                            'Wolbachia',
+                                            'IRDSS',
                                             'RabDash DC',
-                                            'RESCUE Project',
-                                            'Wolbachia Project',
-                                            'IRDSS Project',
+                                            'MATALab',
                                             'Others'
                                         ];
 
