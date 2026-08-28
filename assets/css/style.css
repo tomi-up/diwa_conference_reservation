@@ -456,7 +456,7 @@ body {
 /* desktop */
 @media (min-width: 992px) {
     #reservationCardWrapper {
-        align-items: stretch;
+        align-items: center;
     }
 
     #reservationCardWrapper > .col-lg-8,
@@ -469,12 +469,26 @@ body {
         width: 100%;
         height: 100%;
     }
+
+    #reservationPage {
+        margin: 0 auto !important;
+    }
+
+    #mainContainer {
+        width: calc(100% - 180px) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 991px) {
     .container {
-        padding-left: 3rem;
-        padding-right: 3rem;
+        padding: 0 3rem;
+        margin: 0 3rem;
+    }
+
+    .reservationContainer {
+        padding: 0 3rem !important;
     }
 
     #reservationCardWrapper .col-lg-4 > div {
@@ -549,9 +563,29 @@ body {
         flex-direction: column;
         overflow: hidden;
     }
+    
+
+    #mainContainer {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    #reservationPage {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .reservationContainer {
+        padding: 0 0.1rem !important;
+    }
 }
 
 @media (max-width: 768px) {
+
+    .container {
+        margin: 0 1.5rem;
+    }
+
     .footer {
         padding: 1.25rem 0;
     }
@@ -563,9 +597,18 @@ body {
     .reservation-subheading {
         font-size: 14px;
     }
+    
+    .reservationContainer {
+        padding: 0 0.75rem !important;
+    }
 }
 
 @media (max-width: 576px) {
+
+    .container {
+        margin: 0;
+    }
+
     .navbar {
         padding-left: 1.5rem;
         padding-right: 1.5rem;
@@ -590,5 +633,9 @@ body {
     #reservationCardWrapper .px-4 {
         padding-left: 1.25rem !important;
         padding-right: 1.25rem !important;
+    }
+
+    .reservationContainer {
+        padding: 0 1.5rem !important;
     }
 }

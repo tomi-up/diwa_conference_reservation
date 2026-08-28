@@ -126,7 +126,7 @@ require_once __DIR__ . '/includes/new_header.php';
         style="height: 90px; z-index: 0; border-top: 10px solid #2C0707;">
     </div>
 
-    <div class="container position-relative" style="z-index: 5; max-width: 1000px;">
+    <div id="mainContainer" class="container position-relative" style="z-index: 5; max-width: 1000px;">
 
         <div id="reservationCardWrapper" class="row g-0 shadow-sm align-items-stretch" style="z-index: 6;">
 
