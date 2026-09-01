@@ -3,6 +3,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const calendarTab = document.getElementById('calendarTab');
     const myReservationsTab = document.getElementById('myReservationsTab');
 
+    const projectSelect = document.getElementById('project_team_office');
+    const otherProjectContainer = document.getElementById('otherProjectContainer');
+    const otherProjectInput = document.getElementById('otherProject');
+
+    projectSelect.addEventListener('change', function () {
+        if (this.value === 'Others') {
+            otherProjectContainer.style.display = 'block';
+            otherProjectInput.required = true;
+        } else {
+            otherProjectContainer.style.display = 'none';
+            otherProjectInput.required = false;
+            otherProjectInput.value = '';
+        }
+    });
+
     const calendarView = document.getElementById('calendarView');
     const myReservationsView = document.getElementById('myReservationsView');
     const reservationFilter = document.getElementById('reservationFilter');
@@ -11,19 +26,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const initialCalendarDate = urlParams.get('date');
 
     const projectColors = {
-        'DiWA Core': '#DB7877',
+        'DiWA Core': '#d1393e',
+        'ISC': '#d1393e',
         'Ops Team': '#4fa576',
-        'RESCUE Project': '#8A94D8',
-        'IRDSS Project': '#dbc57b',
-        'Wolbachia Project': '#8E8E8E',
-        'Scaling Up of Diwa App Project': '#ad4d72',
+        'RESCUE': '#da5b70',
+        'IRDSS': '#cfb767',
+        'Wolbachia': '#7b7ddb',
+        'Scaling Up of Diwa App': '#d1393e',
         'RabDash DC': '#db7860',
+        'MATALab': '#d167c3',
         'Others': '#8e6ad1'
     };
 
     function reservationDotColor(props) {
         return props.is_blocked
-            ? '#c5303f'
+            ? '#444'
             : projectColors[props.project_team_office] ?? '#6c757d';
     }
 
@@ -340,14 +357,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Add reservation indicator, colored to match the first reservation's project
+        * reservation indicator, colored to match the first reservation's project
         */
         if (dayReservations.length > 0) {
             cell.classList.add('has-reservations');
-            cell.style.setProperty(
-                '--reservation-dot-color',
-                reservationDotColor(dayReservations[0].extendedProps)
-            );
+
+            const dotsContainer = document.createElement('div');
+            dotsContainer.classList.add('reservation-dots');
+
+            dayReservations.slice(0, 3).forEach(reservation => {
+
+                const dot = document.createElement('span');
+
+                dot.classList.add('reservation-dot');
+
+                dot.style.backgroundColor =
+                    reservationDotColor(reservation.extendedProps);
+
+                dotsContainer.appendChild(dot);
+            });
+
+            cell.appendChild(dotsContainer);
         }
 
 
@@ -552,12 +582,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="d-flex flex-col align-items-center py-2 mb-2 border-top">
 
                     <!-- Start Time -->
-                    <div class="d-flex flex-column justify-content-center text-black" style="width: 50px;">
+                    <div class="d-flex flex-column justify-content-center text-black" style="width: 90px;">
                         <h5 class="fw-bolder mb-0">${formatTime12h(props.start_time_fmt)}</h5>
                     </div>
 
                     <!-- Circle -->
-                    <div class="me-2 ms-4">
+                    <div class="mx-2">
                         <span
                             class="d-block rounded-circle"
                             style="

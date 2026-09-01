@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'A valid Email Address is required.';
     }
     if (empty($form_data['project_team_office'])) {
-        $errors[] = 'Project / Team / Office is required.';
+        $errors[] = 'Team is required.';
     }
     if (empty($form_data['purpose'])) {
         $errors[] = 'Purpose of Meeting / Activity is required.';
@@ -126,7 +126,7 @@ require_once __DIR__ . '/includes/new_header.php';
         style="height: 90px; z-index: 0; border-top: 10px solid #2C0707;">
     </div>
 
-    <div class="container position-relative" style="z-index: 5; max-width: 1000px;">
+    <div id="mainContainer" class="container position-relative" style="z-index: 5; max-width: 1000px;">
 
         <div id="reservationCardWrapper" class="row g-0 shadow-sm align-items-stretch" style="z-index: 6;">
 
@@ -219,6 +219,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                         id="reservation_date"
                                         name="reservation_date"
                                         min="<?= date('Y-m-d') ?>"
+                                        <?= !$is_logged_in ? 'disabled' : '' ?>
                                         required>
 
                                     <div class="invalid-feedback"></div>
@@ -238,6 +239,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             min="07:00"
                                             max="18:00"
                                             step="1800"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required>
 
                                         <div class="invalid-feedback"></div>
@@ -255,6 +257,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             min="07:00"
                                             max="18:00"
                                             step="1800"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required>
 
                                         <div class="invalid-feedback"></div>
@@ -269,12 +272,13 @@ require_once __DIR__ . '/includes/new_header.php';
                                 <!-- Project -->
                                 <div class="mb-2">
                                     <label for="project_team_office" class="form-label fw-normal">
-                                        Project <span class="text-danger">*</span>
+                                        Team <span class="text-danger">*</span>
                                     </label>
 
                                     <select class="form-select"
                                             id="project_team_office"
                                             name="project_team_office"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required>
 
                                         <option value="" selected disabled hidden>
@@ -285,11 +289,13 @@ require_once __DIR__ . '/includes/new_header.php';
                                         $offices = [
                                             'DiWA Core',
                                             'Ops Team',
-                                            'Scaling Up of Diwa App Project',
+                                            'ISC',
+                                            'Scaling Up of Diwa App',
+                                            'RESCUE',
+                                            'Wolbachia',
+                                            'IRDSS',
                                             'RabDash DC',
-                                            'RESCUE Project',
-                                            'Wolbachia Project',
-                                            'IRDSS Project',
+                                            'MATALab',
                                             'Others'
                                         ];
 
@@ -303,6 +309,21 @@ require_once __DIR__ . '/includes/new_header.php';
                                     </select>
 
                                     <div class="invalid-feedback"></div>
+
+                                    <!-- Other Project -->
+                                    <div id="otherProjectContainer" class="mt-2" style="display: none;">
+                                        <textarea
+                                            class="form-control"
+                                            id="project_team_office_other"
+                                            name="project_team_office_other"
+                                            rows="2"
+                                            placeholder="Enter your project or team..."
+                                            style="resize: none;"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
+                                        ></textarea>
+
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
 
                                 <!-- Purpose -->
@@ -316,6 +337,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             name="purpose"
                                             rows="4"
                                             style="resize: none;"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
                                             required></textarea>
 
                                     <div class="invalid-feedback"></div>
@@ -358,7 +380,9 @@ require_once __DIR__ . '/includes/new_header.php';
                                         height: 80px;
                                         font-size: 1.15rem;
                                         background-color: #CA3436;
-                                    ">
+                                    "
+                                    <?= !$is_logged_in ? 'disabled' : '' ?>
+                                    >
                                 <i class="bi bi-calendar-check me-2"></i>
                                 RESERVE NOW
                             </button>

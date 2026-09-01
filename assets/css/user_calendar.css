@@ -68,11 +68,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 32px;
 
     font-size: 0.85rem;
     color: #212529;
 
-    background-color: #ffffff;
+    background-color: #ffffff00;
 
     cursor: pointer;
     transition: all 0.15s ease;
@@ -97,33 +98,30 @@
     font-weight: 600;
 }
 
-/* Reservation indicator */
-.calendar-day.has-reservation::after {
-    content: "";
+/** reservation indicators */
+.reservation-dots {
     position: absolute;
+    top: 4px;
+    right: 4px;
 
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 5px;
-    height: 5px;
-
-    background-color: #951a1d;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
 }
 
-.calendar-day.selected.has-reservation::after {
-    background-color: #ffffff;
-}
-
-.calendar-day.has-reservations::after {
-    content: '';
+.reservation-dot {
     width: 5px;
     height: 5px;
-    background-color: var(--reservation-dot-color, #951a1d);
     border-radius: 50%;
-    position: absolute;
-    right: 0;
-    top: 2px;
-    transform: translateX(-50%);
+    flex-shrink: 0;
+}
+
+@media (max-width: 992px) {
+
+    .reservation-dots {
+        top: 2px;
+        right: 2px;
+    }
+
 }

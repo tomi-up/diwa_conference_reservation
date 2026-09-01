@@ -43,8 +43,11 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
     <div class="container-fluid d-flex align-items-center" style="max-height: 100%;">
 
         <!-- logo -->
-        <a class="navbar-brand" href="<?= APP_URL ?>/index">
-            <img src="<?= APP_URL ?>/assets/images/diwa_logo-white.png" alt="DIWA Logo" class="brand-logo-landscape">
+        <a class="navbar-brand" href="<?= APP_URL ?>/<?= $is_logged_in ? 'reserve' : 'index' ?>">
+            <img 
+                src="<?= APP_URL ?>/assets/images/diwa_logo-white.png" alt="DIWA Logo"
+                class="brand-logo-landscape"
+                style="filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));">
         </a>
 
         <!-- right side -->
@@ -60,11 +63,11 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                         data-bs-toggle="dropdown"
                         aria-expanded="false">
 
-                            <div class="text-end lh-sm">
+                            <div class="text-end lh-sm" style="text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);">
                                 <div class="fw-medium text-white small">
                                     <?= e($_SESSION['user_name']) ?>
                                 </div>
-                                <div class="text-white-50" style="font-size: 0.7rem;">
+                                <div class="text-white" style="font-size: 0.7rem; opacity: 0.8;">
                                     <?= e($_SESSION['user_email']) ?>
                                 </div>
                             </div>
@@ -73,7 +76,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                                 <img
                                     src="<?= e($_SESSION['user_picture']) ?>"
                                     alt="<?= e($_SESSION['user_name']) ?>"
-                                    class="user-avatar"
+                                    class="user-avatar shadow"
                                 >
                             <?php else: ?>
                                 <span class="user-avatar user-avatar-fallback">
@@ -90,16 +93,11 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                                         Admin Dashboard
                                     </a>
                                 </li>
+
+                                
+                            <li><hr class="dropdown-divider mb-2"></li>
                             <?php endif; ?>
 
-                            <li class="mb-1">
-                                <a class="dropdown-item text-dark small fw-semibold"
-                                href="<?= APP_URL ?>/my-reservations">
-                                    My Reservations
-                                </a>
-                            </li>
-
-                            <li><hr class="dropdown-divider mb-2"></li>
 
                             <li>
                                 <a class="dropdown-item text-danger small fw-semibold"

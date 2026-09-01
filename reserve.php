@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'A valid Email Address is required.';
     }
     if (empty($form_data['project_team_office'])) {
-        $errors[] = 'Project / Team / Office is required.';
+        $errors[] = 'Team is required.';
     }
     if (empty($form_data['purpose'])) {
         $errors[] = 'Purpose of Meeting / Activity is required.';
@@ -144,7 +144,7 @@ require_once __DIR__ . '/includes/new_header.php';
         style="height: 90px; z-index: 0; border-top: 10px solid #2C0707;">
     </div>
 
-    <div class="container position-relative" style="z-index: 5; max-width: 1000px;">
+    <div id="mainContainer" class="container position-relative reservationContainer" style="z-index: 5; max-width: 1000px">
 
         <div id="reservationCardWrapper" class="row g-0 shadow-sm align-items-stretch" style="z-index: 6;">
 
@@ -348,13 +348,15 @@ require_once __DIR__ . '/includes/new_header.php';
 
                                 <?php
                                     $project_colors = [
-                                        'DiWA Core' => '#DB7877',
+                                        'DiWA Core' => '#d1393e',
+                                        'ISC' => '#d1393e',
                                         'Ops Team' => '#4fa576',
-                                        'RESCUE Project' => '#8A94D8',
-                                        'IRDSS Project' => '#dbc57b',
-                                        'Wolbachia Project' => '#8E8E8E',
-                                        'Scaling Up of Diwa App Project' => '#ad4d72',
+                                        'RESCUE' => '#da5b70',
+                                        'IRDSS' => '#cfb767',
+                                        'Wolbachia' => '#7b7ddb',
+                                        'Scaling Up of Diwa App' => '#d1393e',
                                         'RabDash DC' => '#db7860',
+                                        'MATALab' => '#d167c3',
                                         'Others' => '#8e6ad1'
                                     ];
                                 ?>
@@ -411,12 +413,12 @@ require_once __DIR__ . '/includes/new_header.php';
                                                 <div class="d-flex align-items-center pb-3">
 
                                                     <!-- Start Time -->
-                                                    <div class="d-flex flex-column justify-content-center text-black" style="width: 50px;">
-                                                        <h5 class="fw-bolder mb-0"><?= e(date('H:i', strtotime($res['start_time']))) ?></h5>
+                                                    <div class="d-flex flex-column justify-content-center text-black" style="width: 90px;">
+                                                        <h5 class="fw-bolder mb-0"><?= e(date('g:i A', strtotime($res['start_time']))) ?></h5>
                                                     </div>
 
                                                     <!-- Circle -->
-                                                    <div class="me-2 ms-4">
+                                                    <div class="mx-2">
                                                         <span
                                                             class="d-block rounded-circle"
                                                             style="
@@ -438,9 +440,9 @@ require_once __DIR__ . '/includes/new_header.php';
                                                         <!-- Details -->
                                                         <div class="small text-muted d-flex align-items-center gap-2" style="font-size: 12.25px;">
                                                             <span>
-                                                                <?= e(date('H:i', strtotime($res['start_time']))) ?>
+                                                                <?= e(date('g:i A', strtotime($res['start_time']))) ?>
                                                                 &ndash;
-                                                                <?= e(date('H:i', strtotime($res['end_time']))) ?>
+                                                                <?= e(date('g:i A', strtotime($res['end_time']))) ?>
                                                             </span>
 
                                                             <span>
@@ -556,15 +558,15 @@ require_once __DIR__ . '/includes/new_header.php';
                                                     <!-- Start Time -->
                                                     <div
                                                         class="d-flex flex-column justify-content-center text-black"
-                                                        style="width: 50px;"
+                                                        style="width: 90px;"
                                                     >
                                                         <h5 class="fw-bolder mb-0">
-                                                            <?= e(date('H:i', strtotime($res['start_time']))) ?>
+                                                            <?= e(date('g:i A', strtotime($res['start_time']))) ?>
                                                         </h5>
                                                     </div>
 
                                                     <!-- Circle -->
-                                                    <div class="me-2 ms-4">
+                                                    <div class="mx-2">
                                                         <span
                                                             class="d-block rounded-circle"
                                                             style="
@@ -592,9 +594,9 @@ require_once __DIR__ . '/includes/new_header.php';
                                                         >
 
                                                             <span>
-                                                                <?= e(date('H:i', strtotime($res['start_time']))) ?>
+                                                                <?= e(date('g:i A', strtotime($res['start_time']))) ?>
                                                                 &ndash;
-                                                                <?= e(date('H:i', strtotime($res['end_time']))) ?>
+                                                                <?= e(date('g:i A', strtotime($res['end_time']))) ?>
                                                             </span>
 
                                                             <span>
@@ -745,7 +747,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                 <!-- Project -->
                                 <div class="mb-2">
                                     <label for="project_team_office" class="form-label fw-normal">
-                                        Project <span class="text-danger">*</span>
+                                        Team <span class="text-danger">*</span>
                                     </label>
 
                                     <select class="form-select"
@@ -762,11 +764,13 @@ require_once __DIR__ . '/includes/new_header.php';
                                         $offices = [
                                             'DiWA Core',
                                             'Ops Team',
-                                            'Scaling Up of Diwa App Project',
+                                            'ISC',
+                                            'Scaling Up of Diwa App',
+                                            'RESCUE',
+                                            'Wolbachia',
+                                            'IRDSS',
                                             'RabDash DC',
-                                            'RESCUE Project',
-                                            'Wolbachia Project',
-                                            'IRDSS Project',
+                                            'MATALab',
                                             'Others'
                                         ];
 
@@ -780,6 +784,21 @@ require_once __DIR__ . '/includes/new_header.php';
                                     </select>
 
                                     <div class="invalid-feedback"></div>
+
+                                    <!-- Other Project -->
+                                    <div id="otherProjectContainer" class="mt-2" style="display: none;">
+                                        <textarea
+                                            class="form-control"
+                                            id="project_team_office_other"
+                                            name="project_team_office_other"
+                                            rows="2"
+                                            placeholder="Enter other team name..."
+                                            style="resize: none;"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
+                                        ></textarea>
+
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
 
                                 <!-- Purpose -->
