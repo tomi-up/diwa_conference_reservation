@@ -475,7 +475,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentDate.getMonth() - 1
             );
 
+            selectedDate = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                1
+            );
+
             renderCalendar();
+            showReservations(selectedDate);
         });
     });
 
@@ -489,7 +496,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentDate.getMonth() + 1
             );
 
+            selectedDate = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                1
+            );
+
             renderCalendar();
+            showReservations(selectedDate);
         });
     });
 
