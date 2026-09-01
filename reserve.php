@@ -784,6 +784,21 @@ require_once __DIR__ . '/includes/new_header.php';
                                     </select>
 
                                     <div class="invalid-feedback"></div>
+
+                                    <!-- Other Project -->
+                                    <div id="otherProjectContainer" class="mt-2" style="display: none;">
+                                        <textarea
+                                            class="form-control"
+                                            id="project_team_office_other"
+                                            name="project_team_office_other"
+                                            rows="2"
+                                            placeholder="enter your project or team..."
+                                            style="resize: none;"
+                                            <?= !$is_logged_in ? 'disabled' : '' ?>
+                                        ></textarea>
+
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
 
                                 <!-- Purpose -->

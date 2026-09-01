@@ -43,7 +43,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
     <div class="container-fluid d-flex align-items-center" style="max-height: 100%;">
 
         <!-- logo -->
-        <a class="navbar-brand" href="<?= APP_URL ?>/index">
+        <a class="navbar-brand" href="<?= APP_URL ?>/<?= $is_logged_in ? 'reserve' : 'index' ?>">
             <img 
                 src="<?= APP_URL ?>/assets/images/diwa_logo-white.png" alt="DIWA Logo"
                 class="brand-logo-landscape"

@@ -3,6 +3,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const calendarTab = document.getElementById('calendarTab');
     const myReservationsTab = document.getElementById('myReservationsTab');
 
+    const projectSelect = document.getElementById('project_team_office');
+    const otherProjectContainer = document.getElementById('otherProjectContainer');
+    const otherProjectInput = document.getElementById('otherProject');
+
+    projectSelect.addEventListener('change', function () {
+        if (this.value === 'Others') {
+            otherProjectContainer.style.display = 'block';
+            otherProjectInput.required = true;
+        } else {
+            otherProjectContainer.style.display = 'none';
+            otherProjectInput.required = false;
+            otherProjectInput.value = '';
+        }
+    });
+
     const calendarView = document.getElementById('calendarView');
     const myReservationsView = document.getElementById('myReservationsView');
     const reservationFilter = document.getElementById('reservationFilter');
