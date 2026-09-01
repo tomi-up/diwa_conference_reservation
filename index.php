@@ -118,7 +118,8 @@ require_once __DIR__ . '/includes/new_header.php';
 
 
 <!-- Content Section -->
-<div class="position-relative w-100 d-flex align-items-center py-0"
+<div id="reservationPage"
+     class="position-relative w-100 d-flex align-items-center py-0"
      style="min-height: calc(100vh - 80px - 80px); z-index: 2;">
 
     <!-- Bottom white background -->
@@ -126,7 +127,7 @@ require_once __DIR__ . '/includes/new_header.php';
         style="height: 90px; z-index: 0; border-top: 10px solid #2C0707;">
     </div>
 
-    <div id="mainContainer" class="container position-relative" style="z-index: 5; max-width: 1000px;">
+    <div id="mainContainer" class="container position-relative" style="z-index: 5; max-width: 1300px;">
 
         <div id="reservationCardWrapper" class="row g-0 shadow-sm align-items-stretch" style="z-index: 6;">
 

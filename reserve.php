@@ -144,7 +144,7 @@ require_once __DIR__ . '/includes/new_header.php';
         style="height: 90px; z-index: 0; border-top: 10px solid #2C0707;">
     </div>
 
-    <div id="mainContainer" class="container position-relative reservationContainer" style="z-index: 5; max-width: 1000px">
+    <div id="mainContainer" class="container position-relative reservationContainer" style="z-index: 5; max-width: 1300px;">
 
         <div id="reservationCardWrapper" class="row g-0 shadow-sm align-items-stretch" style="z-index: 6;">
 
@@ -413,7 +413,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                                 <div class="d-flex align-items-center pb-3">
 
                                                     <!-- Start Time -->
-                                                    <div class="d-flex flex-column justify-content-center text-black" style="width: 90px;">
+                                                    <div class="d-flex flex-column justify-content-center text-black" style="width: 90px; min-width: 90px;">
                                                         <h5 class="fw-bolder mb-0"><?= e(date('g:i A', strtotime($res['start_time']))) ?></h5>
                                                     </div>
 
@@ -558,7 +558,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                                     <!-- Start Time -->
                                                     <div
                                                         class="d-flex flex-column justify-content-center text-black"
-                                                        style="width: 90px;"
+                                                        style="width: 90px; min-width: 90px;"
                                                     >
                                                         <h5 class="fw-bolder mb-0">
                                                             <?= e(date('g:i A', strtotime($res['start_time']))) ?>

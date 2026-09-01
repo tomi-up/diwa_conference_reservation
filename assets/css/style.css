@@ -476,7 +476,7 @@ body {
     }
 
     #mainContainer {
-        width: calc(100% - 180px) !important;
+        width: calc(100vw - 180px) !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }
@@ -638,5 +638,20 @@ body {
 
     .reservationContainer {
         padding: 0 1.5rem !important;
+    }
+}
+
+/** height */
+@media (min-height: 768px) {
+    #reservationPage {
+        height: calc(100vh - 80px - 80px) !important;
+    }
+
+    #mainContainer {
+        height: 100% !important;
+    }
+
+    #reservationCardWrapper {
+        height: 100% !important;
     }
 }
