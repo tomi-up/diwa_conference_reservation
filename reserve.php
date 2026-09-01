@@ -792,7 +792,7 @@ require_once __DIR__ . '/includes/new_header.php';
                                             id="project_team_office_other"
                                             name="project_team_office_other"
                                             rows="2"
-                                            placeholder="enter your project or team..."
+                                            placeholder="Enter other team name..."
                                             style="resize: none;"
                                             <?= !$is_logged_in ? 'disabled' : '' ?>
                                         ></textarea>
