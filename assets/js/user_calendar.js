@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             ${!props.is_blocked ? `
                                 <span>${props.project_team_office ?? ''}</span>
-                                <span>${props.requester_name ?? 'Reserved'}</span>
+                                <span>${props.requester_name ?? ''}</span>
                             ` : ''}
                         </div>
 
