@@ -7,6 +7,10 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/auth.php';
 
+if (!is_admin_logged_in() && !is_user_logged_in()) {
+    json_response(['error' => 'Unauthorized'], 401);
+}
+
 header('Content-Type: application/json; charset=utf-8');
 
 $start = filter_input(INPUT_GET, 'start', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -63,13 +67,9 @@ foreach ($reservations as $res) {
         'start_time_fmt'   => date('H:i', strtotime($res['start_time'])),
         'end_time_fmt'     => date('H:i', strtotime($res['end_time'])),
         'date_fmt'         => format_date($res['reservation_date']),
+        'requester_name'      => $res['requester_name'],
         'project_team_office' => $res['project_team_office']
     ];
-
-    // only to signed-in viewers (regular users or admins) - anonymous public viewers should not see who reserved
-    if (is_admin_logged_in() || is_user_logged_in()) {
-        $extendedProps['requester_name'] = $res['requester_name'];
-    }
 
     // only to admins
     if (is_admin_logged_in()) {

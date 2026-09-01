@@ -114,13 +114,13 @@ if (empty($form_data['start_time']) || empty($form_data['end_time'])) {
     }
 }
 
-// Daily 2 Active Bookings Limit per User
+// Daily 1 Active Booking Limit per User
 if (empty($errors) && !empty($form_data['requester_email']) && !empty($form_data['reservation_date'])) {
     $stmt_check_daily = $pdo->prepare("
-        SELECT COUNT(*)
-        FROM reservations
-        WHERE requester_email = :email
-          AND reservation_date = :res_date
+        SELECT COUNT(*) 
+        FROM reservations 
+        WHERE requester_email = :email 
+          AND reservation_date = :res_date 
           AND status = 'CONFIRMED'
     ");
     $stmt_check_daily->execute([
@@ -129,8 +129,8 @@ if (empty($errors) && !empty($form_data['requester_email']) && !empty($form_data
     ]);
     $daily_count = (int)$stmt_check_daily->fetchColumn();
 
-    if ($daily_count >= 2) {
-        $errors[] = 'Notice: You already have 2 active reservation requests for this date. To prevent spam, only 2 active bookings per user per day are allowed.';
+    if ($daily_count >= 1) {
+        $errors[] = 'Notice: You already have an active reservation request for this date. To prevent spam, only 1 active booking per user per day is allowed.';
     }
 }
 
@@ -179,8 +179,6 @@ json_response([
         'raw_date'            => $res['reservation_date'],
         'start_time'          => format_time($res['start_time']),
         'end_time'            => format_time($res['end_time']),
-        'raw_start_time'      => $res['start_time'],
-        'raw_end_time'        => $res['end_time'],
         'project_team_office' => $res['project_team_office'],
         'purpose'             => $res['purpose'],
         'status'              => $res['status']

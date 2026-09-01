@@ -63,8 +63,8 @@
 </div>
 
 <!-- Shared Footer -->
-<footer class="d-flex flex-col justify-content-end footer border-0" style="z-index: 0; background-color: white;">
-    <div class="container d-flex justify-content-center align-items-center">
+<footer class="footer border-0" style="z-index: 0; background-color: white;">
+    <div class="container d-flex justify-content-end align-items-center">
         <span class="small" style="color: #00000050;">
             Made by
             <strong>Maylotechy</strong>

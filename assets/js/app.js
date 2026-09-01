@@ -2,32 +2,6 @@
  * Client-Side JavaScript for Conference Room Reservation System (jQuery & AJAX Edition)
  */
 
-// Opens Google Calendar's event creation page pre-filled with the confirmed
-// reservation's details. Guests (teammates) are added by the user on that
-// page via Google's own "Add guests" field so they receive the invite/notif.
-window.addToGoogleCalendar = function () {
-    const d = window.__lastReservationDetails;
-    if (!d) return;
-
-    const toGCalDateTime = (dateStr, timeStr) => {
-        const digitsOnly = timeStr.replace(/:/g, '');
-        return dateStr.replace(/-/g, '') + 'T' + digitsOnly.padEnd(6, '0');
-    };
-
-    const dates = toGCalDateTime(d.raw_date, d.raw_start_time) + '/' + toGCalDateTime(d.raw_date, d.raw_end_time);
-    const details = `Reservation ID: ${d.formatted_id}\nRequester: ${d.requester_name}\nProject / Team / Office: ${d.project_team_office}\nPurpose: ${d.purpose}`;
-
-    const url = new URL('https://calendar.google.com/calendar/render');
-    url.searchParams.set('action', 'TEMPLATE');
-    url.searchParams.set('text', `Conference Room Reservation - ${d.project_team_office}`);
-    url.searchParams.set('dates', dates);
-    url.searchParams.set('details', details);
-    url.searchParams.set('location', d.room_name);
-    url.searchParams.set('ctz', 'Asia/Manila');
-
-    window.open(url.toString(), '_blank');
-};
-
 $(document).ready(function () {
 
     // -1. Show any server-side flash message (login/logout notices, action confirmations,
@@ -522,7 +496,6 @@ $(document).ready(function () {
                     if (res.success) {
                         // Render smooth inline Success Card without reloading page!
                         const d = res.details;
-                        window.__lastReservationDetails = d;
                         const successCardHtml = `
                             <div class="h-100 d-flex justify-content-center">
                                 <div class="bg-white border shadow-sm h-100 overflow-hidden d-flex flex-column"

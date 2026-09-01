@@ -39,20 +39,35 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
 <body>
 
 <!-- header -->
-<nav class="navbar sticky-top">
-    <div class="container-fluid d-flex align-items-center" style="max-height: 100%;">
-
-        <!-- logo -->
-        <a class="navbar-brand" href="<?= APP_URL ?>/<?= $is_logged_in ? 'reserve' : 'index' ?>">
-            <img 
-                src="<?= APP_URL ?>/assets/images/diwa_logo-white.png" alt="DIWA Logo"
-                class="brand-logo-landscape"
-                style="filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));">
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="<?= APP_URL ?>/index">
+            <img src="<?= APP_URL ?>/assets/images/diwa_logo-white.png" alt="DIWA Logo" class="brand-logo-landscape">
         </a>
-
-        <!-- right side -->
-        <div class="ms-auto" id="navbarMain">
-            <ul class="navbar-nav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse flex flex-row justify-right" id="navbarMain">
+            <!--
+            <ul class="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link <?= (in_array(basename($_SERVER['PHP_SELF']), ['index.php', 'index'])) ? 'active fw-semibold' : '' ?>" href="<?= APP_URL ?>/index">
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= (in_array(basename($_SERVER['PHP_SELF']), ['reserve.php', 'reserve'])) ? 'active fw-semibold' : '' ?>" href="<?= APP_URL ?>/reserve">
+                        Reserve
+                    </a>
+                </li>
+                <li class="nav-item ms-lg-2">
+                    <button type="button" id="btnStartTutorial" class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3 py-1 shadow-sm d-inline-flex align-items-center gap-1.5" title="Click to view interactive step-by-step reservation guide">
+                             How to Book?
+                    </button>
+                </li>
+            </ul>
+            -->
+            <ul class="navbar-nav align-items-center ms-lg-auto">
                 <?php if (is_user_logged_in()): ?>
 
                     <!-- Logged in -->
@@ -63,11 +78,11 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                         data-bs-toggle="dropdown"
                         aria-expanded="false">
 
-                            <div class="text-end lh-sm" style="text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);">
+                            <div class="text-end lh-sm">
                                 <div class="fw-medium text-white small">
                                     <?= e($_SESSION['user_name']) ?>
                                 </div>
-                                <div class="text-white" style="font-size: 0.7rem; opacity: 0.8;">
+                                <div class="text-white-50" style="font-size: 0.7rem;">
                                     <?= e($_SESSION['user_email']) ?>
                                 </div>
                             </div>
@@ -76,7 +91,7 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                                 <img
                                     src="<?= e($_SESSION['user_picture']) ?>"
                                     alt="<?= e($_SESSION['user_name']) ?>"
-                                    class="user-avatar shadow"
+                                    class="user-avatar"
                                 >
                             <?php else: ?>
                                 <span class="user-avatar user-avatar-fallback">
@@ -93,11 +108,16 @@ $page_title = $page_title ?? 'DIWA Center Conference Room Reservation System';
                                         Admin Dashboard
                                     </a>
                                 </li>
-
-                                
-                            <li><hr class="dropdown-divider mb-2"></li>
                             <?php endif; ?>
 
+                            <li class="mb-1">
+                                <a class="dropdown-item text-dark small fw-semibold"
+                                href="<?= APP_URL ?>/my-reservations">
+                                    My Reservations
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider mb-2"></li>
 
                             <li>
                                 <a class="dropdown-item text-danger small fw-semibold"

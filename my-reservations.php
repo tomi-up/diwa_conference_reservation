@@ -44,15 +44,13 @@ function render_reservation_card(array $res, array $status_badge_map): void {
 
     // Project colors
     $project_colors = [
-        'DiWA Core' => '#d1393e',
-        'ISC' => '#d1393e',
+        'DiWA Core' => '#DB7877',
         'Ops Team' => '#4fa576',
-        'RESCUE' => '#da5b70',
-        'IRDSS' => '#cfb767',
-        'Wolbachia' => '#7b7ddb',
-        'Scaling Up of Diwa App' => '#d1393e',
+        'RESCUE Project' => '#8A94D8',
+        'IRDSS Project' => '#dbc57b',
+        'Wolbachia Project' => '#8E8E8E',
+        'Scaling Up of Diwa App Project' => '#ad4d72',
         'RabDash DC' => '#db7860',
-        'MATALab' => '#d167c3',
         'Others' => '#8e6ad1'
     ];
 
