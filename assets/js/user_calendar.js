@@ -425,16 +425,58 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
+    function animateCalendar(direction, callback) {
+        const animationClass =
+            direction === 'next' ? 'slide-left' : 'slide-right';
+
+        // Start slide-out
+        calendarDays.classList.add(animationClass);
+
+        setTimeout(() => {
+            // Render the new month
+            callback();
+
+            // Immediately place the new month on the opposite side
+            calendarDays.style.transition = 'none';
+            calendarDays.style.transform =
+                direction === 'next'
+                    ? 'translateX(30px)'
+                    : 'translateX(-30px)';
+            calendarDays.style.opacity = '0';
+
+            // Force browser to apply the starting position
+            calendarDays.offsetHeight;
+
+            // Start slide-in
+            calendarDays.style.transition =
+                'transform 0.25s ease, opacity 0.25s ease';
+
+            calendarDays.style.transform = 'translateX(0)';
+            calendarDays.style.opacity = '1';
+
+            // Clean up
+            setTimeout(() => {
+                calendarDays.style.transition = '';
+                calendarDays.style.transform = '';
+                calendarDays.style.opacity = '';
+                calendarDays.classList.remove(animationClass);
+            }, 250);
+
+        }, 150);
+    }
+
+
     /*
      * Previous month
      */
     prevMonth.addEventListener('click', function () {
+        animateCalendar('prev', () => {
+            currentDate.setMonth(
+                currentDate.getMonth() - 1
+            );
 
-        currentDate.setMonth(
-            currentDate.getMonth() - 1
-        );
-
-        renderCalendar();
+            renderCalendar();
+        });
     });
 
 
@@ -442,12 +484,13 @@ document.addEventListener('DOMContentLoaded', function () {
      * Next month
      */
     nextMonth.addEventListener('click', function () {
+        animateCalendar('next', () => {
+            currentDate.setMonth(
+                currentDate.getMonth() + 1
+            );
 
-        currentDate.setMonth(
-            currentDate.getMonth() + 1
-        );
-
-        renderCalendar();
+            renderCalendar();
+        });
     });
 
 
