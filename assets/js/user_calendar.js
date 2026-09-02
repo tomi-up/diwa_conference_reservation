@@ -413,11 +413,21 @@ document.addEventListener('DOMContentLoaded', function () {
         */
         cell.addEventListener('click', function () {
 
+            const previousDate = selectedDate;
+
             selectedDate = cellDate;
 
             renderCalendar();
 
-            showReservations(cellDate);
+            // Determine swipe direction
+            const direction =
+                cellDate > previousDate
+                    ? 'next'
+                    : 'prev';
+
+            animateReservations(direction, () => {
+                showReservations(cellDate);
+            });
         });
 
 
@@ -559,11 +569,60 @@ document.addEventListener('DOMContentLoaded', function () {
         return `${h}:${mStr} ${ampm}`;
     }
 
+    function animateReservations(direction, callback) {
+
+        const reservationContainer =
+            document.getElementById('selectedDateContent');
+
+        const animationClass =
+            direction === 'next'
+                ? 'slide-left'
+                : 'slide-right';
+
+        // Slide current content out
+        reservationContainer.classList.add(animationClass);
+
+        setTimeout(() => {
+
+            // Update reservation content
+            callback();
+
+            // Put new content on the opposite side
+            reservationContainer.style.transition = 'none';
+
+            reservationContainer.style.transform =
+                direction === 'next'
+                    ? 'translateX(30px)'
+                    : 'translateX(-30px)';
+
+            reservationContainer.style.opacity = '0';
+
+            // Force browser reflow
+            reservationContainer.offsetHeight;
+
+            // Slide new content in
+            reservationContainer.style.transition =
+                'transform 0.25s ease, opacity 0.25s ease';
+
+            reservationContainer.style.transform =
+                'translateX(0)';
+
+            reservationContainer.style.opacity = '1';
+
+            // Clean up
+            setTimeout(() => {
+                reservationContainer.style.transition = '';
+                reservationContainer.style.transform = '';
+                reservationContainer.style.opacity = '';
+                reservationContainer.classList.remove(animationClass);
+            }, 250);
+
+        }, 150);
+    }
+
 
     /*
      * display reservations for selected date
-     *
-     *
      */
     function showReservations(date) {
 
@@ -636,7 +695,6 @@ document.addEventListener('DOMContentLoaded', function () {
         /*
         * Display reservations
         */
-        
 
         dayReservations.sort((a, b) => {
             return new Date(a.start) - new Date(b.start);
@@ -696,13 +754,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /*
-     * Initial render
+     * initial render
      */
     renderCalendar();
     showReservations(selectedDate);
 
     /*
-    * Load reservations
+    * load reservations
     */
     loadReservations();
 

@@ -269,20 +269,20 @@ require_once __DIR__ . '/includes/new_header.php';
                                 overflow-y: auto;
                                 overflow-x: hidden;
                             ">
-
-                            <div class="d-flex align-items-center gap-2 mb-2 fw-bold flex-shrink-0 text-black">
-                                <h2 id="selectedDayNumberLabel" class="mb-0 fw-bolder">1</h2>
-                                <span id="selectedWeekdayLabel">Sun</span>
-                            </div>
-
-                            <div id="selectedDateReservations"
-                                class="small text-muted flex-grow-1"
-                                style="min-height: 0; overflow-y: auto;">
-
-                                <div class="text-center py-3">
-                                    Select a date from the calendar to view its reservations.
+                            <div id="selectedDateContent">
+                                <div class="d-flex align-items-center gap-2 mb-2 fw-bold flex-shrink-0 text-black">
+                                    <h2 id="selectedDayNumberLabel" class="mb-0 fw-bolder">1</h2>
+                                    <span id="selectedWeekdayLabel">Sun</span>
                                 </div>
 
+                                <div id="selectedDateReservations"
+                                    class="small text-muted flex-grow-1"
+                                    style="min-height: 0; overflow-y: auto;">
+
+                                    <div class="text-center py-3">
+                                        Select a date from the calendar to view its reservations.
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
