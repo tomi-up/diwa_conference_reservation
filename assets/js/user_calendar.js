@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ).getDate();
 
         /*
-         * Determine whether this month requires
+         * determine whether this month requires
          * 5 or 6 calendar rows.
          */
         const totalCells = firstDay + daysInMonth;
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
         /*
-         * Fill previous month's trailing days
+         * fill previous month's trailing days
          */
         const previousMonthDays = new Date(
             year,
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-         * Current month
+         * current month
          */
         for (let day = 1; day <= daysInMonth; day++) {
 
@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-         * Fill remaining cells with next month
+         * fill remaining cells with next month
          */
         const remainingCells =
             (numberOfWeeks * 7) - totalCells;
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Days belonging to adjacent months
+        * days belonging to adjacent months
         */
         if (type !== 'current') {
             cell.classList.add('other-month');
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Check if this date has reservations
+        * check if this date has reservations
         */
         const dateString =
             year + '-' +
@@ -382,7 +382,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Today
+        * TODAY
         */
         const today = new Date();
 
@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Selected date
+        * SELECTED DATE
         */
         if (
             selectedDate &&
@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Clicking a date
+        * DATE CLICK
         */
         cell.addEventListener('click', function () {
 
@@ -429,14 +429,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const animationClass =
             direction === 'next' ? 'slide-left' : 'slide-right';
 
-        // Start slide-out
+        // slide-out
         calendarDays.classList.add(animationClass);
 
         setTimeout(() => {
-            // Render the new month
+            // render the new month
             callback();
 
-            // Immediately place the new month on the opposite side
+            // immediately place the new month on the opposite side
             calendarDays.style.transition = 'none';
             calendarDays.style.transform =
                 direction === 'next'
@@ -444,17 +444,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     : 'translateX(-30px)';
             calendarDays.style.opacity = '0';
 
-            // Force browser to apply the starting position
             calendarDays.offsetHeight;
 
-            // Start slide-in
             calendarDays.style.transition =
                 'transform 0.25s ease, opacity 0.25s ease';
 
             calendarDays.style.transform = 'translateX(0)';
             calendarDays.style.opacity = '1';
 
-            // Clean up
             setTimeout(() => {
                 calendarDays.style.transition = '';
                 calendarDays.style.transform = '';
@@ -465,21 +462,40 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 150);
     }
 
+    function setDefaultSelectedDate() {
+        const today = new Date();
 
-    /*
-     * Previous month
-     */
-    prevMonth.addEventListener('click', function () {
-        animateCalendar('prev', () => {
-            currentDate.setMonth(
-                currentDate.getMonth() - 1
+        const isCurrentMonth =
+            currentDate.getFullYear() === today.getFullYear() &&
+            currentDate.getMonth() === today.getMonth();
+
+        if (isCurrentMonth) {
+            selectedDate = new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate()
             );
-
+        } else {
             selectedDate = new Date(
                 currentDate.getFullYear(),
                 currentDate.getMonth(),
                 1
             );
+        }
+    }
+
+
+    /*
+    * Previous month
+    */
+    prevMonth.addEventListener('click', function () {
+        animateCalendar('prev', () => {
+
+            currentDate.setMonth(
+                currentDate.getMonth() - 1
+            );
+
+            setDefaultSelectedDate();
 
             renderCalendar();
             showReservations(selectedDate);
@@ -488,19 +504,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /*
-     * Next month
-     */
+    * Next month
+    */
     nextMonth.addEventListener('click', function () {
         animateCalendar('next', () => {
+
             currentDate.setMonth(
                 currentDate.getMonth() + 1
             );
 
-            selectedDate = new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth(),
-                1
-            );
+            setDefaultSelectedDate();
 
             renderCalendar();
             showReservations(selectedDate);
