@@ -117,6 +117,21 @@
     flex-shrink: 0;
 }
 
+#calendarDays {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    will-change: transform, opacity;
+}
+
+#calendarDays.slide-left {
+    transform: translateX(-50px);
+    opacity: 0;
+}
+
+#calendarDays.slide-right {
+    transform: translateX(50px);
+    opacity: 0;
+}
+
 @media (max-width: 992px) {
 
     .reservation-dots {

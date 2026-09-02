@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ).getDate();
 
         /*
-         * Determine whether this month requires
+         * determine whether this month requires
          * 5 or 6 calendar rows.
          */
         const totalCells = firstDay + daysInMonth;
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
         /*
-         * Fill previous month's trailing days
+         * fill previous month's trailing days
          */
         const previousMonthDays = new Date(
             year,
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-         * Current month
+         * current month
          */
         for (let day = 1; day <= daysInMonth; day++) {
 
@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-         * Fill remaining cells with next month
+         * fill remaining cells with next month
          */
         const remainingCells =
             (numberOfWeeks * 7) - totalCells;
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Days belonging to adjacent months
+        * days belonging to adjacent months
         */
         if (type !== 'current') {
             cell.classList.add('other-month');
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Check if this date has reservations
+        * check if this date has reservations
         */
         const dateString =
             year + '-' +
@@ -382,7 +382,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Today
+        * TODAY
         */
         const today = new Date();
 
@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Selected date
+        * SELECTED DATE
         */
         if (
             selectedDate &&
@@ -409,15 +409,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Clicking a date
+        * DATE CLICK
         */
         cell.addEventListener('click', function () {
+
+            const previousDate = selectedDate;
 
             selectedDate = cellDate;
 
             renderCalendar();
 
-            showReservations(cellDate);
+            // Determine swipe direction
+            const direction =
+                cellDate > previousDate
+                    ? 'next'
+                    : 'prev';
+
+            animateReservations(direction, () => {
+                showReservations(cellDate);
+            });
         });
 
 
@@ -425,29 +435,99 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
+    function animateCalendar(direction, callback) {
+        const animationClass =
+            direction === 'next' ? 'slide-left' : 'slide-right';
+
+        // slide-out
+        calendarDays.classList.add(animationClass);
+
+        setTimeout(() => {
+            // render the new month
+            callback();
+
+            // immediately place the new month on the opposite side
+            calendarDays.style.transition = 'none';
+            calendarDays.style.transform =
+                direction === 'next'
+                    ? 'translateX(30px)'
+                    : 'translateX(-30px)';
+            calendarDays.style.opacity = '0';
+
+            calendarDays.offsetHeight;
+
+            calendarDays.style.transition =
+                'transform 0.25s ease, opacity 0.25s ease';
+
+            calendarDays.style.transform = 'translateX(0)';
+            calendarDays.style.opacity = '1';
+
+            setTimeout(() => {
+                calendarDays.style.transition = '';
+                calendarDays.style.transform = '';
+                calendarDays.style.opacity = '';
+                calendarDays.classList.remove(animationClass);
+            }, 250);
+
+        }, 150);
+    }
+
+    function setDefaultSelectedDate() {
+        const today = new Date();
+
+        const isCurrentMonth =
+            currentDate.getFullYear() === today.getFullYear() &&
+            currentDate.getMonth() === today.getMonth();
+
+        if (isCurrentMonth) {
+            selectedDate = new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate()
+            );
+        } else {
+            selectedDate = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                1
+            );
+        }
+    }
+
+
     /*
-     * Previous month
-     */
+    * Previous month
+    */
     prevMonth.addEventListener('click', function () {
+        animateCalendar('prev', () => {
 
-        currentDate.setMonth(
-            currentDate.getMonth() - 1
-        );
+            currentDate.setMonth(
+                currentDate.getMonth() - 1
+            );
 
-        renderCalendar();
+            setDefaultSelectedDate();
+
+            renderCalendar();
+            showReservations(selectedDate);
+        });
     });
 
 
     /*
-     * Next month
-     */
+    * Next month
+    */
     nextMonth.addEventListener('click', function () {
+        animateCalendar('next', () => {
 
-        currentDate.setMonth(
-            currentDate.getMonth() + 1
-        );
+            currentDate.setMonth(
+                currentDate.getMonth() + 1
+            );
 
-        renderCalendar();
+            setDefaultSelectedDate();
+
+            renderCalendar();
+            showReservations(selectedDate);
+        });
     });
 
 
@@ -489,11 +569,60 @@ document.addEventListener('DOMContentLoaded', function () {
         return `${h}:${mStr} ${ampm}`;
     }
 
+    function animateReservations(direction, callback) {
+
+        const reservationContainer =
+            document.getElementById('selectedDateContent');
+
+        const animationClass =
+            direction === 'next'
+                ? 'slide-left'
+                : 'slide-right';
+
+        // Slide current content out
+        reservationContainer.classList.add(animationClass);
+
+        setTimeout(() => {
+
+            // Update reservation content
+            callback();
+
+            // Put new content on the opposite side
+            reservationContainer.style.transition = 'none';
+
+            reservationContainer.style.transform =
+                direction === 'next'
+                    ? 'translateX(30px)'
+                    : 'translateX(-30px)';
+
+            reservationContainer.style.opacity = '0';
+
+            // Force browser reflow
+            reservationContainer.offsetHeight;
+
+            // Slide new content in
+            reservationContainer.style.transition =
+                'transform 0.25s ease, opacity 0.25s ease';
+
+            reservationContainer.style.transform =
+                'translateX(0)';
+
+            reservationContainer.style.opacity = '1';
+
+            // Clean up
+            setTimeout(() => {
+                reservationContainer.style.transition = '';
+                reservationContainer.style.transform = '';
+                reservationContainer.style.opacity = '';
+                reservationContainer.classList.remove(animationClass);
+            }, 250);
+
+        }, 150);
+    }
+
 
     /*
      * display reservations for selected date
-     *
-     *
      */
     function showReservations(date) {
 
@@ -566,7 +695,6 @@ document.addEventListener('DOMContentLoaded', function () {
         /*
         * Display reservations
         */
-        
 
         dayReservations.sort((a, b) => {
             return new Date(a.start) - new Date(b.start);
@@ -626,13 +754,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /*
-     * Initial render
+     * initial render
      */
     renderCalendar();
     showReservations(selectedDate);
 
     /*
-    * Load reservations
+    * load reservations
     */
     loadReservations();
 
